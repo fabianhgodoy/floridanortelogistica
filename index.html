@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CorralónLog — Sistema de Logística</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #333;
+    --accent: #f5a623;
+    --accent2: #e8530a;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --muted: #888;
+    --text: #f0ede8;
+    --text2: #aaa;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+  }
+
+  .logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .logo span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .nav {
+    padding: 16px 0;
+    flex: 1;
+  }
+
+  .nav-section {
+    padding: 8px 20px 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+    color: var(--text2);
+    border-left: 3px solid transparent;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { 
+    background: rgba(245,166,35,0.08); 
+    color: var(--accent); 
+    border-left-color: var(--accent);
+  }
+
+  .nav-item .icon { font-size: 18px; width: 22px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* MAIN */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .badge {
+    background: var(--accent);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .content {
+    padding: 32px;
+    flex: 1;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.orange::before { background: var(--accent); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.red::before { background: var(--red); }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+
+  .stat-card.orange .stat-value { color: var(--accent); }
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.blue .stat-value { color: var(--blue); }
+  .stat-card.red .stat-value { color: var(--red); }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+
+  /* TABLE */
+  .table-wrapper { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--surface2);
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+  tbody td {
+    padding: 12px 16px;
+    color: var(--text);
+  }
+
+  /* PILLS */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+
+  .pill-pendiente { background: rgba(245,166,35,0.15); color: var(--accent); border: 1px solid rgba(245,166,35,0.3); }
+  .pill-transito { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .pill-entregado { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .pill-cancelado { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* BUTTONS */
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #f0b830; }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: #2e2e2e; }
+
+  .btn-danger {
+    background: rgba(239,68,68,0.1);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+  .btn-sm { padding: 4px 10px; font-size: 10px; }
+
+  /* FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+
+  select option { background: var(--surface2); }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .form-actions {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: 600px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.15s;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  /* MAPA VISUAL */
+  .route-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .route-card:hover { background: #2a2a2a; }
+
+  .route-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    min-width: 40px;
+  }
+
+  .route-info { flex: 1; }
+
+  .route-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .route-meta { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+  .route-stops {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .stop-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 2px solid var(--muted);
+  }
+
+  .stop-dot.done { background: var(--green); border-color: var(--green); }
+  .stop-dot.current { background: var(--accent); border-color: var(--accent); animation: pulse 1.5s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .stop-line {
+    width: 20px; height: 2px;
+    background: var(--border);
+  }
+
+  .stop-line.done { background: var(--green); }
+
+  /* DASHBOARD grids */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    background: var(--surface2);
+    height: 6px;
+    border-radius: 0;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  /* TIMELINE */
+  .timeline { padding: 20px; }
+
+  .timeline-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 20px;
+    position: relative;
+  }
+
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 28px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .timeline-dot.done { background: var(--green); border-color: var(--green); }
+  .timeline-dot.active { background: var(--accent); border-color: var(--accent); }
+
+  .timeline-content { flex: 1; padding-top: 4px; }
+  .timeline-title { font-weight: 600; font-size: 13px; }
+  .timeline-time { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* INPUT SEARCH */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .search-bar input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    width: 200px;
+    padding: 0;
+  }
+
+  /* NOTIFICATION DOT */
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .flex { display: flex; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .gap-8 { gap: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+  .p-20 { padding: 20px; }
+  .text-muted { color: var(--muted); font-size: 12px; }
+  .text-accent { color: var(--accent); }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+
+<!-- PANTALLA DE CARGA -->
+<div id="pantalla-carga" style="position:fixed;inset:0;background:#0e0e0e;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:#f5a623;letter-spacing:4px;margin-bottom:16px">CORRALÓN LOG</div>
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#888;letter-spacing:2px;margin-bottom:32px">CONECTANDO CON FIREBASE...</div>
+  <div style="width:48px;height:48px;border:3px solid #333;border-top-color:#f5a623;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <h1>CORRALÓN</h1>
+    <span>Sistema Logístico</span>
+  </div>
+  <div class="nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="showSection('dashboard')">
+      <span class="icon">📊</span> Dashboard
+    </div>
+    <div class="nav-section">Operaciones</div>
+    <div class="nav-item" onclick="showSection('entregas')">
+      <span class="icon">🚛</span> Entregas
+    </div>
+    <div class="nav-item" onclick="showSection('rutas')">
+      <span class="icon">🗺️</span> Rutas
+    </div>
+    <div class="nav-item" onclick="showSection('vehiculos')">
+      <span class="icon">🔧</span> Vehículos
+    </div>
+    <div class="nav-item" onclick="showSection('choferes')">
+      <span class="icon">👷</span> Choferes
+    </div>
+    <div class="nav-section">Gestión</div>
+    <div class="nav-item" onclick="showSection('clientes')">
+      <span class="icon">👥</span> Clientes
+    </div>
+    <div class="nav-item" onclick="showSection('reportes')">
+      <span class="icon">📋</span> Reportes
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div>v1.0 — PRODUCCIÓN</div>
+    <div style="margin-top:4px;font-size:11px;font-family:'IBM Plex Mono',monospace" id="estado-conexion">⏳ Conectando...</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">DASHBOARD</div>
+    <div class="topbar-actions">
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="Buscar entrega, cliente...">
+      </div>
+      <span class="notif-dot"></span>
+      <button class="btn btn-primary" onclick="openModal('modal-nueva-entrega')">+ Nueva Entrega</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="section-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card orange">
+          <div class="stat-label">Entregas Hoy</div>
+          <div class="stat-value">14</div>
+          <div class="stat-sub">3 pendientes de salida</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Completadas</div>
+          <div class="stat-value">9</div>
+          <div class="stat-sub">64% del día</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">En Tránsito</div>
+          <div class="stat-value">4</div>
+          <div class="stat-sub">2 camiones en ruta</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Con Demora</div>
+          <div class="stat-value">2</div>
+          <div class="stat-sub">Requieren atención</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Entregas Recientes</div>
+              <button class="btn btn-secondary btn-sm" onclick="showSection('entregas')">Ver todas</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Estado</th>
+                  <th>Chofer</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-entregas">
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Vehículos Activos</div>
+            </div>
+            <div class="p-20" id="dashboard-vehiculos">
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Actividad del Día</div>
+            </div>
+            <div class="timeline" id="dashboard-timeline">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
+        <button onclick="resetearDatos()" style="background:none;border:1px solid #333;color:#555;padding:6px 14px;font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;letter-spacing:1px" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='#333';this.style.color='#555'">⚠ Borrar todos los datos</button>
+      </div>
+    </div>
+
+    <!-- ENTREGAS -->
+    <div class="section" id="section-entregas">
+      <div class="flex-between mb-16">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm filter-btn active-filter" onclick="filterEntregas('all', this)">Todas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('pendiente', this)">Pendientes</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('transito', this)">En Tránsito</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('entregado', this)">Entregadas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('sin-remito', this)">Sin Remito ○</button>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('modal-nueva-entrega')">+ Nueva Entrega</button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Remito</th>
+                <th>Cliente</th>
+                <th>Dirección</th>
+                <th>Materiales</th>
+                <th>Peso</th>
+                <th>Fecha</th>
+                <th>Turno</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-entregas">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUTAS -->
+    <div class="section" id="section-rutas">
+      <div class="flex-between mb-16">
+        <p class="text-muted mono">Rutas programadas para hoy — <span class="text-accent" id="fecha-hoy"></span></p>
+        <button class="btn btn-primary" onclick="openModal('modal-nueva-ruta')">+ Planificar Ruta</button>
+      </div>
+      <div id="lista-rutas"></div>
+    </div>
+
+    <!-- VEHÍCULOS -->
+    <div class="section" id="section-vehiculos">
+      <div class="flex-between mb-16">
+        <p class="text-muted">Flota registrada</p>
+        <button class="btn btn-primary" onclick="openModal('modal-nuevo-vehiculo')">+ Agregar Vehículo</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Patente</th>
+              <th>Tipo</th>
+              <th>Modelo</th>
+              <th>Capacidad</th>
+              <th>Estado</th>
+              <th>Chofer Asignado</th>
+              <th>Km Recorridos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-vehiculos"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CHOFERES -->
+    <div class="section" id="section-choferes">
+      <div class="flex-between mb-16">
+        <p class="text-muted">Equipo de choferes</p>
+        <button class="btn btn-primary" onclick="openModal('modal-nuevo-chofer')">+ Agregar Chofer</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>DNI</th>
+              <th>Teléfono</th>
+              <th>Licencia</th>
+              <th>Venc. Licencia</th>
+              <th>Disponibilidad</th>
+              <th>Entregas Hoy</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-choferes"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="section" id="section-clientes">
+      <div class="flex-between mb-16">
+        <p class="text-muted">Directorio de clientes</p>
+        <button class="btn btn-primary" onclick="openModal('modal-nuevo-cliente')">+ Agregar Cliente</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Zona</th>
+              <th>Total Entregas</th>
+              <th>Última Entrega</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-clientes"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="section" id="section-reportes">
+      <div class="three-col" style="margin-bottom:24px">
+        <div class="stat-card orange">
+          <div class="stat-label">Entregas Este Mes</div>
+          <div class="stat-value" id="rep-total-mes">—</div>
+          <div class="stat-sub" id="rep-total-sub"></div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Puntualidad Global</div>
+          <div class="stat-value" id="rep-puntualidad">—</div>
+          <div class="stat-sub" id="rep-puntualidad-sub"></div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Paradas Completadas Hoy</div>
+          <div class="stat-value" id="rep-paradas-hoy">—</div>
+          <div class="stat-sub" id="rep-paradas-sub"></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Rendimiento por Chofer</div></div>
+          <div class="p-20" id="reporte-choferes"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Entregas por Zona</div></div>
+          <div class="p-20" id="reporte-zonas"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="card-header">
+          <div class="card-title">⏱ Puntualidad por Chofer — vs. Hora Estimada</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace" id="rep-fecha-reporte"></span>
+            <button class="btn btn-secondary btn-sm" onclick="descargarReporte()" title="Descargar reporte">⬇ Descargar</button>
+            <button class="btn btn-danger btn-sm" onclick="limpiarReporte()" title="Limpiar datos del día">🗑 Limpiar día</button>
+          </div>
+        </div>
+        <div class="p-20" id="reporte-puntualidad"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<!-- Nueva Entrega -->
+<div class="modal-overlay" id="modal-nueva-entrega">
+  <div class="modal" style="width:720px">
+    <div class="modal-header">
+      <div class="modal-title">Nueva Entrega</div>
+      <button class="modal-close" onclick="closeModal('modal-nueva-entrega')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Cliente</label>
+        <select id="ne-cliente">
+          <option value="">Seleccionar cliente...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Dirección de Entrega</label>
+        <input type="text" id="ne-direccion" placeholder="Calle y número">
+      </div>
+      <div class="form-group">
+        <label>Localidad</label>
+        <input type="text" id="ne-localidad" placeholder="Ej: Morón, Ramos Mejía...">
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="ne-zona">
+          <option>Zona 0</option>
+          <option>Zona 1</option>
+          <option>Zona 2</option>
+          <option>Zona 3</option>
+          <option>Zona 4</option>
+          <option>Zona 5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Turno</label>
+        <select id="ne-turno">
+          <option>Mañana (8:00 - 12:00)</option>
+          <option>Tarde (13:00 - 17:00)</option>
+          <option>Tarde Noche (17:00 - 20:00)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Número de Remito</label>
+        <input type="text" id="ne-remito" placeholder="REM-0001">
+      </div>
+      <div class="form-group">
+        <label>📅 Fecha de Entrega</label>
+        <input type="date" id="ne-fecha">
+      </div>
+      <div class="form-group full">
+        <label>Observaciones</label>
+        <textarea id="ne-obs" placeholder="Instrucciones especiales, acceso, horario preferido..." style="min-height:48px"></textarea>
+      </div>
+    </div>
+
+    <!-- CALCULADORA DE PESOS -->
+    <div style="border-top:1px solid var(--border);padding:16px 20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent)">🧮 CALCULADORA DE MATERIALES</div>
+        <button class="btn btn-secondary btn-sm" onclick="agregarLinea()">+ Agregar material</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:2fr 1.2fr 0.8fr 1fr 32px;gap:6px;margin-bottom:6px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Material</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Presentación</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Cantidad</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Peso parcial</div>
+        <div></div>
+      </div>
+
+      <div id="calc-lineas"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">PESO TOTAL CALCULADO</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);letter-spacing:1px" id="peso-total-display">0 kg</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px">RESUMEN MATERIALES</div>
+          <div style="font-size:12px;color:var(--text2);max-width:260px;text-align:right" id="resumen-materiales">—</div>
+        </div>
+      </div>
+      <input type="hidden" id="ne-peso">
+      <input type="hidden" id="ne-materiales">
+    </div>
+
+    <!-- PRODUCTOS LIBRES -->
+    <div style="border-top:1px solid var(--border);padding:14px 20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--text2)">📦 OTROS PRODUCTOS <span style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:0">(sin peso — baldes, herramientas, accesorios, etc.)</span></div>
+        <button class="btn btn-secondary btn-sm" onclick="agregarProductoLibre()">+ Agregar</button>
+      </div>
+      <div id="productos-libres-lista"></div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nueva-entrega')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEntrega()">Registrar Entrega</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nueva Ruta -->
+<div class="modal-overlay" id="modal-nueva-ruta">
+  <div class="modal" style="width:740px">
+    <div class="modal-header">
+      <div class="modal-title">Planificar Ruta</div>
+      <button class="modal-close" onclick="closeModal('modal-nueva-ruta')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre de la Ruta</label>
+        <input type="text" id="nr-nombre" placeholder="Ej: Zona 2 Mañana">
+      </div>
+      <div class="form-group">
+        <label>Turno</label>
+        <select id="nr-turno">
+          <option>Mañana</option>
+          <option>Tarde</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="nr-zona">
+          <option>Zona 0</option>
+          <option>Zona 1</option>
+          <option>Zona 2</option>
+          <option>Zona 3</option>
+          <option>Zona 4</option>
+          <option>Zona 5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>🕐 Horario de Salida <span style="color:var(--muted);font-size:10px">(podés completarlo después)</span></label>
+        <input type="time" id="nr-horario" placeholder="--:--">
+      </div>
+    </div>
+
+    <!-- CHOFER -->
+    <div style="border-top:1px solid var(--border);padding:14px 20px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">👷 SELECCIONAR CHOFER</div>
+      <div id="nr-lista-choferes" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+
+    <!-- VEHÍCULO -->
+    <div style="border-top:1px solid var(--border);padding:14px 20px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🚛 SELECCIONAR VEHÍCULO</div>
+      <div id="nr-lista-vehiculos" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+
+    <!-- DIRECCIONES DESDE ENTREGAS -->
+    <div style="border-top:1px solid var(--border);padding:14px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">📍 PARADAS — SELECCIONAR DE ENTREGAS PENDIENTES</div>
+        <div style="font-size:11px;color:var(--muted)">o escribí manualmente abajo</div>
+      </div>
+      <div id="nr-lista-direcciones" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
+      <div style="margin-top:10px">
+        <label style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Agregar parada manual</label>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <input type="text" id="nr-parada-manual" placeholder="Dirección a agregar..." style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-size:13px;outline:none">
+          <button class="btn btn-secondary" onclick="agregarParadaManual()">+ Agregar</button>
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:6px">PARADAS SELECCIONADAS (<span id="nr-count">0</span>)</div>
+        <div id="nr-paradas-seleccionadas" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nueva-ruta')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarRuta()">Guardar Ruta</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nuevo Vehículo -->
+<div class="modal-overlay" id="modal-nuevo-vehiculo">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nuevo Vehículo</div>
+      <button class="modal-close" onclick="closeModal('modal-nuevo-vehiculo')">✕</button>
+    </div>
+    <div class="form-grid form-grid-3">
+      <div class="form-group">
+        <label>Patente</label>
+        <input type="text" id="nv-patente" placeholder="ABC 123">
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="nv-tipo">
+          <option>Camión</option>
+          <option>Camioneta</option>
+          <option>Acoplado</option>
+          <option>Volquete</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Modelo</label>
+        <input type="text" id="nv-modelo" placeholder="Ej: Mercedes 1620">
+      </div>
+      <div class="form-group">
+        <label>Capacidad (kg)</label>
+        <input type="number" id="nv-capacidad" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Año</label>
+        <input type="number" id="nv-anio" placeholder="2020">
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="nv-estado">
+          <option>Disponible</option>
+          <option>En ruta</option>
+          <option>Mantenimiento</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nuevo-vehiculo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarVehiculo()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nuevo Chofer -->
+<div class="modal-overlay" id="modal-nuevo-chofer">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nuevo Chofer</div>
+      <button class="modal-close" onclick="closeModal('modal-nuevo-chofer')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre Completo</label>
+        <input type="text" id="nc-nombre" placeholder="Nombre y apellido">
+      </div>
+      <div class="form-group">
+        <label>DNI</label>
+        <input type="text" id="nc-dni" placeholder="00.000.000">
+      </div>
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" id="nc-tel" placeholder="11-0000-0000">
+      </div>
+      <div class="form-group">
+        <label>N° Licencia</label>
+        <input type="text" id="nc-licencia" placeholder="Número de licencia">
+      </div>
+      <div class="form-group">
+        <label>Vencimiento Licencia</label>
+        <input type="date" id="nc-venc">
+      </div>
+      <div class="form-group">
+        <label>Disponibilidad</label>
+        <select id="nc-disp">
+          <option>Disponible</option>
+          <option>En ruta</option>
+          <option>Descanso</option>
+          <option>Vacaciones</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nuevo-chofer')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarChofer()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nuevo Cliente -->
+<div class="modal-overlay" id="modal-nuevo-cliente">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nuevo Cliente</div>
+      <button class="modal-close" onclick="closeModal('modal-nuevo-cliente')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre / Razón Social</label>
+        <input type="text" id="ncl-nombre" placeholder="Nombre del cliente">
+      </div>
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" id="ncl-tel" placeholder="11-0000-0000">
+      </div>
+      <div class="form-group full">
+        <label>Dirección Principal</label>
+        <input type="text" id="ncl-dir" placeholder="Calle, número, localidad">
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="ncl-zona">
+          <option>Zona 0</option>
+          <option>Zona 1</option>
+          <option>Zona 2</option>
+          <option>Zona 3</option>
+          <option>Zona 4</option>
+          <option>Zona 5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Observaciones</label>
+        <input type="text" id="ncl-obs" placeholder="Notas...">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nuevo-cliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarCliente()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// ====== DATA (se carga desde Firebase) ======
+let data = {};
+
+// ====== NAVIGATION ======
+const TITLES = { dashboard: 'DASHBOARD', entregas: 'GESTIÓN DE ENTREGAS', rutas: 'RUTAS DE ENTREGA', vehiculos: 'VEHÍCULOS', choferes: 'CHOFERES', clientes: 'CLIENTES', reportes: 'REPORTES' };
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  document.getElementById('page-title').textContent = TITLES[id];
+  event.currentTarget.classList.add('active');
+  renderAll();
+}
+
+// ====== MODAL ======
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  populateSelects();
+  if (id === 'modal-nueva-entrega') {
+    calcLineas = [];
+    productosLibres = [];
+    setTimeout(() => { agregarLinea(); renderProductosLibres(); }, 50);
+  }
+  if (id === 'modal-nueva-ruta') {
+    setTimeout(() => populateRutaModal(), 50);
+  }
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ====== RENDER ======
+function renderAll() {
+  renderDashboard();
+  renderEntregas();
+  renderVehiculos();
+  renderChoferes();
+  renderClientes();
+  renderRutas();
+  renderReportes();
+}
+
+function estadoPill(e) {
+  const map = { pendiente: 'pill-pendiente', transito: 'pill-transito', entregado: 'pill-entregado', cancelado: 'pill-cancelado' };
+  const labels = { pendiente: 'Pendiente', transito: 'En Tránsito', entregado: 'Entregado', cancelado: 'Cancelado' };
+  return `<span class="pill ${map[e]}">${labels[e]}</span>`;
+}
+
+function renderDashboard() {
+  // entregas recientes
+  const tbody = document.getElementById('dashboard-entregas');
+  if (!tbody) return;
+  tbody.innerHTML = data.entregas.slice(0, 5).map(e => `
+    <tr>
+      <td class="mono" style="color:var(--accent)">${e.id}</td>
+      <td>${e.cliente}</td>
+      <td>${estadoPill(e.estado)}</td>
+      <td>${e.chofer}</td>
+    </tr>
+  `).join('');
+
+  // vehículos
+  const dv = document.getElementById('dashboard-vehiculos');
+  if (dv) dv.innerHTML = data.vehiculos.map(v => {
+    const color = v.estado === 'En ruta' ? 'var(--blue)' : v.estado === 'Disponible' ? 'var(--green)' : 'var(--red)';
+    return `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-weight:600;font-size:13px">${v.patente} <span style="color:var(--muted);font-size:12px">— ${v.tipo}</span></div>
+        <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:2px">${v.chofer}</div>
+      </div>
+      <span class="pill" style="background:rgba(0,0,0,0.3);color:${color};border:1px solid ${color}40">${v.estado}</span>
+    </div>
+  `}).join('');
+
+  // timeline
+  const dt = document.getElementById('dashboard-timeline');
+  const events = [
+    { time: '08:15', text: 'Salida REM-0047 — Carlos Méndez', done: true },
+    { time: '09:30', text: 'Entrega completada en Belgrano 1240', done: true },
+    { time: '10:45', text: 'Salida REM-0048 — Roberto Díaz', done: true },
+    { time: '12:00', text: 'REM-0048 en tránsito — zona norte', active: true },
+    { time: '14:00', text: 'Salida REM-0049 programada', done: false },
+  ];
+  if (dt) dt.innerHTML = events.map(e => `
+    <div class="timeline-item">
+      <div class="timeline-dot ${e.done ? 'done' : e.active ? 'active' : ''}">${e.done ? '✓' : e.active ? '●' : '○'}</div>
+      <div class="timeline-content">
+        <div class="timeline-title">${e.text}</div>
+        <div class="timeline-time">${e.time} hs</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderEntregas(filtro = 'all') {
+  const tbody = document.getElementById('tabla-entregas');
+  if (!tbody) return;
+  const filtered = renderEntregasFiltered(filtro);
+  tbody.innerHTML = filtered.map((e, i) => {
+    const realIndex = data.entregas.indexOf(e);
+    const fechaFmt = e.fecha ? (() => { const [y,m,d] = e.fecha.split('-'); return `${d}/${m}/${y}`; })() : '—';
+    const hoy = new Date().toISOString().slice(0,10);
+    const esHoy = e.fecha === hoy;
+    const esPasada = e.fecha && e.fecha < hoy && e.estado !== 'entregado';
+    const fechaColor = esPasada ? 'color:var(--red)' : esHoy ? 'color:var(--accent)' : 'color:var(--text2)';
+
+    // Remito recibido badge
+    const remitoBadge = e.remitoRecibido
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;letter-spacing:1px">✓ REMITO OK</span>`
+      : '';
+
+    // Check button: green if already confirmed, muted if not
+    const checkBtn = e.remitoRecibido
+      ? `<button title="Remito confirmado" onclick="toggleRemito(${realIndex})"
+           style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:var(--green);cursor:pointer;padding:5px 10px;font-size:14px;transition:all .15s" >✓</button>`
+      : `<button title="Marcar remito recibido" onclick="toggleRemito(${realIndex})"
+           style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:5px 10px;font-size:14px;transition:all .15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">○</button>`;
+
+    const deleteBtn = `<button title="Eliminar entrega" onclick="eliminarEntrega(${realIndex})"
+         style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:var(--red);cursor:pointer;padding:5px 10px;font-size:13px;transition:all .15s" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.08)'">✕</button>`;
+
+    return `
+    <tr style="${e.remitoRecibido ? 'background:rgba(34,197,94,0.03)' : ''}">
+      <td class="mono" style="color:var(--accent)">${e.id}<br>${remitoBadge}</td>
+      <td><strong>${e.cliente}</strong></td>
+      <td style="font-size:12px;max-width:150px">${e.direccion}<br><span style="color:var(--muted)">${e.zona}</span></td>
+      <td style="font-size:12px;max-width:180px;color:var(--text2)">${e.materiales}</td>
+      <td class="mono" style="color:var(--green);font-weight:600;white-space:nowrap">${e.peso ? e.peso.toLocaleString('es-AR',{maximumFractionDigits:0})+' kg' : '—'}</td>
+      <td class="mono" style="${fechaColor};white-space:nowrap">${fechaFmt}${esPasada ? ' ⚠️' : esHoy ? ' ★' : ''}</td>
+      <td style="font-size:12px">${e.turno}</td>
+      <td>${estadoPill(e.estado)}</td>
+      <td><div style="display:flex;gap:4px">${checkBtn}${deleteBtn}</div></td>
+    </tr>
+  `}).join('');
+}
+
+function toggleRemito(i) {
+  data.entregas[i].remitoRecibido = !data.entregas[i].remitoRecibido;
+  renderEntregas();
+  showSuccessToast(data.entregas[i].remitoRecibido ? `Remito ${data.entregas[i].id} confirmado` : `Remito ${data.entregas[i].id} desmarcado`);
+}
+
+function filterEntregas(filtro, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('btn-primary', 'active-filter');
+    b.classList.add('btn-secondary');
+  });
+  btn.classList.add('btn-primary', 'active-filter');
+  btn.classList.remove('btn-secondary');
+  renderEntregas(filtro);
+}
+
+function renderEntregasFiltered(filtro) {
+  if (filtro === 'all') return data.entregas;
+  if (filtro === 'sin-remito') return data.entregas.filter(e => !e.remitoRecibido && e.estado !== 'cancelado');
+  return data.entregas.filter(e => e.estado === filtro);
+}
+
+function cambiarEstado(i) {
+  const estados = ['pendiente', 'transito', 'entregado'];
+  const cur = data.entregas[i].estado;
+  const idx = estados.indexOf(cur);
+  if (idx < estados.length - 1) {
+    data.entregas[i].estado = estados[idx + 1];
+    renderAll();
+  }
+}
+
+function eliminarEntrega(i) {
+  if (confirm('¿Eliminar esta entrega?')) {
+    data.entregas.splice(i, 1);
+    renderAll();
+  }
+}
+
+function renderVehiculos() {
+  const tbody = document.getElementById('tabla-vehiculos');
+  if (!tbody) return;
+  tbody.innerHTML = data.vehiculos.map((v, i) => {
+    const color = v.estado === 'En ruta' ? 'pill-transito' : v.estado === 'Disponible' ? 'pill-entregado' : 'pill-cancelado';
+    return `
+    <tr>
+      <td class="mono" style="font-weight:600;color:var(--accent)">${v.patente}</td>
+      <td>${v.tipo}</td>
+      <td>${v.modelo}</td>
+      <td>${(v.capacidad/1000).toFixed(1)} ton</td>
+      <td><span class="pill ${color}">${v.estado}</span></td>
+      <td>${v.chofer}</td>
+      <td class="mono">${v.km.toLocaleString()} km</td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="eliminarVehiculo(${i})">✕</button>
+      </td>
+    </tr>
+  `}).join('');
+}
+
+function eliminarVehiculo(i) {
+  if (confirm('¿Eliminar este vehículo?')) { data.vehiculos.splice(i, 1); renderAll(); }
+}
+
+function renderChoferes() {
+  const tbody = document.getElementById('tabla-choferes');
+  if (!tbody) return;
+  tbody.innerHTML = data.choferes.map((c, i) => {
+    const color = c.disp === 'En ruta' ? 'pill-transito' : c.disp === 'Disponible' ? 'pill-entregado' : 'pill-pendiente';
+    const hoy = new Date();
+    const venc = new Date(c.venc);
+    const diff = Math.floor((venc - hoy) / (1000 * 60 * 60 * 24));
+    const vencColor = diff < 90 ? 'color:var(--red)' : diff < 180 ? 'color:var(--accent)' : 'color:var(--green)';
+    return `
+    <tr>
+      <td><strong>${c.nombre}</strong></td>
+      <td class="mono">${c.dni}</td>
+      <td class="mono">${c.tel}</td>
+      <td class="mono">${c.licencia}</td>
+      <td class="mono" style="${vencColor}">${c.venc.split('-').reverse().join('/')}</td>
+      <td><span class="pill ${color}">${c.disp}</span></td>
+      <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent)">${c.entregasHoy}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="eliminarChofer(${i})">✕</button>
+      </td>
+    </tr>
+  `}).join('');
+}
+
+function eliminarChofer(i) {
+  if (confirm('¿Eliminar este chofer?')) { data.choferes.splice(i, 1); renderAll(); }
+}
+
+function renderClientes() {
+  const tbody = document.getElementById('tabla-clientes');
+  if (!tbody) return;
+  tbody.innerHTML = data.clientes.map((c, i) => `
+    <tr>
+      <td><strong>${c.nombre}</strong></td>
+      <td class="mono">${c.tel}</td>
+      <td style="font-size:12px">${c.dir}</td>
+      <td><span class="badge">${c.zona}</span></td>
+      <td style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent)">${c.totalEntregas}</td>
+      <td class="mono" style="color:var(--muted)">${c.ultimaEntrega}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="eliminarCliente(${i})">✕</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function eliminarCliente(i) {
+  if (confirm('¿Eliminar este cliente?')) { data.clientes.splice(i, 1); renderAll(); }
+}
+
+// ====== TABLAS DE ESTIMACIÓN (de calculadora) ======
+const tablaBase = {
+  0: { 7: 30, 12: 45, 18: 60 },
+  1: { 7: 45, 12: 60, 18: 75 },
+  2: { 7: 60, 12: 75, 18: 90 },
+  3: { 7: 75, 12: 105, 18: 120 },
+  4: { 7: 90, 12: 120, 18: 135 },
+  5: { 7: 120, 12: 150, 18: 165 },
+};
+const tablaCompleja = {
+  0: { 7: 60, 12: 75, 18: 90 },
+  1: { 7: 75, 12: 90, 18: 105 },
+  2: { 7: 90, 12: 105, 18: 120 },
+  3: { 7: 105, 12: 135, 18: 150 },
+  4: { 7: 120, 12: 150, 18: 165 },
+  5: { 7: 150, 12: 180, 18: 195 },
+};
+
+function getTonelajeVehiculo(patente) {
+  const v = data.vehiculos.find(v => v.patente === patente);
+  if (!v) return 7;
+  const cap = v.capacidad / 1000;
+  if (cap <= 9) return 7;
+  if (cap <= 15) return 12;
+  return 18;
+}
+
+function calcularEstimada(horarioSalida, zona, tonelaje, numRemitos, compleja = false) {
+  if (!horarioSalida) return null;
+  const zonaNum = parseInt((zona || '0').replace('Zona ', '')) || 0;
+  const tabla = compleja ? tablaCompleja : tablaBase;
+  const tons = [7, 12, 18].reduce((prev, cur) => Math.abs(cur - tonelaje) < Math.abs(prev - tonelaje) ? cur : prev);
+  const tiempoBase = tabla[zonaNum][tons];
+  const adicional = Math.max(0, numRemitos - 1) * (zonaNum <= 2 ? 15 : 30);
+  const total = tiempoBase + adicional;
+  const [h, m] = horarioSalida.split(':').map(Number);
+  const mins = h * 60 + m + total;
+  return `${String(Math.floor(mins / 60) % 24).padStart(2,'0')}:${String(mins % 60).padStart(2,'0')}`;
+}
+
+function renderRutas() {
+  const el = document.getElementById('lista-rutas');
+  if (!el) return;
+  const fecha = document.getElementById('fecha-hoy');
+  if (fecha) fecha.textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  el.innerHTML = data.rutas.map((r, ri) => {
+    const tonelaje = getTonelajeVehiculo(r.vehiculo);
+    const estimada = r.horario ? calcularEstimada(r.horario, r.zona, tonelaje, r.paradas.length) : null;
+
+    const horarioBadge = r.horario
+      ? `<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="editarHorario(${ri})" title="Click para editar">🕐 Salida ${r.horario} hs ✏️</span>`
+      : `<span style="color:var(--muted);cursor:pointer;border:1px dashed var(--muted);padding:2px 8px;font-size:11px" onclick="editarHorario(${ri})">+ Registrar salida</span>`;
+
+    const estimadaBadge = estimada
+      ? `<span style="color:var(--blue);font-size:11px;font-family:'IBM Plex Mono',monospace">⏱ Est. regreso: <strong>${estimada} hs</strong></span>`
+      : '';
+
+    // Lista de paradas con horarios reales
+    const paradasDetalle = r.paradas.map((p, pi) => {
+      const llegada = r.llegadas && r.llegadas[pi];
+      const isDone = pi < r.progreso;
+      const isCurrent = pi === r.progreso;
+      const dotColor = isDone ? 'var(--green)' : isCurrent ? 'var(--accent)' : 'var(--border)';
+      const llegadaTag = llegada
+        ? `<span style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:8px">✓ llegó ${llegada} hs</span>`
+        : (isCurrent && r.horario ? `<span style="color:var(--muted);font-size:10px;margin-left:8px;font-family:'IBM Plex Mono',monospace">est. llegada: ${calcularEstimada(r.horario, r.zona, tonelaje, pi + 1) || '—'}</span>` : '');
+      return `
+        <div style="display:flex;align-items:center;gap:8px;padding:4px 0;${pi < r.paradas.length-1 ? 'border-bottom:1px solid rgba(255,255,255,0.04)' : ''}">
+          <div style="width:10px;height:10px;border-radius:50%;background:${dotColor};flex-shrink:0;${isCurrent ? 'box-shadow:0 0 0 3px rgba(245,166,35,0.25)' : ''}"></div>
+          <span style="font-size:12px;color:${isDone ? 'var(--muted)' : 'var(--text)'}${isDone ? ';text-decoration:line-through' : ''}">${p}</span>
+          ${llegadaTag}
+        </div>`;
+    }).join('');
+
+    const dots = r.paradas.map((p, i) => {
+      const isDone = i < r.progreso;
+      const isCurrent = i === r.progreso;
+      return `${i > 0 ? `<div class="stop-line ${isDone ? 'done' : ''}"></div>` : ''}<div class="stop-dot ${isDone ? 'done' : isCurrent ? 'current' : ''}" title="${p}"></div>`;
+    }).join('');
+
+    return `
+    <div class="route-card" style="align-items:flex-start">
+      <div class="route-num" style="padding-top:4px">R${ri + 1}</div>
+      <div class="route-info" style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+          <div>
+            <div class="route-name">${r.nombre} <span class="badge" style="font-size:10px;vertical-align:middle">${r.zona || ''}</span></div>
+            <div class="route-meta" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px">
+              <span>👷 ${r.chofer || '<span style="color:var(--muted)">Sin chofer</span>'}</span>
+              <span>🚛 ${r.vehiculo || '<span style="color:var(--muted)">Sin vehículo</span>'} <span style="color:var(--muted);font-size:10px">(${tonelaje}t)</span></span>
+              <span>Turno ${r.turno}</span>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;align-items:center">
+              ${horarioBadge}
+              ${estimadaBadge}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0">
+            <button class="btn btn-secondary btn-sm" onclick="avanzarRuta(${ri})" ${r.progreso >= r.paradas.length ? 'disabled style="opacity:0.4"' : ''}>✓ Completar parada</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarRuta(${ri})">✕ Eliminar</button>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'IBM Plex Mono',monospace">PARADAS: ${r.progreso}/${r.paradas.length} &nbsp; <span style="color:var(--accent)">${r.progreso === r.paradas.length ? '✓ COMPLETADA' : ''}</span></div>
+          <div class="route-stops" style="margin-bottom:8px">${dots}</div>
+          <div style="background:var(--surface);border:1px solid var(--border);padding:8px 12px">${paradasDetalle}</div>
+        </div>
+      </div>
+    </div>
+  `}).join('') || '<div style="color:var(--muted);padding:20px;text-align:center">No hay rutas planificadas para hoy.</div>';
+}
+
+function editarHorario(ri) {
+  const ruta = data.rutas[ri];
+  const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
+  // Mostrar modal de salida
+  document.getElementById('modal-salida-ri').value = ri;
+  document.getElementById('modal-salida-hora').value = ruta.horario || '';
+  // Pre-calcular estimada si ya hay hora
+  actualizarEstimadaModal();
+  document.getElementById('modal-salida').classList.add('open');
+}
+
+function actualizarEstimadaModal() {
+  const ri = parseInt(document.getElementById('modal-salida-ri').value);
+  const hora = document.getElementById('modal-salida-hora').value;
+  const ruta = data.rutas[ri];
+  if (!ruta || !hora) {
+    document.getElementById('modal-salida-estimada').textContent = '—';
+    return;
+  }
+  const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
+  const est = calcularEstimada(hora, ruta.zona, tonelaje, ruta.paradas.length);
+  const zonaNum = parseInt((ruta.zona || '0').replace('Zona ', '')) || 0;
+  const tons = [7,12,18].reduce((p,c) => Math.abs(c-tonelaje)<Math.abs(p-tonelaje)?c:p);
+  const tabla = tablaBase;
+  const tiempoBase = tabla[zonaNum][tons];
+  const adicional = Math.max(0, ruta.paradas.length - 1) * (zonaNum <= 2 ? 15 : 30);
+  document.getElementById('modal-salida-estimada').textContent = est || '—';
+  document.getElementById('modal-salida-detalle').textContent =
+    `Zona ${zonaNum} · ${tonelaje}t · ${tiempoBase} min base + ${adicional} min (${ruta.paradas.length} paradas) = ${tiempoBase+adicional} min`;
+}
+
+function confirmarSalida() {
+  const ri = parseInt(document.getElementById('modal-salida-ri').value);
+  const hora = document.getElementById('modal-salida-hora').value.trim();
+  if (!hora) { alert('Ingresá la hora de salida'); return; }
+  const ruta = data.rutas[ri];
+  const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
+  ruta.horario = hora;
+  ruta.estimada = calcularEstimada(hora, ruta.zona, tonelaje, ruta.paradas.length);
+  document.getElementById('modal-salida').classList.remove('open');
+  renderRutas();
+  showSuccessToast(`Salida ${hora} hs · Est. regreso ${ruta.estimada || '—'} hs`);
+}
+
+function avanzarRuta(ri) {
+  const ruta = data.rutas[ri];
+  if (ruta.progreso >= ruta.paradas.length) return;
+  const parada = ruta.paradas[ruta.progreso];
+  // Open llegada modal
+  document.getElementById('modal-llegada-ri').value = ri;
+  document.getElementById('modal-llegada-parada').textContent = parada;
+  document.getElementById('modal-llegada-num').textContent = ruta.progreso + 1;
+  document.getElementById('modal-llegada-total').textContent = ruta.paradas.length;
+  // Populate estimated arrival for this stop
+  const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
+  const est = ruta.horario ? calcularEstimada(ruta.horario, ruta.zona, tonelaje, ruta.progreso + 1) : null;
+  document.getElementById('modal-llegada-estimada').textContent = est ? `Hora estimada: ${est} hs` : '';
+  // Default to current time
+  const now = new Date();
+  document.getElementById('modal-llegada-hora').value =
+    `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('modal-llegada').classList.add('open');
+}
+
+function confirmarLlegada() {
+  const ri = parseInt(document.getElementById('modal-llegada-ri').value);
+  const hora = document.getElementById('modal-llegada-hora').value.trim();
+  if (!hora) { alert('Ingresá la hora de llegada'); return; }
+  const ruta = data.rutas[ri];
+  if (!ruta.llegadas) ruta.llegadas = {};
+  ruta.llegadas[ruta.progreso] = hora;
+  ruta.progreso++;
+  document.getElementById('modal-llegada').classList.remove('open');
+  renderRutas();
+  showSuccessToast(`Parada ${ruta.progreso}/${ruta.paradas.length} completada · Llegada ${hora} hs`);
+}
+
+function eliminarRuta(i) {
+  if (confirm('¿Eliminar esta ruta?')) { data.rutas.splice(i, 1); renderRutas(); }
+}
+
+function renderReportes() {
+  // ---- STATS CARDS ----
+  const totalMes = data.entregas.filter(e => e.estado === 'entregado').length;
+  const elTM = document.getElementById('rep-total-mes');
+  const elTS = document.getElementById('rep-total-sub');
+  if (elTM) elTM.textContent = totalMes;
+  if (elTS) elTS.textContent = `de ${data.entregas.length} registradas`;
+
+  // Puntualidad global: paradas con llegada real registrada vs estimada
+  let puntualTotal = 0, puntualOk = 0;
+  data.rutas.forEach(r => {
+    if (!r.horario || !r.llegadas) return;
+    const tonelaje = getTonelajeVehiculo(r.vehiculo);
+    Object.entries(r.llegadas).forEach(([piStr, llegadaReal]) => {
+      const pi = parseInt(piStr);
+      const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
+      if (!est || !llegadaReal) return;
+      puntualTotal++;
+      const [eh, em] = est.split(':').map(Number);
+      const [rh, rm] = llegadaReal.split(':').map(Number);
+      if (rh * 60 + rm <= eh * 60 + em + 10) puntualOk++; // 10 min tolerancia
+    });
+  });
+  const pctPuntual = puntualTotal > 0 ? Math.round((puntualOk / puntualTotal) * 100) : null;
+  const elPP = document.getElementById('rep-puntualidad');
+  const elPS = document.getElementById('rep-puntualidad-sub');
+  if (elPP) elPP.textContent = pctPuntual !== null ? pctPuntual + '%' : '—';
+  if (elPS) elPS.textContent = pctPuntual !== null ? `${puntualOk} de ${puntualTotal} paradas a tiempo (±10 min)` : 'Sin datos suficientes';
+
+  // Paradas completadas hoy
+  const totalParadas = data.rutas.reduce((a, r) => a + r.paradas.length, 0);
+  const completadas = data.rutas.reduce((a, r) => a + r.progreso, 0);
+  const elPH = document.getElementById('rep-paradas-hoy');
+  const elPHS = document.getElementById('rep-paradas-sub');
+  if (elPH) elPH.textContent = completadas;
+  if (elPHS) elPHS.textContent = `de ${totalParadas} total en rutas activas`;
+
+  // ---- RENDIMIENTO CHOFERES ----
+  const rc = document.getElementById('reporte-choferes');
+  if (rc) rc.innerHTML = data.choferes.map(c => {
+    const total = c.entregasHoy;
+    const pct = Math.min((total / 6) * 100, 100);
+    return `
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px">${c.nombre}</span>
+        <span class="mono" style="color:var(--accent)">${total} entregas</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+  `}).join('');
+
+  // ---- ENTREGAS POR ZONA ----
+  const rz = document.getElementById('reporte-zonas');
+  const zonas = {};
+  data.entregas.forEach(e => { zonas[e.zona] = (zonas[e.zona] || 0) + 1; });
+  if (rz) rz.innerHTML = Object.entries(zonas).map(([zona, cant]) => {
+    const pct = (cant / data.entregas.length) * 100;
+    return `
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px">${zona}</span>
+        <span class="mono" style="color:var(--blue)">${cant} entregas</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--blue)"></div></div>
+    </div>
+  `}).join('');
+
+  // ---- PUNTUALIDAD POR CHOFER ----
+  const rp = document.getElementById('reporte-puntualidad');
+  const repFecha = document.getElementById('rep-fecha-reporte');
+  if (repFecha) repFecha.textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  if (!rp) return;
+
+  // Build per-chofer stats from rutas
+  const choferStats = {};
+  data.rutas.forEach(r => {
+    if (!r.chofer || r.chofer === '-') return;
+    if (!choferStats[r.chofer]) choferStats[r.chofer] = { paradas: 0, aTiempo: 0, demoraTotal: 0, detalle: [] };
+    if (!r.horario || !r.llegadas) return;
+    const tonelaje = getTonelajeVehiculo(r.vehiculo);
+    r.paradas.forEach((parada, pi) => {
+      const llegadaReal = r.llegadas[pi];
+      if (!llegadaReal) return;
+      const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
+      if (!est) return;
+      const [eh, em] = est.split(':').map(Number);
+      const [rh, rm] = llegadaReal.split(':').map(Number);
+      const estMins = eh * 60 + em;
+      const realMins = rh * 60 + rm;
+      const diff = realMins - estMins;
+      const fecha = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      choferStats[r.chofer].paradas++;
+      if (diff <= 10) choferStats[r.chofer].aTiempo++;
+      choferStats[r.chofer].demoraTotal += Math.max(0, diff);
+      choferStats[r.chofer].detalle.push({ fecha, ruta: r.nombre, parada, est, real: llegadaReal, diff });
+    });
+  });
+
+  if (Object.keys(choferStats).length === 0) {
+    rp.innerHTML = `
+      <div style="text-align:center;padding:32px;color:var(--muted)">
+        <div style="font-size:32px;margin-bottom:8px">📊</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px">Sin datos todavía</div>
+        <div style="font-size:12px;margin-top:6px">Registrá horarios de salida y completá paradas con hora de llegada para ver la puntualidad.</div>
+      </div>`;
+    return;
+  }
+
+  rp.innerHTML = Object.entries(choferStats).map(([chofer, st]) => {
+    const pct = st.paradas > 0 ? Math.round((st.aTiempo / st.paradas) * 100) : 0;
+    const demoraPromedio = st.paradas > 0 ? Math.round(st.demoraTotal / st.paradas) : 0;
+    const barColor = pct >= 90 ? 'var(--green)' : pct >= 70 ? 'var(--accent)' : 'var(--red)';
+    const statusIcon = pct >= 90 ? '✓' : pct >= 70 ? '⚠' : '✗';
+    const statusLabel = pct >= 90 ? 'Excelente' : pct >= 70 ? 'Regular' : 'Con demoras';
+
+    const detalleRows = st.detalle.map(d => {
+      const tarde = d.diff > 10;
+      const adelanto = d.diff < -5;
+      const diffLabel = d.diff > 0 ? `+${d.diff} min` : d.diff < 0 ? `${d.diff} min` : 'exacto';
+      const diffColor = tarde ? 'var(--red)' : adelanto ? 'var(--blue)' : 'var(--green)';
+      return `
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">${d.fecha}</td>
+          <td style="padding:6px 8px;font-size:11px;color:var(--muted)">${d.ruta}</td>
+          <td style="padding:6px 8px;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.parada}</td>
+          <td style="padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue)">${d.est} hs</td>
+          <td style="padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text)">${d.real} hs</td>
+          <td style="padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:${diffColor}">${diffLabel}</td>
+        </tr>`;
+    }).join('');
+
+    return `
+    <div style="margin-bottom:20px;background:var(--surface2);border:1px solid var(--border);padding:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-weight:600;font-size:14px">👷 ${chofer}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:'IBM Plex Mono',monospace">
+            ${st.paradas} paradas registradas · demora promedio: ${demoraPromedio > 0 ? demoraPromedio + ' min' : 'sin demora'}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:${barColor};letter-spacing:1px">${pct}%</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:${barColor};border:1px solid ${barColor};padding:2px 8px">${statusIcon} ${statusLabel}</span>
+        </div>
+      </div>
+      <div class="progress-bar" style="margin-bottom:12px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
+      ${st.detalle.length > 0 ? `
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border)">
+              <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Fecha</th>
+              <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Ruta</th>
+              <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Parada</th>
+              <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Estimada</th>
+              <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Real</th>
+              <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Diferencia</th>
+            </tr>
+          </thead>
+          <tbody>${detalleRows}</tbody>
+        </table>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function descargarReporte() {
+  const fecha = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+  let csv = `REPORTE DE PUNTUALIDAD — ${new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}\n\n`;
+  csv += `Fecha,Chofer,Ruta,Parada,Hora Estimada,Hora Real,Diferencia,Estado\n`;
+
+  data.rutas.forEach(r => {
+    if (!r.chofer || r.chofer === '-' || !r.horario || !r.llegadas) return;
+    const tonelaje = getTonelajeVehiculo(r.vehiculo);
+    r.paradas.forEach((parada, pi) => {
+      const llegadaReal = r.llegadas[pi];
+      if (!llegadaReal) return;
+      const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
+      if (!est) return;
+      const [eh, em] = est.split(':').map(Number);
+      const [rh, rm] = llegadaReal.split(':').map(Number);
+      const diff = (rh * 60 + rm) - (eh * 60 + em);
+      const diffLabel = diff > 0 ? `+${diff} min` : diff < 0 ? `${diff} min` : 'exacto';
+      const estado = diff <= 10 ? 'A TIEMPO' : 'DEMORADO';
+      csv += `${fecha},"${r.chofer}","${r.nombre}","${parada}",${est} hs,${llegadaReal} hs,"${diffLabel}",${estado}\n`;
+    });
+  });
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reporte-puntualidad-${fecha}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showSuccessToast('Reporte descargado');
+}
+
+function limpiarReporte() {
+  if (!confirm('¿Limpiar todos los registros de llegadas del día?\n\nEsto borra los horarios de salida y llegadas registradas en las rutas. Las rutas en sí no se eliminan.')) return;
+  data.rutas.forEach(r => {
+    r.horario = '';
+    r.estimada = '';
+    r.llegadas = {};
+    r.progreso = 0;
+  });
+  renderAll();
+  showSuccessToast('Registros del día limpiados');
+}
+
+// ====== SAVE FORMS ======
+let rutaParadasSeleccionadas = [];
+let rutaChoferSel = '';
+let rutaVehiculoSel = '';
+
+function populateSelects() {
+  document.querySelectorAll('#ne-cliente').forEach(s => {
+    s.innerHTML = '<option value="">Seleccionar cliente...</option>' + data.clientes.map(c => `<option>${c.nombre}</option>`).join('');
+  });
+}
+
+function populateRutaModal() {
+  rutaParadasSeleccionadas = [];
+  rutaChoferSel = '';
+  rutaVehiculoSel = '';
+
+  // Choferes como tarjetas clickeables
+  const lc = document.getElementById('nr-lista-choferes');
+  if (lc) lc.innerHTML = data.choferes.map(c => {
+    const dispColor = c.disp === 'Disponible' ? 'var(--green)' : c.disp === 'En ruta' ? 'var(--blue)' : 'var(--muted)';
+    return `
+    <div class="selcard" id="chofer-card-${c.nombre.replace(/\s/g,'_')}"
+      onclick="selChofer('${c.nombre.replace(/'/g,"\\'")}', this)"
+      style="background:var(--surface2);border:1px solid var(--border);padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
+      <div style="font-weight:600;font-size:13px">${c.nombre}</div>
+      <div style="font-size:11px;color:${dispColor};font-family:'IBM Plex Mono',monospace;margin-top:2px">${c.disp} · ${c.entregasHoy} entregas hoy</div>
+    </div>`;
+  }).join('') || '<span style="color:var(--muted);font-size:12px">No hay choferes cargados.</span>';
+
+  // Vehículos como tarjetas clickeables
+  const lv = document.getElementById('nr-lista-vehiculos');
+  if (lv) lv.innerHTML = data.vehiculos.map(v => {
+    const dispColor = v.estado === 'Disponible' ? 'var(--green)' : v.estado === 'En ruta' ? 'var(--blue)' : 'var(--red)';
+    return `
+    <div class="selcard" id="vehiculo-card-${v.patente.replace(/\s/g,'_')}"
+      onclick="selVehiculo('${v.patente}', this)"
+      style="background:var(--surface2);border:1px solid var(--border);padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
+      <div style="font-weight:600;font-size:13px;font-family:'IBM Plex Mono',monospace">${v.patente}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">${v.tipo} ${v.modelo}</div>
+      <div style="font-size:11px;color:${dispColor};font-family:'IBM Plex Mono',monospace;margin-top:2px">${v.estado} · ${(v.capacidad/1000).toFixed(1)}t</div>
+    </div>`;
+  }).join('') || '<span style="color:var(--muted);font-size:12px">No hay vehículos cargados.</span>';
+
+  // Direcciones de entregas pendientes
+  const ld = document.getElementById('nr-lista-direcciones');
+  const pendientes = data.entregas.filter(e => e.estado === 'pendiente');
+  if (ld) ld.innerHTML = pendientes.length > 0
+    ? pendientes.map(e => `
+      <div onclick="toggleParada('${e.id}', '${e.direccion.replace(/'/g,"\\'")}', '${e.cliente.replace(/'/g,"\\'")}', '${e.zona}', this)"
+        id="dir-card-${e.id}"
+        style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid var(--border);padding:8px 12px;cursor:pointer;transition:all 0.15s">
+        <div>
+          <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? e.peso.toLocaleString('es-AR')+' kg' : '—'}</div>
+        </div>
+        <div style="font-size:18px;color:var(--border)" id="dir-check-${e.id}">○</div>
+      </div>`)
+    .join('')
+    : '<div style="color:var(--muted);font-size:12px;padding:8px">No hay entregas pendientes cargadas.</div>';
+
+  renderParadasSeleccionadas();
+}
+
+function selChofer(nombre, el) {
+  rutaChoferSel = nombre;
+  document.querySelectorAll('#nr-lista-choferes .selcard').forEach(c => {
+    c.style.borderColor = 'var(--border)';
+    c.style.background = 'var(--surface2)';
+  });
+  el.style.borderColor = 'var(--accent)';
+  el.style.background = 'rgba(245,166,35,0.08)';
+}
+
+function selVehiculo(patente, el) {
+  rutaVehiculoSel = patente;
+  document.querySelectorAll('#nr-lista-vehiculos .selcard').forEach(c => {
+    c.style.borderColor = 'var(--border)';
+    c.style.background = 'var(--surface2)';
+  });
+  el.style.borderColor = 'var(--accent)';
+  el.style.background = 'rgba(245,166,35,0.08)';
+}
+
+function toggleParada(id, direccion, cliente, zona, el) {
+  const exists = rutaParadasSeleccionadas.findIndex(p => p.id === id);
+  if (exists >= 0) {
+    rutaParadasSeleccionadas.splice(exists, 1);
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface2)';
+    const chk = document.getElementById('dir-check-' + id);
+    if (chk) { chk.textContent = '○'; chk.style.color = 'var(--border)'; }
+  } else {
+    rutaParadasSeleccionadas.push({ id, direccion, cliente, zona });
+    el.style.borderColor = 'var(--green)';
+    el.style.background = 'rgba(34,197,94,0.06)';
+    const chk = document.getElementById('dir-check-' + id);
+    if (chk) { chk.textContent = '✓'; chk.style.color = 'var(--green)'; }
+  }
+  renderParadasSeleccionadas();
+}
+
+function agregarParadaManual() {
+  const inp = document.getElementById('nr-parada-manual');
+  const val = inp.value.trim();
+  if (!val) return;
+  const id = 'manual-' + Date.now();
+  rutaParadasSeleccionadas.push({ id, direccion: val, cliente: 'Manual', zona: '' });
+  inp.value = '';
+  renderParadasSeleccionadas();
+}
+
+function quitarParada(id) {
+  rutaParadasSeleccionadas = rutaParadasSeleccionadas.filter(p => p.id !== id);
+  // uncheck the card if it exists
+  const chk = document.getElementById('dir-check-' + id);
+  if (chk) { chk.textContent = '○'; chk.style.color = 'var(--border)'; }
+  const card = document.getElementById('dir-card-' + id);
+  if (card) { card.style.borderColor='var(--border)'; card.style.background='var(--surface2)'; }
+  renderParadasSeleccionadas();
+}
+
+function renderParadasSeleccionadas() {
+  const el = document.getElementById('nr-paradas-seleccionadas');
+  const cnt = document.getElementById('nr-count');
+  if (cnt) cnt.textContent = rutaParadasSeleccionadas.length;
+  if (!el) return;
+  el.innerHTML = rutaParadasSeleccionadas.map(p => `
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);padding:4px 10px;font-size:12px">
+      <span>📍 ${p.cliente !== 'Manual' ? `<strong>${p.cliente}</strong> — ` : ''}${p.direccion}</span>
+      <button onclick="quitarParada('${p.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 4px">✕</button>
+    </div>
+  `).join('') || '<span style="color:var(--muted);font-size:12px">Ninguna parada seleccionada aún.</span>';
+}
+
+function guardarEntrega() {
+  const c = v => document.getElementById(v).value;
+  if (!c('ne-cliente') || !c('ne-direccion')) { alert('Completá los campos requeridos'); return; }
+  const remito = c('ne-remito') || 'REM-' + String(data.entregas.length + 1).padStart(4, '0');
+  const materialesCalc = c('ne-materiales') || '';
+  const productosExtra = productosLibres.map(p => p.desc).filter(Boolean);
+  const todosLosMateriales = [materialesCalc, ...productosExtra].filter(Boolean).join(', ') || '-';
+  const pesoTotal = parseFloat(c('ne-peso')) || 0;
+  const localidad = c('ne-localidad').trim();
+  const direccionCompleta = localidad ? `${c('ne-direccion')} — ${localidad}` : c('ne-direccion');
+  data.entregas.unshift({
+    id: remito,
+    cliente: c('ne-cliente'),
+    direccion: direccionCompleta,
+    materiales: todosLosMateriales,
+    peso: pesoTotal,
+    fecha: c('ne-fecha') || '',
+    chofer: '-',
+    vehiculo: '-',
+    turno: c('ne-turno').split(' ')[0],
+    estado: 'pendiente',
+    zona: c('ne-zona'),
+    remitoRecibido: false
+  });
+  calcLineas = [];
+  productosLibres = [];
+  closeModal('modal-nueva-entrega');
+  renderAll();
+  showSuccessToast('Entrega registrada — ' + (pesoTotal > 0 ? pesoTotal.toLocaleString('es-AR') + ' kg' : 'sin peso'));
+}
+
+function guardarRuta() {
+  const c = v => document.getElementById(v).value;
+  if (!c('nr-nombre')) { alert('Ingresá el nombre de la ruta'); return; }
+  if (rutaParadasSeleccionadas.length === 0) { alert('Seleccioná al menos una parada'); return; }
+  data.rutas.push({
+    nombre: c('nr-nombre'),
+    chofer: rutaChoferSel || '-',
+    vehiculo: rutaVehiculoSel || '-',
+    turno: c('nr-turno'),
+    horario: c('nr-horario') || '',
+    zona: c('nr-zona'),
+    paradas: rutaParadasSeleccionadas.map(p => p.direccion),
+    entregaIds: rutaParadasSeleccionadas.map(p => p.id),
+    progreso: 0
+  });
+  closeModal('modal-nueva-ruta');
+  renderAll();
+  showSuccessToast('Ruta planificada — ' + rutaParadasSeleccionadas.length + ' paradas');
+}
+
+function guardarVehiculo() {
+  const c = v => document.getElementById(v).value;
+  if (!c('nv-patente')) { alert('Ingresá la patente'); return; }
+  data.vehiculos.push({
+    patente: c('nv-patente').toUpperCase(),
+    tipo: c('nv-tipo'),
+    modelo: c('nv-modelo'),
+    capacidad: parseInt(c('nv-capacidad')) || 0,
+    anio: parseInt(c('nv-anio')) || 2024,
+    estado: c('nv-estado'),
+    chofer: '-',
+    km: 0
+  });
+  closeModal('modal-nuevo-vehiculo');
+  renderAll();
+  showSuccessToast('Vehículo agregado');
+}
+
+function guardarChofer() {
+  const c = v => document.getElementById(v).value;
+  if (!c('nc-nombre')) { alert('Ingresá el nombre'); return; }
+  data.choferes.push({
+    nombre: c('nc-nombre'),
+    dni: c('nc-dni'),
+    tel: c('nc-tel'),
+    licencia: c('nc-licencia'),
+    venc: c('nc-venc') || '2025-12-31',
+    disp: c('nc-disp'),
+    entregasHoy: 0
+  });
+  closeModal('modal-nuevo-chofer');
+  renderAll();
+  showSuccessToast('Chofer agregado');
+}
+
+function guardarCliente() {
+  const c = v => document.getElementById(v).value;
+  if (!c('ncl-nombre')) { alert('Ingresá el nombre'); return; }
+  data.clientes.push({
+    nombre: c('ncl-nombre'),
+    tel: c('ncl-tel'),
+    dir: c('ncl-dir'),
+    zona: c('ncl-zona'),
+    totalEntregas: 0,
+    ultimaEntrega: '-'
+  });
+  closeModal('modal-nuevo-cliente');
+  renderAll();
+  showSuccessToast('Cliente agregado');
+}
+
+function showSuccessToast(msg) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position:fixed;bottom:32px;right:32px;background:var(--green);color:#000;
+    padding:12px 20px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;
+    z-index:999;animation:slideIn 0.2s ease;letter-spacing:1px;text-transform:uppercase;
+  `;
+  toast.textContent = '✓ ' + msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ====== CALCULADORA DE MATERIALES ======
+const MATERIALES_DB = [
+  // CEMENTOS
+  { cat: 'Cementos', nombre: 'Holcim', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Cementos', nombre: 'Avellaneda', unidad: 'bolsa', pesoPorUn: 25 },
+  // CALES
+  { cat: 'Cales', nombre: 'Cal Hidrát. (Cal Común)', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Cales', nombre: 'Cal Milagro', unidad: 'bolsa', pesoPorUn: 25 },
+  // CEMENTO ALBAÑILERÍA
+  { cat: 'Cemento Albañilería', nombre: 'Hidralit (Plasticor)', unidad: 'bolsa', pesoPorUn: 20 },
+  { cat: 'Cemento Albañilería', nombre: 'Maestro (Holcim)', unidad: 'bolsa', pesoPorUn: 25 },
+  // YESOS
+  { cat: 'Yesos', nombre: 'Yeso Tuyango Trad 30kg', unidad: 'bolsa', pesoPorUn: 30 },
+  { cat: 'Yesos', nombre: 'Yeso Tuyango Proy. SG 30kg', unidad: 'bolsa', pesoPorUn: 30 },
+  { cat: 'Yesos', nombre: 'Yeso Tuyango AP 25kg', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Yesos', nombre: 'Yeso Alpress Proy. 35kg', unidad: 'bolsa', pesoPorUn: 35 },
+  { cat: 'Yesos', nombre: 'Yeso Corral 40kg', unidad: 'bolsa', pesoPorUn: 40 },
+  // ADHESIVOS
+  { cat: 'Adhesivos', nombre: 'Perfecto x25', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Adhesivos', nombre: 'Klaukol x25', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Adhesivos', nombre: 'Weber x25', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Adhesivos', nombre: 'Holcim (Tector) x25', unidad: 'bolsa', pesoPorUn: 25 },
+  // MORTEROS
+  { cat: 'Morteros', nombre: 'Fino a la Cal x25', unidad: 'bolsa', pesoPorUn: 25 },
+  { cat: 'Morteros', nombre: 'Promex x30', unidad: 'bolsa', pesoPorUn: 30 },
+  { cat: 'Morteros', nombre: 'Mortero Retak x30', unidad: 'bolsa', pesoPorUn: 30 },
+  { cat: 'Morteros', nombre: 'Base Coat Weber x30', unidad: 'bolsa', pesoPorUn: 30 },
+  // ÁRIDOS
+  { cat: 'Áridos', nombre: 'Arena / Piedra / Cascote (m³)', unidad: 'm³', pesoPorUn: 1350 },
+  { cat: 'Áridos', nombre: 'Arena / Piedra / Binder (bolsón)', unidad: 'bolsón', pesoPorUn: 1000 },
+  { cat: 'Áridos', nombre: 'Arena / Piedra (bolsa 30kg)', unidad: 'bolsa', pesoPorUn: 30 },
+  // LADRILLOS
+  { cat: 'Ladrillos', nombre: 'Ladrillo Común', unidad: 'un', pesoPorUn: 1.65 },
+  { cat: 'Ladrillos', nombre: 'Ladrillo Chacabuco/Córdoba', unidad: 'un', pesoPorUn: 2.00 },
+  { cat: 'Ladrillos', nombre: 'Ladrillo Hueco 8', unidad: 'un', pesoPorUn: 3.50 },
+  { cat: 'Ladrillos', nombre: 'Ladrillo Hueco 12', unidad: 'un', pesoPorUn: 4.60 },
+  { cat: 'Ladrillos', nombre: 'Ladrillo Hueco 18', unidad: 'un', pesoPorUn: 6.40 },
+  { cat: 'Ladrillos', nombre: 'Portante 12', unidad: 'un', pesoPorUn: 5.60 },
+  { cat: 'Ladrillos', nombre: 'Portante 18', unidad: 'un', pesoPorUn: 7.50 },
+  { cat: 'Ladrillos', nombre: 'Retak 7.5', unidad: 'un', pesoPorUn: 6.25 },
+  { cat: 'Ladrillos', nombre: 'Retak 10', unidad: 'un', pesoPorUn: 8.33 },
+  { cat: 'Ladrillos', nombre: 'Retak 12.5', unidad: 'un', pesoPorUn: 10.42 },
+  { cat: 'Ladrillos', nombre: 'Retak 15', unidad: 'un', pesoPorUn: 12.50 },
+  { cat: 'Ladrillos', nombre: 'Retak 17.5', unidad: 'un', pesoPorUn: 13.89 },
+  { cat: 'Ladrillos', nombre: 'Retak 20', unidad: 'un', pesoPorUn: 17.86 },
+  { cat: 'Ladrillos', nombre: 'Ladrillo Cemento 13', unidad: 'un', pesoPorUn: 13.00 },
+  { cat: 'Ladrillos', nombre: 'Ladrillo Cemento 19', unidad: 'un', pesoPorUn: 19.00 },
+  // HIERROS
+  { cat: 'Hierros', nombre: 'Varilla 6mm x12m', unidad: 'barra', pesoPorUn: 2.66 },
+  { cat: 'Hierros', nombre: 'Varilla 8mm x12m', unidad: 'barra', pesoPorUn: 4.74 },
+  { cat: 'Hierros', nombre: 'Varilla 10mm x12m', unidad: 'barra', pesoPorUn: 7.40 },
+  { cat: 'Hierros', nombre: 'Varilla 12mm x12m', unidad: 'barra', pesoPorUn: 10.66 },
+  { cat: 'Hierros', nombre: 'Varilla 16mm x12m', unidad: 'barra', pesoPorUn: 18.96 },
+  { cat: 'Hierros', nombre: 'Varilla 20mm x12m', unidad: 'barra', pesoPorUn: 29.64 },
+  { cat: 'Hierros', nombre: 'Varilla 25mm x12m', unidad: 'barra', pesoPorUn: 46.20 },
+  { cat: 'Hierros', nombre: 'ADN (kg)', unidad: 'kg', pesoPorUn: 1.00 },
+  // MALLAS
+  { cat: 'Mallas', nombre: 'Malla 4 15x25 (5x2)', unidad: 'un', pesoPorUn: 8.86 },
+  { cat: 'Mallas', nombre: 'Malla 4 15x15 (5x2)', unidad: 'un', pesoPorUn: 11.30 },
+  { cat: 'Mallas', nombre: 'Malla 6 15x15 Q131 Mini (3x2.4)', unidad: 'un', pesoPorUn: 14.80 },
+  { cat: 'Mallas', nombre: 'Malla 6 15x15 Q131 (6x2.4)', unidad: 'un', pesoPorUn: 29.60 },
+  { cat: 'Mallas', nombre: 'Malla 8 15x15 Q257 (6x2.4)', unidad: 'un', pesoPorUn: 58.00 },
+  { cat: 'Mallas', nombre: 'Malla 6 Q188 (6x2.4)', unidad: 'un', pesoPorUn: 42.62 },
+  { cat: 'Mallas', nombre: 'Malla 8 Q335 (6x2.4)', unidad: 'un', pesoPorUn: 75.76 },
+  { cat: 'Mallas', nombre: 'Malla 10 Q524 (6x2.4)', unidad: 'un', pesoPorUn: 118.38 },
+  // VIGUETAS
+  { cat: 'Viguetas', nombre: 'Viga x ml', unidad: 'ml', pesoPorUn: 15 },
+];
+
+// Group by category for the select
+const CATS = [...new Set(MATERIALES_DB.map(m => m.cat))];
+
+let calcLineas = [];
+let productosLibres = [];
+
+function agregarProductoLibre() {
+  const id = Date.now();
+  productosLibres.push({ id, desc: '' });
+  renderProductosLibres();
+}
+
+function renderProductosLibres() {
+  const el = document.getElementById('productos-libres-lista');
+  if (!el) return;
+  el.innerHTML = productosLibres.map(p => `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px" id="pl-${p.id}">
+      <input type="text" value="${p.desc}"
+        oninput="updateProductoLibre(${p.id}, this.value)"
+        placeholder="Ej: 3 baldes de albañil, 2 llanas, accesorios baño..."
+        style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 10px;font-size:13px;outline:none">
+      <button onclick="quitarProductoLibre(${p.id})" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);cursor:pointer;padding:5px 10px;font-size:12px">✕</button>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:12px;padding:4px 0">Agregá productos sin peso de la lista.</div>';
+}
+
+function updateProductoLibre(id, val) {
+  const p = productosLibres.find(p => p.id === id);
+  if (p) p.desc = val;
+}
+
+function quitarProductoLibre(id) {
+  productosLibres = productosLibres.filter(p => p.id !== id);
+  renderProductosLibres();
+}
+
+function calcSelectHTML(lineId, selectedNombre = '') {
+  return `<select onchange="updateLinea(${lineId})" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
+    <option value="">Seleccionar...</option>
+    ${CATS.map(cat => `
+      <optgroup label="${cat}">
+        ${MATERIALES_DB.filter(m => m.cat === cat).map(m =>
+          `<option value="${m.nombre}" ${m.nombre === selectedNombre ? 'selected' : ''}>${m.nombre} (${m.pesoPorUn} kg/${m.unidad})</option>`
+        ).join('')}
+      </optgroup>
+    `).join('')}
+  </select>`;
+}
+
+function agregarLinea() {
+  const id = Date.now();
+  calcLineas.push({ id, material: '', cantidad: 1, peso: 0 });
+  renderLineas();
+}
+
+function renderLineas() {
+  const container = document.getElementById('calc-lineas');
+  if (!container) return;
+  container.innerHTML = calcLineas.map(l => `
+    <div style="display:grid;grid-template-columns:2fr 1.2fr 0.8fr 1fr 32px;gap:6px;margin-bottom:6px;align-items:center" id="linea-${l.id}">
+      <div>${calcSelectHTML(l.id, l.material)}</div>
+      <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;padding:0 4px" id="unidad-${l.id}">
+        ${l.material ? (MATERIALES_DB.find(m=>m.nombre===l.material)?.unidad || '—') : '—'}
+      </div>
+      <div>
+        <input type="number" min="0" step="0.5" value="${l.cantidad}"
+          onchange="setCantidad(${l.id}, this.value)"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);padding:0 4px;font-weight:600" id="peso-${l.id}">
+        ${l.peso > 0 ? l.peso.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg' : '—'}
+      </div>
+      <button onclick="quitarLinea(${l.id})" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);cursor:pointer;padding:4px 8px;font-size:12px">✕</button>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:12px;padding:8px 0">Agregá materiales para calcular el peso automáticamente.</div>';
+  actualizarTotal();
+}
+
+function updateLinea(id) {
+  const select = document.querySelector(`#linea-${id} select`);
+  if (!select) return;
+  const nombre = select.value;
+  const mat = MATERIALES_DB.find(m => m.nombre === nombre);
+  const l = calcLineas.find(l => l.id === id);
+  if (l) {
+    l.material = nombre;
+    l.peso = mat ? mat.pesoPorUn * l.cantidad : 0;
+    const unEl = document.getElementById(`unidad-${id}`);
+    const pEl = document.getElementById(`peso-${id}`);
+    if (unEl) unEl.textContent = mat?.unidad || '—';
+    if (pEl) pEl.textContent = l.peso > 0 ? l.peso.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg' : '—';
+    actualizarTotal();
+  }
+}
+
+function setCantidad(id, val) {
+  const l = calcLineas.find(l => l.id === id);
+  if (!l) return;
+  l.cantidad = parseFloat(val) || 0;
+  const mat = MATERIALES_DB.find(m => m.nombre === l.material);
+  l.peso = mat ? mat.pesoPorUn * l.cantidad : 0;
+  const pEl = document.getElementById(`peso-${id}`);
+  if (pEl) pEl.textContent = l.peso > 0 ? l.peso.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg' : '—';
+  actualizarTotal();
+}
+
+function quitarLinea(id) {
+  calcLineas = calcLineas.filter(l => l.id !== id);
+  renderLineas();
+}
+
+function actualizarTotal() {
+  const total = calcLineas.reduce((acc, l) => acc + (l.peso || 0), 0);
+  const el = document.getElementById('peso-total-display');
+  const resumen = document.getElementById('resumen-materiales');
+  const pesoHidden = document.getElementById('ne-peso');
+  const materialesHidden = document.getElementById('ne-materiales');
+  if (el) el.textContent = total.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg';
+  const items = calcLineas.filter(l => l.material && l.cantidad > 0);
+  if (resumen) resumen.textContent = items.length > 0
+    ? items.map(l => `${l.cantidad} ${MATERIALES_DB.find(m=>m.nombre===l.material)?.unidad||''} ${l.material}`).join(', ')
+    : '—';
+  if (pesoHidden) pesoHidden.value = total;
+  if (materialesHidden) materialesHidden.value = items.map(l => `${l.cantidad} ${MATERIALES_DB.find(m=>m.nombre===l.material)?.unidad||''} ${l.material}`).join(', ');
+}
+
+// ====== FIREBASE — DATOS DEFAULT ======
+const DATA_DEFAULT = {
+  entregas: [
+    { id: 'REM-0047', cliente: 'Constructora Pérez', direccion: 'Av. Belgrano 1240', materiales: 'Cemento 200 bolsas, Arena 2 ton', peso: 5000, fecha: '2026-03-01', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Mañana', estado: 'entregado', zona: 'Zona 1', remitoRecibido: true },
+    { id: 'REM-0048', cliente: 'García Obras', direccion: 'San Martín 567', materiales: 'Ladrillos 500 uni, Cal 50 kg', peso: 1050, fecha: '2026-03-01', chofer: 'Roberto Díaz', vehiculo: 'DEF 456', turno: 'Mañana', estado: 'transito', zona: 'Zona 2', remitoRecibido: false },
+    { id: 'REM-0049', cliente: 'Herrera CUIT', direccion: 'Rivadavia 890', materiales: 'Hierro 8mm 200kg, Alambre', peso: 950, fecha: '2026-03-01', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Tarde', estado: 'pendiente', zona: 'Zona 3', remitoRecibido: false },
+    { id: 'REM-0050', cliente: 'Torres Familia', direccion: 'Mitre 234', materiales: 'Cerámicos 30m2, Adhesivo', peso: 800, fecha: '2026-03-02', chofer: 'Luis Romero', vehiculo: 'GHI 789', turno: 'Tarde', estado: 'pendiente', zona: 'Zona 4', remitoRecibido: false },
+    { id: 'REM-0051', cliente: 'Martínez SRL', direccion: 'Corrientes 1100', materiales: 'Bloques 400 uni', peso: 2400, fecha: '2026-02-28', chofer: 'Roberto Díaz', vehiculo: 'DEF 456', turno: 'Mañana', estado: 'entregado', zona: 'Zona 0', remitoRecibido: true },
+    { id: 'REM-0052', cliente: 'Álvarez Obras', direccion: 'Paraguay 780', materiales: 'Cemento 100 bolsas', peso: 2500, fecha: '2026-02-27', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Tarde', estado: 'cancelado', zona: 'Zona 1', remitoRecibido: false },
+  ],
+  vehiculos: [
+    { patente: 'ABC 123', tipo: 'Camión', modelo: 'Mercedes 1620', capacidad: 15000, anio: 2018, estado: 'En ruta', chofer: 'Carlos Méndez', km: 89420 },
+    { patente: 'DEF 456', tipo: 'Camión', modelo: 'Iveco Daily', capacidad: 8000, anio: 2020, estado: 'En ruta', chofer: 'Roberto Díaz', km: 42300 },
+    { patente: 'GHI 789', tipo: 'Camioneta', modelo: 'Toyota Hilux', capacidad: 1500, anio: 2022, estado: 'Disponible', chofer: 'Luis Romero', km: 18750 },
+    { patente: 'JKL 012', tipo: 'Acoplado', modelo: 'Randon 3 ejes', capacidad: 30000, anio: 2016, estado: 'Mantenimiento', chofer: '-', km: 210500 },
+  ],
+  choferes: [
+    { nombre: 'Carlos Méndez', dni: '28.456.789', tel: '11-4523-8901', licencia: 'E-2345678', venc: '2026-03-15', disp: 'En ruta', entregasHoy: 3 },
+    { nombre: 'Roberto Díaz', dni: '31.234.567', tel: '11-6712-3456', licencia: 'E-1234567', venc: '2025-11-20', disp: 'En ruta', entregasHoy: 2 },
+    { nombre: 'Luis Romero', dni: '25.678.901', tel: '11-9834-5678', licencia: 'C-3456789', venc: '2027-06-30', disp: 'Disponible', entregasHoy: 0 },
+    { nombre: 'Jorge Fernández', dni: '33.901.234', tel: '11-1256-7890', licencia: 'E-4567890', venc: '2024-12-01', disp: 'Descanso', entregasHoy: 4 },
+  ],
+  clientes: [
+    { nombre: 'Constructora Pérez', tel: '11-4401-2233', dir: 'Av. Belgrano 1240, CABA', zona: 'Zona 1', totalEntregas: 24, ultimaEntrega: '01/03/2026' },
+    { nombre: 'García Obras', tel: '11-5502-3344', dir: 'San Martín 567, Morón', zona: 'Zona 2', totalEntregas: 18, ultimaEntrega: '01/03/2026' },
+    { nombre: 'Herrera CUIT', tel: '11-6603-4455', dir: 'Rivadavia 890, Lomas', zona: 'Zona 3', totalEntregas: 9, ultimaEntrega: '28/02/2026' },
+    { nombre: 'Torres Familia', tel: '11-7704-5566', dir: 'Mitre 234, Quilmes', zona: 'Zona 4', totalEntregas: 6, ultimaEntrega: '27/02/2026' },
+    { nombre: 'Martínez SRL', tel: '11-8805-6677', dir: 'Corrientes 1100, Palermo', zona: 'Zona 0', totalEntregas: 31, ultimaEntrega: '01/03/2026' },
+  ],
+  rutas: [
+    { nombre: 'Zona 1 Mañana', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Mañana', horario: '08:00', estimada: '10:45', zona: 'Zona 1', paradas: ['Av. Belgrano 1240', 'Corrientes 1100', 'Paraguay 780'], progreso: 2, llegadas: { 0: '09:10', 1: '10:05' } },
+    { nombre: 'Zona 2 Mañana', chofer: 'Roberto Díaz', vehiculo: 'DEF 456', turno: 'Mañana', horario: '08:30', estimada: '11:15', zona: 'Zona 2', paradas: ['San Martín 567', 'Lavalle 890', 'Pueyrredón 345'], progreso: 1, llegadas: { 0: '09:45' } },
+    { nombre: 'Zona 3 Tarde', chofer: 'Luis Romero', vehiculo: 'GHI 789', turno: 'Tarde', horario: '', estimada: '', zona: 'Zona 3', paradas: ['Rivadavia 890', 'Mitre 234'], progreso: 0, llegadas: {} },
+  ]
+};
+
+// ====== FIREBASE — Tiempo Real ======
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCbYaDcEBWipmhCjyM2Wu__Nk2-6i6AVGM",
+  authDomain: "florida-norte.firebaseapp.com",
+  projectId: "florida-norte",
+  databaseURL: "https://florida-norte-default-rtdb.firebaseio.com",
+  storageBucket: "florida-norte.firebasestorage.app",
+  messagingSenderId: "830500588493",
+  appId: "1:830500588493:web:87de9aa9f4dfa55af51284"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+const dbRef = ref(db, 'corralonlog');
+
+let _guardandoDesdeFirebase = false;
+let _inicializado = false;
+
+// Guardar en Firebase
+function guardarFirebase() {
+  if (_guardandoDesdeFirebase) return;
+  set(dbRef, data).catch(e => {
+    console.warn('Error guardando en Firebase:', e);
+    mostrarEstadoConexion('error');
+  });
+}
+
+// Escuchar cambios en tiempo real (desde cualquier PC)
+onValue(dbRef, (snapshot) => {
+  const remoto = snapshot.val();
+
+  if (!remoto) {
+    // Primera vez — no hay datos en Firebase, cargar defaults
+    data = JSON.parse(JSON.stringify(DATA_DEFAULT));
+    guardarFirebase();
+  } else {
+    // Hay datos remotos — usar esos
+    _guardandoDesdeFirebase = true;
+    data = {
+      entregas: remoto.entregas || [],
+      vehiculos: remoto.vehiculos || [],
+      choferes: remoto.choferes || [],
+      clientes: remoto.clientes || [],
+      rutas: remoto.rutas || [],
+    };
+    _guardandoDesdeFirebase = false;
+  }
+
+  if (!_inicializado) {
+    _inicializado = true;
+    ocultarPantallaCarga();
+    renderAll();
+    populateSelects();
+    agregarLinea();
+  } else {
+    renderAll();
+  }
+
+  mostrarEstadoConexion('ok');
+}, (error) => {
+  console.error('Error Firebase:', error);
+  mostrarEstadoConexion('error');
+  // Fallback a localStorage si Firebase no conecta
+  const local = localStorage.getItem('corralonlog_offline');
+  if (local) data = JSON.parse(local);
+  else data = JSON.parse(JSON.stringify(DATA_DEFAULT));
+  if (!_inicializado) {
+    _inicializado = true;
+    ocultarPantallaCarga();
+    renderAll();
+    populateSelects();
+    agregarLinea();
+  }
+});
+
+// Sobreescribir renderAll para que guarde en Firebase en cada cambio
+const _renderAllOrig = renderAll;
+renderAll = function() {
+  _renderAllOrig();
+  if (_inicializado && !_guardandoDesdeFirebase) {
+    guardarFirebase();
+    // Backup offline
+    try { localStorage.setItem('corralonlog_offline', JSON.stringify(data)); } catch(e) {}
+  }
+};
+
+function mostrarEstadoConexion(estado) {
+  const el = document.getElementById('estado-conexion');
+  if (!el) return;
+  if (estado === 'ok') {
+    el.innerHTML = '🟢 Conectado';
+    el.style.color = 'var(--green)';
+  } else {
+    el.innerHTML = '🔴 Sin conexión — modo offline';
+    el.style.color = 'var(--red)';
+  }
+}
+
+function ocultarPantallaCarga() {
+  const el = document.getElementById('pantalla-carga');
+  if (el) el.style.display = 'none';
+}
+
+function resetearDatos() {
+  if (!confirm('⚠️ ¿Borrar TODOS los datos?\n\nEsto eliminará entregas, rutas, clientes, vehículos y choferes en TODAS las PCs conectadas.\n\nEsta acción no se puede deshacer.')) return;
+  data = JSON.parse(JSON.stringify(DATA_DEFAULT));
+  guardarFirebase();
+  renderAll();
+  showSuccessToast('Datos reseteados');
+}
+
+// Exponer funciones al scope global para que funcionen los onclick del HTML
+Object.assign(window, {
+  showSection, openModal, closeModal,
+  filterEntregas, cambiarEstado, eliminarEntrega, toggleRemito,
+  guardarEntrega, guardarRuta, guardarVehiculo, guardarChofer, guardarCliente,
+  eliminarVehiculo, eliminarChofer, eliminarCliente, eliminarRuta,
+  avanzarRuta, editarHorario, confirmarSalida, confirmarLlegada,
+  actualizarEstimadaModal,
+  selChofer, selVehiculo, toggleParada, agregarParadaManual, quitarParada,
+  agregarLinea, updateLinea, setCantidad, quitarLinea,
+  agregarProductoLibre, updateProductoLibre, quitarProductoLibre,
+  descargarReporte, limpiarReporte, resetearDatos,
+});
+</script>
+<!-- MODAL SALIDA -->
+<div class="modal-overlay" id="modal-salida">
+  <div class="modal" style="width:460px">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--accent)">🕐 REGISTRAR SALIDA</div>
+      <button class="modal-close" onclick="document.getElementById('modal-salida').classList.remove('open')">✕</button>
+    </div>
+    <input type="hidden" id="modal-salida-ri">
+    <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+      <div class="form-group">
+        <label>Hora de salida del corralón</label>
+        <input type="time" id="modal-salida-hora" oninput="actualizarEstimadaModal()" style="font-size:22px;padding:12px;text-align:center;letter-spacing:4px">
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;border-left:3px solid var(--blue)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">⏱ HORA ESTIMADA DE REGRESO</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--blue);letter-spacing:2px;line-height:1" id="modal-salida-estimada">—</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;font-family:'IBM Plex Mono',monospace" id="modal-salida-detalle"></div>
+      </div>
+      <p style="font-size:11px;color:var(--muted)">La estimación usa las tablas de zona, tonelaje del vehículo y cantidad de paradas. Podés editarla después.</p>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-salida').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarSalida()">Confirmar Salida</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LLEGADA -->
+<div class="modal-overlay" id="modal-llegada">
+  <div class="modal" style="width:460px">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--green)">✓ COMPLETAR PARADA</div>
+      <button class="modal-close" onclick="document.getElementById('modal-llegada').classList.remove('open')">✕</button>
+    </div>
+    <input type="hidden" id="modal-llegada-ri">
+    <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">PARADA <span id="modal-llegada-num">—</span> DE <span id="modal-llegada-total">—</span></div>
+        <div style="font-size:14px;font-weight:600" id="modal-llegada-parada">—</div>
+        <div style="font-size:11px;color:var(--blue);font-family:'IBM Plex Mono',monospace;margin-top:4px" id="modal-llegada-estimada"></div>
+      </div>
+      <div class="form-group">
+        <label>Hora de llegada real</label>
+        <input type="time" id="modal-llegada-hora" style="font-size:22px;padding:12px;text-align:center;letter-spacing:4px">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-llegada').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-primary" style="background:var(--green);color:#000" onclick="confirmarLlegada()">Registrar Llegada</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
