@@ -1597,9 +1597,22 @@ function confirmarSalida() {
   const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
   ruta.horario = hora;
   ruta.estimada = calcularEstimada(hora, ruta.zona, tonelaje, ruta.paradas.length);
+
+  // Pasar entregas vinculadas a "transito"
+  let transitoCount = 0;
+  if (ruta.entregaIds && ruta.entregaIds.length > 0) {
+    ruta.entregaIds.forEach(id => {
+      const entrega = data.entregas.find(e => e.id === id);
+      if (entrega && entrega.estado === 'pendiente') {
+        entrega.estado = 'transito';
+        transitoCount++;
+      }
+    });
+  }
+
   document.getElementById('modal-salida').classList.remove('open');
-  renderRutas();
-  showSuccessToast(`Salida ${hora} hs · Est. regreso ${ruta.estimada || '—'} hs`);
+  renderAll();
+  showSuccessToast(`🚛 Salida ${hora} hs · ${transitoCount} pedido${transitoCount !== 1 ? 's' : ''} en tránsito`);
 }
 
 function avanzarRuta(ri) {
@@ -1628,11 +1641,19 @@ function confirmarLlegada() {
   if (!hora) { alert('Ingresá la hora de llegada'); return; }
   const ruta = data.rutas[ri];
   if (!ruta.llegadas) ruta.llegadas = {};
+
+  // Marcar entrega vinculada como entregada
+  const idEntrega = ruta.entregaIds && ruta.entregaIds[ruta.progreso];
+  if (idEntrega) {
+    const entrega = data.entregas.find(e => e.id === idEntrega);
+    if (entrega) entrega.estado = 'entregado';
+  }
+
   ruta.llegadas[ruta.progreso] = hora;
   ruta.progreso++;
   document.getElementById('modal-llegada').classList.remove('open');
-  renderRutas();
-  showSuccessToast(`Parada ${ruta.progreso}/${ruta.paradas.length} completada · Llegada ${hora} hs`);
+  renderAll();
+  showSuccessToast(`✓ Parada ${ruta.progreso}/${ruta.paradas.length} entregada · ${hora} hs`);
 }
 
 function eliminarRuta(i) {
