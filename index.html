@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CorralónLog — Sistema de Logística</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
     --bg: #0e0e0e;
@@ -16,6 +17,8 @@
     --green: #22c55e;
     --red: #ef4444;
     --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
     --muted: #888;
     --text: #f0ede8;
     --text2: #aaa;
@@ -183,6 +186,7 @@
   .stat-card.green::before { background: var(--green); }
   .stat-card.blue::before { background: var(--blue); }
   .stat-card.red::before { background: var(--red); }
+  .stat-card.purple::before { background: var(--purple); }
 
   .stat-label {
     font-family: 'IBM Plex Mono', monospace;
@@ -204,6 +208,7 @@
   .stat-card.green .stat-value { color: var(--green); }
   .stat-card.blue .stat-value { color: var(--blue); }
   .stat-card.red .stat-value { color: var(--red); }
+  .stat-card.purple .stat-value { color: var(--purple); }
 
   .stat-sub {
     font-size: 12px;
@@ -283,6 +288,9 @@
   .pill-transito { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
   .pill-entregado { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
   .pill-cancelado { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  /* NUEVOS ESTADOS */
+  .pill-no-entregado { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid rgba(249,115,22,0.4); }
+  .pill-reprogramado { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
 
   /* BUTTONS */
   .btn {
@@ -316,6 +324,13 @@
     border: 1px solid rgba(239,68,68,0.3);
   }
   .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+  .btn-warning {
+    background: rgba(249,115,22,0.1);
+    color: var(--orange);
+    border: 1px solid rgba(249,115,22,0.35);
+  }
+  .btn-warning:hover { background: rgba(249,115,22,0.2); }
 
   .btn-sm { padding: 4px 10px; font-size: 10px; }
 
@@ -466,6 +481,8 @@
 
   .stop-dot.done { background: var(--green); border-color: var(--green); }
   .stop-dot.current { background: var(--accent); border-color: var(--accent); animation: pulse 1.5s infinite; }
+  .stop-dot.no-entregado { background: var(--orange); border-color: var(--orange); }
+  .stop-dot.reprogramado { background: var(--purple); border-color: var(--purple); }
 
   @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -562,6 +579,30 @@
     background: var(--red);
     border-radius: 50%;
     display: inline-block;
+  }
+
+  /* MOTIVO CHIPS */
+  .motivo-chip {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .motivo-chip:hover, .motivo-chip.selected {
+    border-color: var(--orange);
+    background: rgba(249,115,22,0.1);
+    color: var(--orange);
+  }
+  .motivo-chip.reprog-chip:hover, .motivo-chip.reprog-chip.selected {
+    border-color: var(--purple);
+    background: rgba(168,85,247,0.1);
+    color: var(--purple);
   }
 
   .flex { display: flex; }
@@ -715,6 +756,8 @@
           <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('pendiente', this)">Pendientes</button>
           <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('transito', this)">En Tránsito</button>
           <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('entregado', this)">Entregadas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('no-entregado', this)" style="color:var(--orange);border-color:rgba(249,115,22,0.4)">No Entregadas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('reprogramado', this)" style="color:var(--purple);border-color:rgba(168,85,247,0.4)">Reprogramadas</button>
           <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('sin-remito', this)">Sin Remito ○</button>
         </div>
         <button class="btn btn-primary" onclick="openModal('modal-nueva-entrega')">+ Nueva Entrega</button>
@@ -747,7 +790,10 @@
     <div class="section" id="section-rutas">
       <div class="flex-between mb-16">
         <p class="text-muted mono">Rutas programadas para hoy — <span class="text-accent" id="fecha-hoy"></span></p>
-        <button class="btn btn-primary" onclick="openModal('modal-nueva-ruta')">+ Planificar Ruta</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" onclick="descargarRutas()" title="Descargar resumen del día">⬇ Descargar Rutas del Día</button>
+          <button class="btn btn-primary" onclick="openModal('modal-nueva-ruta')">+ Planificar Ruta</button>
+        </div>
       </div>
       <div id="lista-rutas"></div>
     </div>
@@ -1188,6 +1234,79 @@
   </div>
 </div>
 
+<!-- ======================== MODAL NO ENTREGADO / REPROGRAMADO ======================== -->
+<div class="modal-overlay" id="modal-no-entregado">
+  <div class="modal" style="width:500px">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-ne-titulo" style="color:var(--orange)">⚠ PARADA NO ENTREGADA</div>
+      <button class="modal-close" onclick="closeModal('modal-no-entregado')">✕</button>
+    </div>
+    <input type="hidden" id="modal-ne-ri">
+    <input type="hidden" id="modal-ne-tipo">
+
+    <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+
+      <!-- Info parada -->
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">PARADA <span id="modal-ne-num">—</span> DE <span id="modal-ne-total">—</span></div>
+        <div style="font-size:14px;font-weight:600" id="modal-ne-parada">—</div>
+      </div>
+
+      <!-- Tipo de incidencia -->
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px">¿QUÉ PASÓ CON ESTA ENTREGA?</div>
+        <div style="display:flex;gap:10px">
+          <div class="motivo-chip selected" id="chip-no-entregado" onclick="selTipoNE('no-entregado')">
+            ✗ No Entregado
+          </div>
+          <div class="motivo-chip reprog-chip" id="chip-reprogramado" onclick="selTipoNE('reprogramado')">
+            📅 Reprogramar
+          </div>
+        </div>
+      </div>
+
+      <!-- Motivos -->
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px">MOTIVO</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="motivos-container">
+          <div class="motivo-chip" onclick="selMotivo(this, 'Cliente ausente')">Cliente ausente</div>
+          <div class="motivo-chip" onclick="selMotivo(this, 'No se llegó a tiempo')">No se llegó a tiempo</div>
+          <div class="motivo-chip" onclick="selMotivo(this, 'Dirección incorrecta')">Dirección incorrecta</div>
+          <div class="motivo-chip" onclick="selMotivo(this, 'Acceso cerrado')">Acceso cerrado</div>
+          <div class="motivo-chip" onclick="selMotivo(this, 'Rechazo del cliente')">Rechazo del cliente</div>
+          <div class="motivo-chip" onclick="selMotivo(this, 'Problema con el vehículo')">Problema con vehículo</div>
+        </div>
+        <input type="text" id="modal-ne-motivo-custom" placeholder="O escribí un motivo personalizado..."
+          style="margin-top:10px;width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-size:13px;outline:none"
+          oninput="limpiarChipsMotivo()">
+        <input type="hidden" id="modal-ne-motivo-sel">
+      </div>
+
+      <!-- Nueva fecha (solo si reprogramado) -->
+      <div id="reprog-fecha-group" style="display:none">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">📅 NUEVA FECHA DE ENTREGA</div>
+        <input type="date" id="modal-ne-nueva-fecha" style="font-size:14px;padding:10px">
+      </div>
+
+      <!-- Nuevo turno (solo si reprogramado) -->
+      <div id="reprog-turno-group" style="display:none">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">NUEVO TURNO</div>
+        <select id="modal-ne-nuevo-turno" style="font-size:13px;padding:8px 12px">
+          <option>Mañana (8:00 - 12:00)</option>
+          <option>Tarde (13:00 - 17:00)</option>
+          <option>Tarde Noche (17:00 - 20:00)</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-no-entregado')">Cancelar</button>
+      <button class="btn btn-warning" id="btn-confirmar-ne" onclick="confirmarNoEntregado()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 // ====== DATA (se carga desde Firebase) ======
 let data = {};
@@ -1236,13 +1355,26 @@ function renderAll() {
 }
 
 function estadoPill(e) {
-  const map = { pendiente: 'pill-pendiente', transito: 'pill-transito', entregado: 'pill-entregado', cancelado: 'pill-cancelado' };
-  const labels = { pendiente: 'Pendiente', transito: 'En Tránsito', entregado: 'Entregado', cancelado: 'Cancelado' };
-  return `<span class="pill ${map[e]}">${labels[e]}</span>`;
+  const map = {
+    pendiente: 'pill-pendiente',
+    transito: 'pill-transito',
+    entregado: 'pill-entregado',
+    cancelado: 'pill-cancelado',
+    'no-entregado': 'pill-no-entregado',
+    reprogramado: 'pill-reprogramado'
+  };
+  const labels = {
+    pendiente: 'Pendiente',
+    transito: 'En Tránsito',
+    entregado: 'Entregado',
+    cancelado: 'Cancelado',
+    'no-entregado': 'No Entregado',
+    reprogramado: 'Reprogramado'
+  };
+  return `<span class="pill ${map[e] || 'pill-pendiente'}">${labels[e] || e}</span>`;
 }
 
 function renderDashboard() {
-  // entregas recientes
   const tbody = document.getElementById('dashboard-entregas');
   if (!tbody) return;
   tbody.innerHTML = data.entregas.slice(0, 5).map(e => `
@@ -1254,7 +1386,6 @@ function renderDashboard() {
     </tr>
   `).join('');
 
-  // vehículos
   const dv = document.getElementById('dashboard-vehiculos');
   if (dv) dv.innerHTML = data.vehiculos.map(v => {
     const color = v.estado === 'En ruta' ? 'var(--blue)' : v.estado === 'Disponible' ? 'var(--green)' : 'var(--red)';
@@ -1268,7 +1399,6 @@ function renderDashboard() {
     </div>
   `}).join('');
 
-  // timeline
   const dt = document.getElementById('dashboard-timeline');
   const events = [
     { time: '08:15', text: 'Salida REM-0047 — Carlos Méndez', done: true },
@@ -1300,12 +1430,20 @@ function renderEntregas(filtro = 'all') {
     const esPasada = e.fecha && e.fecha < hoy && e.estado !== 'entregado';
     const fechaColor = esPasada ? 'color:var(--red)' : esHoy ? 'color:var(--accent)' : 'color:var(--text2)';
 
-    // Remito recibido badge
     const remitoBadge = e.remitoRecibido
       ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;letter-spacing:1px">✓ REMITO OK</span>`
       : '';
 
-    // Check button: green if already confirmed, muted if not
+    // Motivo badge para no-entregado / reprogramado
+    let motivoBadge = '';
+    if (e.motivoNoEntrega) {
+      motivoBadge = `<div style="margin-top:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--muted)">↳ ${e.motivoNoEntrega}</div>`;
+    }
+    if (e.estado === 'reprogramado' && e.nuevaFecha) {
+      const [y,m,d] = e.nuevaFecha.split('-');
+      motivoBadge += `<div style="margin-top:2px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--purple)">📅 Reprog: ${d}/${m}/${y}</div>`;
+    }
+
     const checkBtn = e.remitoRecibido
       ? `<button title="Remito confirmado" onclick="toggleRemito(${realIndex})"
            style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:var(--green);cursor:pointer;padding:5px 10px;font-size:14px;transition:all .15s" >✓</button>`
@@ -1315,8 +1453,13 @@ function renderEntregas(filtro = 'all') {
     const deleteBtn = `<button title="Eliminar entrega" onclick="eliminarEntrega(${realIndex})"
          style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:var(--red);cursor:pointer;padding:5px 10px;font-size:13px;transition:all .15s" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.08)'">✕</button>`;
 
+    // Row background for special states
+    let rowBg = e.remitoRecibido ? 'background:rgba(34,197,94,0.03)' : '';
+    if (e.estado === 'no-entregado') rowBg = 'background:rgba(249,115,22,0.04)';
+    if (e.estado === 'reprogramado') rowBg = 'background:rgba(168,85,247,0.04)';
+
     return `
-    <tr style="${e.remitoRecibido ? 'background:rgba(34,197,94,0.03)' : ''}">
+    <tr style="${rowBg}">
       <td class="mono" style="color:var(--accent)">${e.id}<br>${remitoBadge}</td>
       <td><strong>${e.cliente}</strong></td>
       <td style="font-size:12px;max-width:150px">${e.direccion}<br><span style="color:var(--muted)">${e.zona}</span></td>
@@ -1324,7 +1467,7 @@ function renderEntregas(filtro = 'all') {
       <td class="mono" style="color:var(--green);font-weight:600;white-space:nowrap">${e.peso ? e.peso.toLocaleString('es-AR',{maximumFractionDigits:0})+' kg' : '—'}</td>
       <td class="mono" style="${fechaColor};white-space:nowrap">${fechaFmt}${esPasada ? ' ⚠️' : esHoy ? ' ★' : ''}</td>
       <td style="font-size:12px">${e.turno}</td>
-      <td>${estadoPill(e.estado)}</td>
+      <td>${estadoPill(e.estado)}${motivoBadge}</td>
       <td><div style="display:flex;gap:4px">${checkBtn}${deleteBtn}</div></td>
     </tr>
   `}).join('');
@@ -1445,7 +1588,7 @@ function eliminarCliente(i) {
   if (confirm('¿Eliminar este cliente?')) { data.clientes.splice(i, 1); renderAll(); }
 }
 
-// ====== TABLAS DE ESTIMACIÓN (de calculadora) ======
+// ====== TABLAS DE ESTIMACIÓN ======
 const tablaBase = {
   0: { 7: 30, 12: 45, 18: 60 },
   1: { 7: 45, 12: 60, 18: 75 },
@@ -1503,28 +1646,69 @@ function renderRutas() {
       ? `<span style="color:var(--blue);font-size:11px;font-family:'IBM Plex Mono',monospace">⏱ Est. regreso: <strong>${estimada} hs</strong></span>`
       : '';
 
-    // Lista de paradas con horarios reales
+    // Lista de paradas con horarios reales y estados especiales
     const paradasDetalle = r.paradas.map((p, pi) => {
       const llegada = r.llegadas && r.llegadas[pi];
-      const isDone = pi < r.progreso;
-      const isCurrent = pi === r.progreso;
-      const dotColor = isDone ? 'var(--green)' : isCurrent ? 'var(--accent)' : 'var(--border)';
-      const llegadaTag = llegada
-        ? `<span style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:8px">✓ llegó ${llegada} hs</span>`
-        : (isCurrent && r.horario ? `<span style="color:var(--muted);font-size:10px;margin-left:8px;font-family:'IBM Plex Mono',monospace">est. llegada: ${calcularEstimada(r.horario, r.zona, tonelaje, pi + 1) || '—'}</span>` : '');
+      const estadoParada = r.estadosParadas && r.estadosParadas[pi];
+      const isDone = estadoParada === 'entregado' || (pi < r.progreso && !estadoParada);
+      const isNoEntregado = estadoParada === 'no-entregado';
+      const isReprogramado = estadoParada === 'reprogramado';
+      const isCurrent = pi === r.progreso && !isDone && !isNoEntregado && !isReprogramado;
+      
+      let dotColor = isDone ? 'var(--green)' : isCurrent ? 'var(--accent)' : 'var(--border)';
+      if (isNoEntregado) dotColor = 'var(--orange)';
+      if (isReprogramado) dotColor = 'var(--purple)';
+
+      let etiqueta = '';
+      if (llegada && isDone) {
+        etiqueta = `<span style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:8px">✓ llegó ${llegada} hs</span>`;
+      } else if (isNoEntregado) {
+        const motivo = r.motivosParadas && r.motivosParadas[pi] ? r.motivosParadas[pi] : '';
+        etiqueta = `<span style="color:var(--orange);font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:8px">✗ NO ENTREGADO${motivo ? ' · ' + motivo : ''}</span>`;
+      } else if (isReprogramado) {
+        const motivo = r.motivosParadas && r.motivosParadas[pi] ? r.motivosParadas[pi] : '';
+        const nFecha = r.nuevasFechasParadas && r.nuevasFechasParadas[pi] ? (() => { const [y,m,d] = r.nuevasFechasParadas[pi].split('-'); return `${d}/${m}/${y}`; })() : '';
+        etiqueta = `<span style="color:var(--purple);font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:8px">📅 REPROG.${nFecha ? ' → ' + nFecha : ''}${motivo ? ' · ' + motivo : ''}</span>`;
+      } else if (isCurrent && r.horario) {
+        etiqueta = `<span style="color:var(--muted);font-size:10px;margin-left:8px;font-family:'IBM Plex Mono',monospace">est: ${calcularEstimada(r.horario, r.zona, tonelaje, pi + 1) || '—'}</span>`;
+      }
+
+      const textStyle = isDone ? 'color:var(--muted);text-decoration:line-through' : isNoEntregado ? 'color:var(--orange)' : isReprogramado ? 'color:var(--purple)' : 'color:var(--text)';
+
       return `
         <div style="display:flex;align-items:center;gap:8px;padding:4px 0;${pi < r.paradas.length-1 ? 'border-bottom:1px solid rgba(255,255,255,0.04)' : ''}">
           <div style="width:10px;height:10px;border-radius:50%;background:${dotColor};flex-shrink:0;${isCurrent ? 'box-shadow:0 0 0 3px rgba(245,166,35,0.25)' : ''}"></div>
-          <span style="font-size:12px;color:${isDone ? 'var(--muted)' : 'var(--text)'}${isDone ? ';text-decoration:line-through' : ''}">${p}</span>
-          ${llegadaTag}
+          <span style="font-size:12px;${textStyle}">${p}</span>
+          ${etiqueta}
         </div>`;
     }).join('');
 
+    // Dots visuales (barra de progreso superior)
     const dots = r.paradas.map((p, i) => {
-      const isDone = i < r.progreso;
-      const isCurrent = i === r.progreso;
-      return `${i > 0 ? `<div class="stop-line ${isDone ? 'done' : ''}"></div>` : ''}<div class="stop-dot ${isDone ? 'done' : isCurrent ? 'current' : ''}" title="${p}"></div>`;
+      const estadoParada = r.estadosParadas && r.estadosParadas[i];
+      const isDone = estadoParada === 'entregado' || (i < r.progreso && !estadoParada);
+      const isNoEntregado = estadoParada === 'no-entregado';
+      const isReprogramado = estadoParada === 'reprogramado';
+      const isCurrent = i === r.progreso && !isDone && !isNoEntregado && !isReprogramado;
+      
+      let dotClass = isDone ? 'done' : isCurrent ? 'current' : '';
+      if (isNoEntregado) dotClass = 'no-entregado';
+      if (isReprogramado) dotClass = 'reprogramado';
+      
+      return `${i > 0 ? `<div class="stop-line ${isDone ? 'done' : ''}"></div>` : ''}<div class="stop-dot ${dotClass}" title="${p}"></div>`;
     }).join('');
+
+    // Contar paradas "procesadas" (cualquier estado final)
+    const paradasProcesadas = r.paradas.filter((p, i) => {
+      const ep = r.estadosParadas && r.estadosParadas[i];
+      return ep === 'entregado' || ep === 'no-entregado' || ep === 'reprogramado' || i < r.progreso;
+    }).length;
+
+    const todasProcesadas = paradasProcesadas >= r.paradas.length;
+
+    // Detectar si la parada actual tiene estado especial para decidir qué botones mostrar
+    const proxParada = r.progreso;
+    const hayProxParada = proxParada < r.paradas.length;
 
     return `
     <div class="route-card" style="align-items:flex-start">
@@ -1544,12 +1728,18 @@ function renderRutas() {
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0">
-            <button class="btn btn-secondary btn-sm" onclick="avanzarRuta(${ri})" ${r.progreso >= r.paradas.length ? 'disabled style="opacity:0.4"' : ''}>✓ Completar parada</button>
+            ${hayProxParada ? `
+              <button class="btn btn-secondary btn-sm" onclick="avanzarRuta(${ri})" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.35);color:var(--green)">✓ Entregado</button>
+              <button class="btn btn-warning btn-sm" onclick="abrirNoEntregado(${ri})">✗ No Entregado / Reprogramar</button>
+            ` : ''}
             <button class="btn btn-danger btn-sm" onclick="eliminarRuta(${ri})">✕ Eliminar</button>
           </div>
         </div>
         <div style="margin-top:10px">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'IBM Plex Mono',monospace">PARADAS: ${r.progreso}/${r.paradas.length} &nbsp; <span style="color:var(--accent)">${r.progreso === r.paradas.length ? '✓ COMPLETADA' : ''}</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'IBM Plex Mono',monospace">
+            PARADAS: ${paradasProcesadas}/${r.paradas.length} &nbsp;
+            <span style="color:var(--accent)">${todasProcesadas ? '✓ COMPLETADA' : ''}</span>
+          </div>
           <div class="route-stops" style="margin-bottom:8px">${dots}</div>
           <div style="background:var(--surface);border:1px solid var(--border);padding:8px 12px">${paradasDetalle}</div>
         </div>
@@ -1558,13 +1748,130 @@ function renderRutas() {
   `}).join('') || '<div style="color:var(--muted);padding:20px;text-align:center">No hay rutas planificadas para hoy.</div>';
 }
 
+// ====== MODAL NO ENTREGADO ======
+let _neRi = null;
+let _neTipoSel = 'no-entregado';
+let _neMotivo = '';
+
+function abrirNoEntregado(ri) {
+  _neRi = ri;
+  _neTipoSel = 'no-entregado';
+  _neMotivo = '';
+
+  const ruta = data.rutas[ri];
+  const pi = ruta.progreso;
+
+  document.getElementById('modal-ne-ri').value = ri;
+  document.getElementById('modal-ne-num').textContent = pi + 1;
+  document.getElementById('modal-ne-total').textContent = ruta.paradas.length;
+  document.getElementById('modal-ne-parada').textContent = ruta.paradas[pi];
+  document.getElementById('modal-ne-motivo-custom').value = '';
+  document.getElementById('modal-ne-motivo-sel').value = '';
+  document.getElementById('modal-ne-nueva-fecha').value = '';
+
+  // Reset chips selección
+  document.querySelectorAll('#motivos-container .motivo-chip').forEach(c => c.classList.remove('selected'));
+  selTipoNE('no-entregado');
+
+  document.getElementById('modal-no-entregado').classList.add('open');
+}
+
+function selTipoNE(tipo) {
+  _neTipoSel = tipo;
+
+  const chipNE = document.getElementById('chip-no-entregado');
+  const chipRP = document.getElementById('chip-reprogramado');
+  const titulo = document.getElementById('modal-ne-titulo');
+  const btnConfirmar = document.getElementById('btn-confirmar-ne');
+  const fechaGroup = document.getElementById('reprog-fecha-group');
+  const turnoGroup = document.getElementById('reprog-turno-group');
+
+  if (tipo === 'no-entregado') {
+    chipNE.classList.add('selected');
+    chipRP.classList.remove('selected');
+    titulo.textContent = '⚠ PARADA NO ENTREGADA';
+    titulo.style.color = 'var(--orange)';
+    btnConfirmar.textContent = 'Marcar No Entregado';
+    btnConfirmar.className = 'btn btn-warning';
+    fechaGroup.style.display = 'none';
+    turnoGroup.style.display = 'none';
+  } else {
+    chipRP.classList.add('selected');
+    chipNE.classList.remove('selected');
+    titulo.textContent = '📅 REPROGRAMAR ENTREGA';
+    titulo.style.color = 'var(--purple)';
+    btnConfirmar.textContent = 'Reprogramar';
+    btnConfirmar.style.cssText = 'background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.4);color:var(--purple);cursor:pointer;font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 16px';
+    fechaGroup.style.display = 'block';
+    turnoGroup.style.display = 'block';
+  }
+}
+
+function selMotivo(el, motivo) {
+  document.querySelectorAll('#motivos-container .motivo-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  _neMotivo = motivo;
+  document.getElementById('modal-ne-motivo-sel').value = motivo;
+  document.getElementById('modal-ne-motivo-custom').value = '';
+}
+
+function limpiarChipsMotivo() {
+  document.querySelectorAll('#motivos-container .motivo-chip').forEach(c => c.classList.remove('selected'));
+  _neMotivo = document.getElementById('modal-ne-motivo-custom').value;
+}
+
+function confirmarNoEntregado() {
+  const ri = parseInt(document.getElementById('modal-ne-ri').value);
+  const ruta = data.rutas[ri];
+  const pi = ruta.progreso;
+  const tipo = _neTipoSel;
+  const motivo = document.getElementById('modal-ne-motivo-custom').value.trim()
+    || document.getElementById('modal-ne-motivo-sel').value.trim()
+    || '';
+
+  // Inicializar estructuras si no existen
+  if (!ruta.estadosParadas) ruta.estadosParadas = {};
+  if (!ruta.motivosParadas) ruta.motivosParadas = {};
+  if (!ruta.nuevasFechasParadas) ruta.nuevasFechasParadas = {};
+
+  ruta.estadosParadas[pi] = tipo;
+  if (motivo) ruta.motivosParadas[pi] = motivo;
+
+  // Actualizar entrega vinculada
+  const idEntrega = ruta.entregaIds && ruta.entregaIds[pi];
+  if (idEntrega) {
+    const entrega = data.entregas.find(e => e.id === idEntrega);
+    if (entrega) {
+      entrega.estado = tipo;
+      entrega.motivoNoEntrega = motivo || null;
+      if (tipo === 'reprogramado') {
+        const nuevaFecha = document.getElementById('modal-ne-nueva-fecha').value;
+        const nuevoTurno = document.getElementById('modal-ne-nuevo-turno').value;
+        if (nuevaFecha) {
+          entrega.nuevaFecha = nuevaFecha;
+          ruta.nuevasFechasParadas[pi] = nuevaFecha;
+        }
+        if (nuevoTurno) entrega.turno = nuevoTurno.split(' ')[0];
+      }
+    }
+  }
+
+  // Avanzar progreso para que el sistema pase a la siguiente parada
+  ruta.progreso++;
+
+  closeModal('modal-no-entregado');
+  renderAll();
+
+  const msg = tipo === 'no-entregado'
+    ? `✗ Parada ${pi + 1} marcada como NO ENTREGADA${motivo ? ' · ' + motivo : ''}`
+    : `📅 Parada ${pi + 1} REPROGRAMADA`;
+  showSuccessToast(msg);
+}
+
 function editarHorario(ri) {
   const ruta = data.rutas[ri];
-  const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
-  // Mostrar modal de salida
   document.getElementById('modal-salida-ri').value = ri;
   document.getElementById('modal-salida-hora').value = ruta.horario || '';
-  // Pre-calcular estimada si ya hay hora
   actualizarEstimadaModal();
   document.getElementById('modal-salida').classList.add('open');
 }
@@ -1581,8 +1888,7 @@ function actualizarEstimadaModal() {
   const est = calcularEstimada(hora, ruta.zona, tonelaje, ruta.paradas.length);
   const zonaNum = parseInt((ruta.zona || '0').replace('Zona ', '')) || 0;
   const tons = [7,12,18].reduce((p,c) => Math.abs(c-tonelaje)<Math.abs(p-tonelaje)?c:p);
-  const tabla = tablaBase;
-  const tiempoBase = tabla[zonaNum][tons];
+  const tiempoBase = tablaBase[zonaNum][tons];
   const adicional = Math.max(0, ruta.paradas.length - 1) * (zonaNum <= 2 ? 15 : 30);
   document.getElementById('modal-salida-estimada').textContent = est || '—';
   document.getElementById('modal-salida-detalle').textContent =
@@ -1598,7 +1904,6 @@ function confirmarSalida() {
   ruta.horario = hora;
   ruta.estimada = calcularEstimada(hora, ruta.zona, tonelaje, ruta.paradas.length);
 
-  // Pasar entregas vinculadas a "transito"
   let transitoCount = 0;
   if (ruta.entregaIds && ruta.entregaIds.length > 0) {
     ruta.entregaIds.forEach(id => {
@@ -1619,16 +1924,13 @@ function avanzarRuta(ri) {
   const ruta = data.rutas[ri];
   if (ruta.progreso >= ruta.paradas.length) return;
   const parada = ruta.paradas[ruta.progreso];
-  // Open llegada modal
   document.getElementById('modal-llegada-ri').value = ri;
   document.getElementById('modal-llegada-parada').textContent = parada;
   document.getElementById('modal-llegada-num').textContent = ruta.progreso + 1;
   document.getElementById('modal-llegada-total').textContent = ruta.paradas.length;
-  // Populate estimated arrival for this stop
   const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
   const est = ruta.horario ? calcularEstimada(ruta.horario, ruta.zona, tonelaje, ruta.progreso + 1) : null;
   document.getElementById('modal-llegada-estimada').textContent = est ? `Hora estimada: ${est} hs` : '';
-  // Default to current time
   const now = new Date();
   document.getElementById('modal-llegada-hora').value =
     `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
@@ -1641,14 +1943,15 @@ function confirmarLlegada() {
   if (!hora) { alert('Ingresá la hora de llegada'); return; }
   const ruta = data.rutas[ri];
   if (!ruta.llegadas) ruta.llegadas = {};
+  if (!ruta.estadosParadas) ruta.estadosParadas = {};
 
-  // Marcar entrega vinculada como entregada
   const idEntrega = ruta.entregaIds && ruta.entregaIds[ruta.progreso];
   if (idEntrega) {
     const entrega = data.entregas.find(e => e.id === idEntrega);
     if (entrega) entrega.estado = 'entregado';
   }
 
+  ruta.estadosParadas[ruta.progreso] = 'entregado';
   ruta.llegadas[ruta.progreso] = hora;
   ruta.progreso++;
   document.getElementById('modal-llegada').classList.remove('open');
@@ -1661,14 +1964,12 @@ function eliminarRuta(i) {
 }
 
 function renderReportes() {
-  // ---- STATS CARDS ----
   const totalMes = data.entregas.filter(e => e.estado === 'entregado').length;
   const elTM = document.getElementById('rep-total-mes');
   const elTS = document.getElementById('rep-total-sub');
   if (elTM) elTM.textContent = totalMes;
   if (elTS) elTS.textContent = `de ${data.entregas.length} registradas`;
 
-  // Puntualidad global: paradas con llegada real registrada vs estimada
   let puntualTotal = 0, puntualOk = 0;
   data.rutas.forEach(r => {
     if (!r.horario || !r.llegadas) return;
@@ -1680,7 +1981,7 @@ function renderReportes() {
       puntualTotal++;
       const [eh, em] = est.split(':').map(Number);
       const [rh, rm] = llegadaReal.split(':').map(Number);
-      if (rh * 60 + rm <= eh * 60 + em + 10) puntualOk++; // 10 min tolerancia
+      if (rh * 60 + rm <= eh * 60 + em + 10) puntualOk++;
     });
   });
   const pctPuntual = puntualTotal > 0 ? Math.round((puntualOk / puntualTotal) * 100) : null;
@@ -1689,7 +1990,6 @@ function renderReportes() {
   if (elPP) elPP.textContent = pctPuntual !== null ? pctPuntual + '%' : '—';
   if (elPS) elPS.textContent = pctPuntual !== null ? `${puntualOk} de ${puntualTotal} paradas a tiempo (±10 min)` : 'Sin datos suficientes';
 
-  // Paradas completadas hoy
   const totalParadas = data.rutas.reduce((a, r) => a + r.paradas.length, 0);
   const completadas = data.rutas.reduce((a, r) => a + r.progreso, 0);
   const elPH = document.getElementById('rep-paradas-hoy');
@@ -1697,7 +1997,6 @@ function renderReportes() {
   if (elPH) elPH.textContent = completadas;
   if (elPHS) elPHS.textContent = `de ${totalParadas} total en rutas activas`;
 
-  // ---- RENDIMIENTO CHOFERES ----
   const rc = document.getElementById('reporte-choferes');
   if (rc) rc.innerHTML = data.choferes.map(c => {
     const total = c.entregasHoy;
@@ -1712,7 +2011,6 @@ function renderReportes() {
     </div>
   `}).join('');
 
-  // ---- ENTREGAS POR ZONA ----
   const rz = document.getElementById('reporte-zonas');
   const zonas = {};
   data.entregas.forEach(e => { zonas[e.zona] = (zonas[e.zona] || 0) + 1; });
@@ -1728,29 +2026,35 @@ function renderReportes() {
     </div>
   `}).join('');
 
-  // ---- PUNTUALIDAD POR CHOFER ----
   const rp = document.getElementById('reporte-puntualidad');
   const repFecha = document.getElementById('rep-fecha-reporte');
   if (repFecha) repFecha.textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   if (!rp) return;
 
-  // Build per-chofer stats from rutas
   const choferStats = {};
   data.rutas.forEach(r => {
     if (!r.chofer || r.chofer === '-') return;
-    if (!choferStats[r.chofer]) choferStats[r.chofer] = { paradas: 0, aTiempo: 0, demoraTotal: 0, detalle: [] };
+    if (!choferStats[r.chofer]) choferStats[r.chofer] = { paradas: 0, aTiempo: 0, demoraTotal: 0, noEntregadas: 0, reprogramadas: 0, detalle: [] };
     if (!r.horario || !r.llegadas) return;
     const tonelaje = getTonelajeVehiculo(r.vehiculo);
     r.paradas.forEach((parada, pi) => {
       const llegadaReal = r.llegadas[pi];
+      const estadoParada = r.estadosParadas && r.estadosParadas[pi];
+
+      if (estadoParada === 'no-entregado') {
+        choferStats[r.chofer].noEntregadas++;
+        return;
+      }
+      if (estadoParada === 'reprogramado') {
+        choferStats[r.chofer].reprogramadas++;
+        return;
+      }
       if (!llegadaReal) return;
       const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
       if (!est) return;
       const [eh, em] = est.split(':').map(Number);
       const [rh, rm] = llegadaReal.split(':').map(Number);
-      const estMins = eh * 60 + em;
-      const realMins = rh * 60 + rm;
-      const diff = realMins - estMins;
+      const diff = (rh * 60 + rm) - (eh * 60 + em);
       const fecha = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
       choferStats[r.chofer].paradas++;
       if (diff <= 10) choferStats[r.chofer].aTiempo++;
@@ -1799,6 +2103,8 @@ function renderReportes() {
           <div style="font-weight:600;font-size:14px">👷 ${chofer}</div>
           <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:'IBM Plex Mono',monospace">
             ${st.paradas} paradas registradas · demora promedio: ${demoraPromedio > 0 ? demoraPromedio + ' min' : 'sin demora'}
+            ${st.noEntregadas > 0 ? ` · <span style="color:var(--orange)">${st.noEntregadas} no entregadas</span>` : ''}
+            ${st.reprogramadas > 0 ? ` · <span style="color:var(--purple)">${st.reprogramadas} reprogramadas</span>` : ''}
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
@@ -1827,16 +2133,183 @@ function renderReportes() {
   }).join('');
 }
 
+function descargarRutas() {
+  if (typeof XLSX === 'undefined') {
+    showSuccessToast('Cargando librería, intentá de nuevo en un segundo...');
+    return;
+  }
+
+  const fechaLabel = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const fechaArchivo = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+
+  // ── Armar filas ──────────────────────────────────────────────
+  const filas = [];
+  data.rutas.forEach(r => {
+    r.paradas.forEach((parada, pi) => {
+      const idEntrega = r.entregaIds && r.entregaIds[pi];
+      const entrega   = idEntrega ? data.entregas.find(e => e.id === idEntrega) : null;
+
+      // Separar dirección en calle y localidad (guardado como "Calle — Localidad")
+      let direccion = parada;
+      let localidad = '';
+      if (entrega && entrega.direccion && entrega.direccion.includes(' — ')) {
+        [direccion, localidad] = entrega.direccion.split(' — ');
+      } else if (parada.includes(' — ')) {
+        [direccion, localidad] = parada.split(' — ');
+      }
+
+      const estadoParada = r.estadosParadas && r.estadosParadas[pi];
+      const llegadaHs    = r.llegadas && r.llegadas[pi] ? r.llegadas[pi] + ' hs' : '';
+
+      let estadoLabel = '';
+      if      (estadoParada === 'entregado')    estadoLabel = 'ENTREGADO';
+      else if (estadoParada === 'no-entregado') estadoLabel = 'NO ENTREGADO';
+      else if (estadoParada === 'reprogramado') estadoLabel = 'REPROGRAMADO';
+      else if (pi < r.progreso)                 estadoLabel = 'ENTREGADO';
+      else if (r.horario)                       estadoLabel = 'EN RUTA';
+
+      filas.push({
+        'remito':           entrega ? entrega.id        : '',
+        'dirección':        direccion,
+        'localidad':        localidad,
+        'cliente':          entrega ? entrega.cliente   : '',
+        'materiales':       entrega ? entrega.materiales: '',
+        'chofer':           r.chofer || '',
+        'nombre de la ruta':r.nombre || '',
+        'hora de salida':   r.horario ? r.horario + ' hs' : '',
+        'hora de llegada':  llegadaHs,
+        'estado':           estadoLabel,
+      });
+    });
+  });
+
+  if (filas.length === 0) {
+    showSuccessToast('No hay paradas para exportar');
+    return;
+  }
+
+  // ── Crear workbook con openpyxl-style via SheetJS ────────────
+  const wb = XLSX.utils.book_new();
+
+  // Fila de título
+  const tituloRow = [`RUTAS DEL DÍA — ${fechaLabel.toUpperCase()}`];
+
+  // Cabeceras (las 9 columnas visibles, sin "estado" — se muestra en llegada como contexto)
+  const COLS = [
+    'remito','dirección','localidad','cliente','materiales',
+    'chofer','nombre de la ruta','hora de salida','hora de llegada'
+  ];
+
+  const wsData = [
+    tituloRow,          // fila 1 – título
+    [],                 // fila 2 – espacio
+    COLS,               // fila 3 – encabezados
+    ...filas.map(f => COLS.map(c => f[c] || '')),
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // ── Anchos de columna ────────────────────────────────────────
+  ws['!cols'] = [
+    { wch: 14 },  // remito
+    { wch: 28 },  // dirección
+    { wch: 18 },  // localidad
+    { wch: 22 },  // cliente
+    { wch: 40 },  // materiales
+    { wch: 22 },  // chofer
+    { wch: 22 },  // nombre de la ruta
+    { wch: 14 },  // hora de salida
+    { wch: 14 },  // hora de llegada
+  ];
+
+  // ── Merge título en fila 1 ───────────────────────────────────
+  ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: COLS.length - 1 } }];
+
+  // ── Estilos via SheetJS (requiere write con bookSST) ─────────
+  // SheetJS CE no soporta estilos directamente; usamos una hoja
+  // auxiliar para insertar los colores de cabecera via cell.s
+  // Título
+  if (ws['A1']) {
+    ws['A1'].s = {
+      font:      { bold: true, sz: 13, color: { rgb: '1F1F1F' } },
+      fill:      { fgColor: { rgb: 'F5A623' } },
+      alignment: { horizontal: 'left', vertical: 'center' },
+    };
+  }
+
+  // Encabezados fila 3 (índice 2) — fondo gris como la imagen
+  COLS.forEach((col, ci) => {
+    const addr = XLSX.utils.encode_cell({ r: 2, c: ci });
+    if (ws[addr]) {
+      ws[addr].s = {
+        font:      { bold: true, sz: 10, color: { rgb: '1F1F1F' } },
+        fill:      { fgColor: { rgb: 'BFC8D0' } },
+        alignment: { horizontal: 'left', vertical: 'center', wrapText: true },
+        border: {
+          top:    { style: 'thin', color: { rgb: '888888' } },
+          bottom: { style: 'thin', color: { rgb: '888888' } },
+          left:   { style: 'thin', color: { rgb: '888888' } },
+          right:  { style: 'thin', color: { rgb: '888888' } },
+        },
+      };
+    }
+  });
+
+  // Filas de datos — borde fino en todas las celdas
+  filas.forEach((fila, ri) => {
+    const excelRow = ri + 3; // 0-based: fila título=0, vacía=1, headers=2, datos desde 3
+    COLS.forEach((col, ci) => {
+      const addr = XLSX.utils.encode_cell({ r: excelRow, c: ci });
+      if (!ws[addr]) ws[addr] = { t: 's', v: '' };
+      ws[addr].s = {
+        font:      { sz: 10 },
+        alignment: { vertical: 'center', wrapText: false },
+        border: {
+          top:    { style: 'thin', color: { rgb: 'CCCCCC' } },
+          bottom: { style: 'thin', color: { rgb: 'CCCCCC' } },
+          left:   { style: 'thin', color: { rgb: 'CCCCCC' } },
+          right:  { style: 'thin', color: { rgb: 'CCCCCC' } },
+        },
+      };
+    });
+  });
+
+  // Altura de filas
+  ws['!rows'] = [
+    { hpt: 22 },  // título
+    { hpt: 6  },  // espacio
+    { hpt: 20 },  // encabezados
+    ...filas.map(() => ({ hpt: 18 })),
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Rutas del Día');
+
+  XLSX.writeFile(wb, `rutas-del-dia-${fechaArchivo}.xlsx`, { bookType: 'xlsx', cellStyles: true });
+  showSuccessToast(`✓ Excel descargado — ${filas.length} paradas`);
+}
+
 function descargarReporte() {
   const fecha = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
   let csv = `REPORTE DE PUNTUALIDAD — ${new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}\n\n`;
   csv += `Fecha,Chofer,Ruta,Parada,Hora Estimada,Hora Real,Diferencia,Estado\n`;
 
   data.rutas.forEach(r => {
-    if (!r.chofer || r.chofer === '-' || !r.horario || !r.llegadas) return;
+    if (!r.chofer || r.chofer === '-' || !r.horario) return;
     const tonelaje = getTonelajeVehiculo(r.vehiculo);
     r.paradas.forEach((parada, pi) => {
-      const llegadaReal = r.llegadas[pi];
+      const estadoParada = r.estadosParadas && r.estadosParadas[pi];
+      if (estadoParada === 'no-entregado') {
+        const motivo = r.motivosParadas && r.motivosParadas[pi] ? r.motivosParadas[pi] : '';
+        csv += `${fecha},"${r.chofer}","${r.nombre}","${parada}",—,—,"${motivo}",NO ENTREGADO\n`;
+        return;
+      }
+      if (estadoParada === 'reprogramado') {
+        const motivo = r.motivosParadas && r.motivosParadas[pi] ? r.motivosParadas[pi] : '';
+        const nf = r.nuevasFechasParadas && r.nuevasFechasParadas[pi] ? r.nuevasFechasParadas[pi] : '';
+        csv += `${fecha},"${r.chofer}","${r.nombre}","${parada}",—,—,"${motivo} → ${nf}",REPROGRAMADO\n`;
+        return;
+      }
+      const llegadaReal = r.llegadas && r.llegadas[pi];
       if (!llegadaReal) return;
       const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
       if (!est) return;
@@ -1866,6 +2339,9 @@ function limpiarReporte() {
     r.estimada = '';
     r.llegadas = {};
     r.progreso = 0;
+    r.estadosParadas = {};
+    r.motivosParadas = {};
+    r.nuevasFechasParadas = {};
   });
   renderAll();
   showSuccessToast('Registros del día limpiados');
@@ -1887,7 +2363,6 @@ function populateRutaModal() {
   rutaChoferSel = '';
   rutaVehiculoSel = '';
 
-  // Choferes como tarjetas clickeables
   const lc = document.getElementById('nr-lista-choferes');
   if (lc) lc.innerHTML = data.choferes.map(c => {
     const dispColor = c.disp === 'Disponible' ? 'var(--green)' : c.disp === 'En ruta' ? 'var(--blue)' : 'var(--muted)';
@@ -1900,7 +2375,6 @@ function populateRutaModal() {
     </div>`;
   }).join('') || '<span style="color:var(--muted);font-size:12px">No hay choferes cargados.</span>';
 
-  // Vehículos como tarjetas clickeables
   const lv = document.getElementById('nr-lista-vehiculos');
   if (lv) lv.innerHTML = data.vehiculos.map(v => {
     const dispColor = v.estado === 'Disponible' ? 'var(--green)' : v.estado === 'En ruta' ? 'var(--blue)' : 'var(--red)';
@@ -1914,16 +2388,15 @@ function populateRutaModal() {
     </div>`;
   }).join('') || '<span style="color:var(--muted);font-size:12px">No hay vehículos cargados.</span>';
 
-  // Direcciones de entregas pendientes
   const ld = document.getElementById('nr-lista-direcciones');
-  const pendientes = data.entregas.filter(e => e.estado === 'pendiente');
+  const pendientes = data.entregas.filter(e => e.estado === 'pendiente' || e.estado === 'reprogramado');
   if (ld) ld.innerHTML = pendientes.length > 0
     ? pendientes.map(e => `
       <div onclick="toggleParada('${e.id}', '${e.direccion.replace(/'/g,"\\'")}', '${e.cliente.replace(/'/g,"\\'")}', '${e.zona}', this)"
         id="dir-card-${e.id}"
         style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid var(--border);padding:8px 12px;cursor:pointer;transition:all 0.15s">
         <div>
-          <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span></div>
+          <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span> ${e.estado === 'reprogramado' ? '<span style="color:var(--purple);font-size:10px;font-family:\'IBM Plex Mono\',monospace">REPROG.</span>' : ''}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? e.peso.toLocaleString('es-AR')+' kg' : '—'}</div>
         </div>
         <div style="font-size:18px;color:var(--border)" id="dir-check-${e.id}">○</div>
@@ -1984,7 +2457,6 @@ function agregarParadaManual() {
 
 function quitarParada(id) {
   rutaParadasSeleccionadas = rutaParadasSeleccionadas.filter(p => p.id !== id);
-  // uncheck the card if it exists
   const chk = document.getElementById('dir-check-' + id);
   if (chk) { chk.textContent = '○'; chk.style.color = 'var(--border)'; }
   const card = document.getElementById('dir-card-' + id);
@@ -2049,7 +2521,10 @@ function guardarRuta() {
     zona: c('nr-zona'),
     paradas: rutaParadasSeleccionadas.map(p => p.direccion),
     entregaIds: rutaParadasSeleccionadas.map(p => p.id),
-    progreso: 0
+    progreso: 0,
+    estadosParadas: {},
+    motivosParadas: {},
+    nuevasFechasParadas: {}
   });
   closeModal('modal-nueva-ruta');
   renderAll();
@@ -2115,42 +2590,41 @@ function showSuccessToast(msg) {
     z-index:999;animation:slideIn 0.2s ease;letter-spacing:1px;text-transform:uppercase;
   `;
   toast.textContent = '✓ ' + msg;
+  // Override background for warning messages
+  if (msg.startsWith('✗') || msg.includes('NO ENTREGADO')) {
+    toast.style.background = 'var(--orange)';
+  } else if (msg.includes('REPROG')) {
+    toast.style.background = 'var(--purple)';
+    toast.style.color = '#fff';
+  }
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
 
 // ====== CALCULADORA DE MATERIALES ======
 const MATERIALES_DB = [
-  // CEMENTOS
   { cat: 'Cementos', nombre: 'Holcim', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Cementos', nombre: 'Avellaneda', unidad: 'bolsa', pesoPorUn: 25 },
-  // CALES
   { cat: 'Cales', nombre: 'Cal Hidrát. (Cal Común)', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Cales', nombre: 'Cal Milagro', unidad: 'bolsa', pesoPorUn: 25 },
-  // CEMENTO ALBAÑILERÍA
   { cat: 'Cemento Albañilería', nombre: 'Hidralit (Plasticor)', unidad: 'bolsa', pesoPorUn: 20 },
   { cat: 'Cemento Albañilería', nombre: 'Maestro (Holcim)', unidad: 'bolsa', pesoPorUn: 25 },
-  // YESOS
   { cat: 'Yesos', nombre: 'Yeso Tuyango Trad 30kg', unidad: 'bolsa', pesoPorUn: 30 },
   { cat: 'Yesos', nombre: 'Yeso Tuyango Proy. SG 30kg', unidad: 'bolsa', pesoPorUn: 30 },
   { cat: 'Yesos', nombre: 'Yeso Tuyango AP 25kg', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Yesos', nombre: 'Yeso Alpress Proy. 35kg', unidad: 'bolsa', pesoPorUn: 35 },
   { cat: 'Yesos', nombre: 'Yeso Corral 40kg', unidad: 'bolsa', pesoPorUn: 40 },
-  // ADHESIVOS
   { cat: 'Adhesivos', nombre: 'Perfecto x25', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Adhesivos', nombre: 'Klaukol x25', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Adhesivos', nombre: 'Weber x25', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Adhesivos', nombre: 'Holcim (Tector) x25', unidad: 'bolsa', pesoPorUn: 25 },
-  // MORTEROS
   { cat: 'Morteros', nombre: 'Fino a la Cal x25', unidad: 'bolsa', pesoPorUn: 25 },
   { cat: 'Morteros', nombre: 'Promex x30', unidad: 'bolsa', pesoPorUn: 30 },
   { cat: 'Morteros', nombre: 'Mortero Retak x30', unidad: 'bolsa', pesoPorUn: 30 },
   { cat: 'Morteros', nombre: 'Base Coat Weber x30', unidad: 'bolsa', pesoPorUn: 30 },
-  // ÁRIDOS
   { cat: 'Áridos', nombre: 'Arena / Piedra / Cascote (m³)', unidad: 'm³', pesoPorUn: 1350 },
   { cat: 'Áridos', nombre: 'Arena / Piedra / Binder (bolsón)', unidad: 'bolsón', pesoPorUn: 1000 },
   { cat: 'Áridos', nombre: 'Arena / Piedra (bolsa 30kg)', unidad: 'bolsa', pesoPorUn: 30 },
-  // LADRILLOS
   { cat: 'Ladrillos', nombre: 'Ladrillo Común', unidad: 'un', pesoPorUn: 1.65 },
   { cat: 'Ladrillos', nombre: 'Ladrillo Chacabuco/Córdoba', unidad: 'un', pesoPorUn: 2.00 },
   { cat: 'Ladrillos', nombre: 'Ladrillo Hueco 8', unidad: 'un', pesoPorUn: 3.50 },
@@ -2166,7 +2640,6 @@ const MATERIALES_DB = [
   { cat: 'Ladrillos', nombre: 'Retak 20', unidad: 'un', pesoPorUn: 17.86 },
   { cat: 'Ladrillos', nombre: 'Ladrillo Cemento 13', unidad: 'un', pesoPorUn: 13.00 },
   { cat: 'Ladrillos', nombre: 'Ladrillo Cemento 19', unidad: 'un', pesoPorUn: 19.00 },
-  // HIERROS
   { cat: 'Hierros', nombre: 'Varilla 6mm x12m', unidad: 'barra', pesoPorUn: 2.66 },
   { cat: 'Hierros', nombre: 'Varilla 8mm x12m', unidad: 'barra', pesoPorUn: 4.74 },
   { cat: 'Hierros', nombre: 'Varilla 10mm x12m', unidad: 'barra', pesoPorUn: 7.40 },
@@ -2175,7 +2648,6 @@ const MATERIALES_DB = [
   { cat: 'Hierros', nombre: 'Varilla 20mm x12m', unidad: 'barra', pesoPorUn: 29.64 },
   { cat: 'Hierros', nombre: 'Varilla 25mm x12m', unidad: 'barra', pesoPorUn: 46.20 },
   { cat: 'Hierros', nombre: 'ADN (kg)', unidad: 'kg', pesoPorUn: 1.00 },
-  // MALLAS
   { cat: 'Mallas', nombre: 'Malla 4 15x25 (5x2)', unidad: 'un', pesoPorUn: 8.86 },
   { cat: 'Mallas', nombre: 'Malla 4 15x15 (5x2)', unidad: 'un', pesoPorUn: 11.30 },
   { cat: 'Mallas', nombre: 'Malla 6 15x15 Q131 Mini (3x2.4)', unidad: 'un', pesoPorUn: 14.80 },
@@ -2184,11 +2656,9 @@ const MATERIALES_DB = [
   { cat: 'Mallas', nombre: 'Malla 6 Q188 (6x2.4)', unidad: 'un', pesoPorUn: 42.62 },
   { cat: 'Mallas', nombre: 'Malla 8 Q335 (6x2.4)', unidad: 'un', pesoPorUn: 75.76 },
   { cat: 'Mallas', nombre: 'Malla 10 Q524 (6x2.4)', unidad: 'un', pesoPorUn: 118.38 },
-  // VIGUETAS
   { cat: 'Viguetas', nombre: 'Viga x ml', unidad: 'ml', pesoPorUn: 15 },
 ];
 
-// Group by category for the select
 const CATS = [...new Set(MATERIALES_DB.map(m => m.cat))];
 
 let calcLineas = [];
@@ -2314,7 +2784,7 @@ function actualizarTotal() {
   if (materialesHidden) materialesHidden.value = items.map(l => `${l.cantidad} ${MATERIALES_DB.find(m=>m.nombre===l.material)?.unidad||''} ${l.material}`).join(', ');
 }
 
-// ====== FIREBASE — DATOS DEFAULT ======
+// ====== FIREBASE ======
 const DATA_DEFAULT = {
   entregas: [
     { id: 'REM-0047', cliente: 'Constructora Pérez', direccion: 'Av. Belgrano 1240', materiales: 'Cemento 200 bolsas, Arena 2 ton', peso: 5000, fecha: '2026-03-01', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Mañana', estado: 'entregado', zona: 'Zona 1', remitoRecibido: true },
@@ -2344,13 +2814,12 @@ const DATA_DEFAULT = {
     { nombre: 'Martínez SRL', tel: '11-8805-6677', dir: 'Corrientes 1100, Palermo', zona: 'Zona 0', totalEntregas: 31, ultimaEntrega: '01/03/2026' },
   ],
   rutas: [
-    { nombre: 'Zona 1 Mañana', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Mañana', horario: '08:00', estimada: '10:45', zona: 'Zona 1', paradas: ['Av. Belgrano 1240', 'Corrientes 1100', 'Paraguay 780'], progreso: 2, llegadas: { 0: '09:10', 1: '10:05' } },
-    { nombre: 'Zona 2 Mañana', chofer: 'Roberto Díaz', vehiculo: 'DEF 456', turno: 'Mañana', horario: '08:30', estimada: '11:15', zona: 'Zona 2', paradas: ['San Martín 567', 'Lavalle 890', 'Pueyrredón 345'], progreso: 1, llegadas: { 0: '09:45' } },
-    { nombre: 'Zona 3 Tarde', chofer: 'Luis Romero', vehiculo: 'GHI 789', turno: 'Tarde', horario: '', estimada: '', zona: 'Zona 3', paradas: ['Rivadavia 890', 'Mitre 234'], progreso: 0, llegadas: {} },
+    { nombre: 'Zona 1 Mañana', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Mañana', horario: '08:00', estimada: '10:45', zona: 'Zona 1', paradas: ['Av. Belgrano 1240', 'Corrientes 1100', 'Paraguay 780'], progreso: 2, llegadas: { 0: '09:10', 1: '10:05' }, estadosParadas: { 0: 'entregado', 1: 'entregado' }, motivosParadas: {}, nuevasFechasParadas: {} },
+    { nombre: 'Zona 2 Mañana', chofer: 'Roberto Díaz', vehiculo: 'DEF 456', turno: 'Mañana', horario: '08:30', estimada: '11:15', zona: 'Zona 2', paradas: ['San Martín 567', 'Lavalle 890', 'Pueyrredón 345'], progreso: 1, llegadas: { 0: '09:45' }, estadosParadas: { 0: 'entregado' }, motivosParadas: {}, nuevasFechasParadas: {} },
+    { nombre: 'Zona 3 Tarde', chofer: 'Luis Romero', vehiculo: 'GHI 789', turno: 'Tarde', horario: '', estimada: '', zona: 'Zona 3', paradas: ['Rivadavia 890', 'Mitre 234'], progreso: 0, llegadas: {}, estadosParadas: {}, motivosParadas: {}, nuevasFechasParadas: {} },
   ]
 };
 
-// ====== FIREBASE — Tiempo Real ======
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
@@ -2371,7 +2840,6 @@ const dbRef = ref(db, 'corralonlog');
 let _guardandoDesdeFirebase = false;
 let _inicializado = false;
 
-// Guardar en Firebase
 function guardarFirebase() {
   if (_guardandoDesdeFirebase) return;
   set(dbRef, data).catch(e => {
@@ -2380,23 +2848,25 @@ function guardarFirebase() {
   });
 }
 
-// Escuchar cambios en tiempo real (desde cualquier PC)
 onValue(dbRef, (snapshot) => {
   const remoto = snapshot.val();
 
   if (!remoto) {
-    // Primera vez — no hay datos en Firebase, cargar defaults
     data = JSON.parse(JSON.stringify(DATA_DEFAULT));
     guardarFirebase();
   } else {
-    // Hay datos remotos — usar esos
     _guardandoDesdeFirebase = true;
     data = {
       entregas: remoto.entregas || [],
       vehiculos: remoto.vehiculos || [],
       choferes: remoto.choferes || [],
       clientes: remoto.clientes || [],
-      rutas: remoto.rutas || [],
+      rutas: (remoto.rutas || []).map(r => ({
+        ...r,
+        estadosParadas: r.estadosParadas || {},
+        motivosParadas: r.motivosParadas || {},
+        nuevasFechasParadas: r.nuevasFechasParadas || {}
+      })),
     };
     _guardandoDesdeFirebase = false;
   }
@@ -2415,7 +2885,6 @@ onValue(dbRef, (snapshot) => {
 }, (error) => {
   console.error('Error Firebase:', error);
   mostrarEstadoConexion('error');
-  // Fallback a localStorage si Firebase no conecta
   const local = localStorage.getItem('corralonlog_offline');
   if (local) data = JSON.parse(local);
   else data = JSON.parse(JSON.stringify(DATA_DEFAULT));
@@ -2428,13 +2897,11 @@ onValue(dbRef, (snapshot) => {
   }
 });
 
-// Sobreescribir renderAll para que guarde en Firebase en cada cambio
 const _renderAllOrig = renderAll;
 renderAll = function() {
   _renderAllOrig();
   if (_inicializado && !_guardandoDesdeFirebase) {
     guardarFirebase();
-    // Backup offline
     try { localStorage.setItem('corralonlog_offline', JSON.stringify(data)); } catch(e) {}
   }
 };
@@ -2464,7 +2931,6 @@ function resetearDatos() {
   showSuccessToast('Datos reseteados');
 }
 
-// Exponer funciones al scope global para que funcionen los onclick del HTML
 Object.assign(window, {
   showSection, openModal, closeModal,
   filterEntregas, cambiarEstado, eliminarEntrega, toggleRemito,
@@ -2472,12 +2938,14 @@ Object.assign(window, {
   eliminarVehiculo, eliminarChofer, eliminarCliente, eliminarRuta,
   avanzarRuta, editarHorario, confirmarSalida, confirmarLlegada,
   actualizarEstimadaModal,
+  abrirNoEntregado, selTipoNE, selMotivo, limpiarChipsMotivo, confirmarNoEntregado,
   selChofer, selVehiculo, toggleParada, agregarParadaManual, quitarParada,
   agregarLinea, updateLinea, setCantidad, quitarLinea,
   agregarProductoLibre, updateProductoLibre, quitarProductoLibre,
-  descargarReporte, limpiarReporte, resetearDatos,
+  descargarReporte, descargarRutas, limpiarReporte, resetearDatos,
 });
 </script>
+
 <!-- MODAL SALIDA -->
 <div class="modal-overlay" id="modal-salida">
   <div class="modal" style="width:460px">
