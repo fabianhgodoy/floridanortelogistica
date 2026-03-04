@@ -8,20 +8,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
-    --bg: #0e0e0e;
-    --surface: #1a1a1a;
-    --surface2: #242424;
-    --border: #333;
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface2: #f0f1f3;
+    --border: #d8dce3;
     --accent: #f5a623;
     --accent2: #e8530a;
-    --green: #22c55e;
-    --red: #ef4444;
-    --blue: #3b82f6;
-    --purple: #a855f7;
-    --orange: #f97316;
-    --muted: #888;
-    --text: #f0ede8;
-    --text2: #aaa;
+    --green: #16a34a;
+    --red: #dc2626;
+    --blue: #2563eb;
+    --purple: #9333ea;
+    --orange: #ea580c;
+    --muted: #6b7280;
+    --text: #1a1a2e;
+    --text2: #6b7280;
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -38,7 +38,7 @@
   .sidebar {
     width: 240px;
     background: var(--surface);
-    border-right: 1px solid var(--border);
+    border-right: 1px solid #1a1a2e;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -48,7 +48,7 @@
 
   .logo {
     padding: 24px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #1a1a2e;
   }
 
   .logo h1 {
@@ -104,7 +104,7 @@
 
   .sidebar-footer {
     padding: 16px 20px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid #1a1a2e;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     color: var(--muted);
@@ -121,7 +121,7 @@
 
   .topbar {
     background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #1a1a2e;
     padding: 16px 32px;
     display: flex;
     align-items: center;
@@ -143,8 +143,8 @@
   .badge {
     background: var(--accent);
     color: #000;
-    padding: 2px 8px;
-    border-radius: 2px;
+    padding: 2px 10px;
+    border-radius: 20px;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     font-weight: 600;
@@ -169,7 +169,7 @@
 
   .stat-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
     padding: 20px;
     position: relative;
     overflow: hidden;
@@ -219,13 +219,14 @@
   /* CARDS */
   .card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1.5px solid #1a1a2e;
     margin-bottom: 24px;
+    border-radius: 4px;
   }
 
   .card-header {
     padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1.5px solid #1a1a2e;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -248,7 +249,7 @@
   }
 
   thead th {
-    background: var(--surface2);
+    background: #eef0f4;
     padding: 10px 16px;
     text-align: left;
     font-family: 'IBM Plex Mono', monospace;
@@ -257,15 +258,15 @@
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 400;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1.5px solid #1a1a2e;
   }
 
   tbody tr {
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid #c0c4cc;
     transition: background 0.1s;
   }
 
-  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody tr:hover { background: #f7f8fa; }
 
   tbody td {
     padding: 12px 16px;
@@ -275,13 +276,13 @@
   /* PILLS */
   .pill {
     display: inline-block;
-    padding: 2px 10px;
+    padding: 3px 10px;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    border-radius: 2px;
+    border-radius: 20px;
   }
 
   .pill-pendiente { background: rgba(245,166,35,0.15); color: var(--accent); border: 1px solid rgba(245,166,35,0.3); }
@@ -314,7 +315,7 @@
   .btn-secondary {
     background: var(--surface2);
     color: var(--text);
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
   }
   .btn-secondary:hover { background: #2e2e2e; }
 
@@ -357,7 +358,7 @@
 
   input, select, textarea {
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
     color: var(--text);
     padding: 8px 12px;
     font-family: 'IBM Plex Sans', sans-serif;
@@ -377,7 +378,7 @@
 
   .form-actions {
     padding: 16px 20px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid #1a1a2e;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
@@ -398,7 +399,7 @@
 
   .modal {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
     width: 600px;
     max-width: 90vw;
     max-height: 90vh;
@@ -413,7 +414,7 @@
 
   .modal-header {
     padding: 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #1a1a2e;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -441,7 +442,7 @@
   /* MAPA VISUAL */
   .route-card {
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
     border-left: 3px solid var(--accent);
     padding: 14px 16px;
     margin-bottom: 8px;
@@ -475,7 +476,7 @@
   .stop-dot {
     width: 10px; height: 10px;
     border-radius: 50%;
-    background: var(--border);
+    background: #1a1a2e;
     border: 2px solid var(--muted);
   }
 
@@ -491,7 +492,7 @@
 
   .stop-line {
     width: 20px; height: 2px;
-    background: var(--border);
+    background: #1a1a2e;
   }
 
   .stop-line.done { background: var(--green); }
@@ -532,13 +533,13 @@
     top: 28px;
     bottom: 0;
     width: 2px;
-    background: var(--border);
+    background: #1a1a2e;
   }
 
   .timeline-dot {
     width: 28px; height: 28px;
     border-radius: 50%;
-    border: 2px solid var(--border);
+    border: 2px solid #1a1a2e;
     background: var(--surface);
     display: flex;
     align-items: center;
@@ -560,7 +561,7 @@
     display: flex;
     align-items: center;
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
     padding: 6px 12px;
     gap: 8px;
   }
@@ -584,7 +585,7 @@
   /* MOTIVO CHIPS */
   .motivo-chip {
     padding: 8px 14px;
-    border: 1px solid var(--border);
+    border: 1px solid #1a1a2e;
     background: var(--surface2);
     cursor: pointer;
     font-family: 'IBM Plex Mono', monospace;
@@ -618,7 +619,7 @@
 <body>
 
 <!-- PANTALLA DE CARGA -->
-<div id="pantalla-carga" style="position:fixed;inset:0;background:#0e0e0e;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999">
+<div id="pantalla-carga" style="position:fixed;inset:0;background:#f4f5f7;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999">
   <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:#f5a623;letter-spacing:4px;margin-bottom:16px">CORRALÓN LOG</div>
   <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#888;letter-spacing:2px;margin-bottom:32px">CONECTANDO CON FIREBASE...</div>
   <div style="width:48px;height:48px;border:3px solid #333;border-top-color:#f5a623;border-radius:50%;animation:spin 0.8s linear infinite"></div>
@@ -634,7 +635,10 @@
   <div class="nav">
     <div class="nav-section">Principal</div>
     <div class="nav-item active" onclick="showSection('dashboard')">
-      <span class="icon">📊</span> Dashboard
+      <span class="icon">📋</span> Planilla Operativa
+    </div>
+    <div class="nav-item" onclick="showSection('vencidas')" style="padding-left:32px;font-size:12px">
+      <span class="icon">⚠️</span> Entregas Vencidas <span id="nav-vencidas-count" style="background:#dc2626;color:#fff;border-radius:20px;padding:1px 7px;font-size:10px;font-family:'IBM Plex Mono',monospace;margin-left:4px;display:none"></span>
     </div>
     <div class="nav-section">Operaciones</div>
     <div class="nav-item" onclick="showSection('entregas')">
@@ -660,13 +664,14 @@
   <div class="sidebar-footer">
     <div>v1.0 — PRODUCCIÓN</div>
     <div style="margin-top:4px;font-size:11px;font-family:'IBM Plex Mono',monospace" id="estado-conexion">⏳ Conectando...</div>
+    <button id="btn-bloquear" onclick="bloquearSistema()" style="display:none;margin-top:10px;width:100%;background:#dc2626;color:#fff;border:none;padding:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer">🔒 BLOQUEAR</button>
   </div>
 </nav>
 
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="page-title" id="page-title">DASHBOARD</div>
+    <div class="page-title" id="page-title">PLANILLA OPERATIVA</div>
     <div class="topbar-actions">
       <div class="search-bar">
         <span>🔍</span>
@@ -679,72 +684,80 @@
 
   <div class="content">
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD — Vista Operativa -->
     <div class="section active" id="section-dashboard">
-      <div class="stats-grid">
-        <div class="stat-card orange">
-          <div class="stat-label">Entregas Hoy</div>
-          <div class="stat-value">14</div>
-          <div class="stat-sub">3 pendientes de salida</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-label">Completadas</div>
-          <div class="stat-value">9</div>
-          <div class="stat-sub">64% del día</div>
-        </div>
-        <div class="stat-card blue">
-          <div class="stat-label">En Tránsito</div>
-          <div class="stat-value">4</div>
-          <div class="stat-sub">2 camiones en ruta</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-label">Con Demora</div>
-          <div class="stat-value">2</div>
-          <div class="stat-sub">Requieren atención</div>
-        </div>
+
+      <!-- Título estilo planilla -->
+      <div style="background:var(--accent);padding:12px 20px;margin-bottom:0;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:#fff">ENTREGAS FLORIDA NORTE</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#fff;opacity:0.9" id="dash-fecha-hoy"></div>
       </div>
 
-      <div class="two-col">
-        <div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Entregas Recientes</div>
-              <button class="btn btn-secondary btn-sm" onclick="showSection('entregas')">Ver todas</button>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Cliente</th>
-                  <th>Estado</th>
-                  <th>Chofer</th>
-                </tr>
-              </thead>
-              <tbody id="dashboard-entregas">
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Vehículos Activos</div>
-            </div>
-            <div class="p-20" id="dashboard-vehiculos">
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Actividad del Día</div>
-            </div>
-            <div class="timeline" id="dashboard-timeline">
-            </div>
-          </div>
-        </div>
+      <!-- Pestañas HOY / MAÑANA -->
+      <div style="display:flex;border-bottom:2px solid #1a1a2e;background:var(--surface);margin-bottom:12px">
+        <button id="tab-hoy" onclick="switchDashTab('hoy')"
+          style="padding:10px 28px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-bottom:3px solid var(--accent);margin-bottom:-2px;background:var(--surface);color:var(--accent)">
+          📋 HOY
+        </button>
+        <button id="tab-manana" onclick="switchDashTab('manana')"
+          style="padding:10px 28px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;background:var(--surface);color:var(--muted)">
+          📅 MAÑANA
+        </button>
       </div>
 
-      <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
-        <button onclick="resetearDatos()" style="background:none;border:1px solid #333;color:#555;padding:6px 14px;font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;letter-spacing:1px" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='#333';this.style.color='#555'">⚠ Borrar todos los datos</button>
+      <!-- Leyenda de estados -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Estados:</span>
+        <span style="background:#16a34a;color:#fff;padding:3px 10px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;border-radius:20px">ENTREGADO</span>
+        <span style="background:#2563eb;color:#fff;padding:3px 10px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;border-radius:20px">EN TRÁNSITO</span>
+        <span style="background:#f5a623;color:#fff;padding:3px 10px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;border-radius:20px">PENDIENTE</span>
+        <span style="background:#dc2626;color:#fff;padding:3px 10px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;border-radius:20px">NO ENTREGADO</span>
+        <span style="background:#9333ea;color:#fff;padding:3px 10px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;border-radius:20px">REPROGRAMADO</span>
+      </div>
+
+      <!-- Panel HOY -->
+      <div id="panel-hoy">
+        <div id="dashboard-operativo" style="overflow-x:auto"></div>
+      </div>
+
+      <!-- Panel MAÑANA -->
+      <div id="panel-manana" style="display:none">
+        <!-- Subtítulo fecha mañana -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)" id="dash-fecha-manana"></div>
+        </div>
+        <div id="dashboard-operativo-manana" style="overflow-x:auto"></div>
+      </div>
+
+    </div>
+
+    <!-- ENTREGAS VENCIDAS -->
+    <div class="section" id="section-vencidas">
+      <div style="background:#fff3cd;border:1.5px solid #f5a623;border-radius:4px;padding:12px 20px;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">⚠️</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#92400e;letter-spacing:1px">ENTREGAS CON FECHA VENCIDA — pendientes o reprogramadas que superaron su fecha de entrega</span>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📅 Vencidas sin entregar</div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)" id="vencidas-count">—</span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Remito</th>
+                <th>Cliente</th>
+                <th>Origen</th>
+                <th>Dirección</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Días vencida</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-vencidas"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -770,6 +783,7 @@
               <tr>
                 <th>Remito</th>
                 <th>Cliente</th>
+                <th>Origen</th>
                 <th>Dirección</th>
                 <th>Materiales</th>
                 <th>Peso</th>
@@ -792,6 +806,7 @@
         <p class="text-muted mono">Rutas programadas para hoy — <span class="text-accent" id="fecha-hoy"></span></p>
         <div style="display:flex;gap:8px">
           <button class="btn btn-secondary" onclick="descargarRutas()" title="Descargar resumen del día">⬇ Descargar Rutas del Día</button>
+          <button class="btn btn-secondary" onclick="openModal('modal-nueva-ruta-manana')" title="Planificar ruta para mañana">📅 Ruta Mañana</button>
           <button class="btn btn-primary" onclick="openModal('modal-nueva-ruta')">+ Planificar Ruta</button>
         </div>
       </div>
@@ -874,33 +889,9 @@
 
     <!-- REPORTES -->
     <div class="section" id="section-reportes">
-      <div class="three-col" style="margin-bottom:24px">
-        <div class="stat-card orange">
-          <div class="stat-label">Entregas Este Mes</div>
-          <div class="stat-value" id="rep-total-mes">—</div>
-          <div class="stat-sub" id="rep-total-sub"></div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-label">Puntualidad Global</div>
-          <div class="stat-value" id="rep-puntualidad">—</div>
-          <div class="stat-sub" id="rep-puntualidad-sub"></div>
-        </div>
-        <div class="stat-card blue">
-          <div class="stat-label">Paradas Completadas Hoy</div>
-          <div class="stat-value" id="rep-paradas-hoy">—</div>
-          <div class="stat-sub" id="rep-paradas-sub"></div>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Rendimiento por Chofer</div></div>
-          <div class="p-20" id="reporte-choferes"></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">Entregas por Zona</div></div>
-          <div class="p-20" id="reporte-zonas"></div>
-        </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">👷 Rendimiento por Chofer</div></div>
+        <div class="p-20" id="reporte-choferes"></div>
       </div>
 
       <div class="card" style="margin-top:24px">
@@ -908,11 +899,19 @@
           <div class="card-title">⏱ Puntualidad por Chofer — vs. Hora Estimada</div>
           <div style="display:flex;gap:8px;align-items:center">
             <span style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace" id="rep-fecha-reporte"></span>
-            <button class="btn btn-secondary btn-sm" onclick="descargarReporte()" title="Descargar reporte">⬇ Descargar</button>
-            <button class="btn btn-danger btn-sm" onclick="limpiarReporte()" title="Limpiar datos del día">🗑 Limpiar día</button>
+            <button class="btn btn-secondary btn-sm" onclick="descargarReporte()">⬇ Descargar</button>
+            <button class="btn btn-danger btn-sm" onclick="limpiarReporte()">🗑 Limpiar día</button>
           </div>
         </div>
         <div class="p-20" id="reporte-puntualidad"></div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="card-header">
+          <div class="card-title">🏗 Tiempos de Carga por Cargador</div>
+          <span style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace">Registrado al confirmar salida</span>
+        </div>
+        <div class="p-20" id="reporte-carga"></div>
       </div>
     </div>
 
@@ -932,6 +931,15 @@
         <label>Cliente</label>
         <select id="ne-cliente">
           <option value="">Seleccionar cliente...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Origen</label>
+        <select id="ne-origen">
+          <option value="">Seleccionar origen...</option>
+          <option>Local</option>
+          <option>Ventas</option>
+          <option>Expedición</option>
         </select>
       </div>
       <div class="form-group">
@@ -976,7 +984,7 @@
     </div>
 
     <!-- CALCULADORA DE PESOS -->
-    <div style="border-top:1px solid var(--border);padding:16px 20px;">
+    <div style="border-top:1px solid #1a1a2e;padding:16px 20px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent)">🧮 CALCULADORA DE MATERIALES</div>
         <button class="btn btn-secondary btn-sm" onclick="agregarLinea()">+ Agregar material</button>
@@ -992,7 +1000,7 @@
 
       <div id="calc-lineas"></div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid #1a1a2e">
         <div>
           <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">PESO TOTAL CALCULADO</div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);letter-spacing:1px" id="peso-total-display">0 kg</div>
@@ -1007,7 +1015,7 @@
     </div>
 
     <!-- PRODUCTOS LIBRES -->
-    <div style="border-top:1px solid var(--border);padding:14px 20px;">
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--text2)">📦 OTROS PRODUCTOS <span style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:0">(sin peso — baldes, herramientas, accesorios, etc.)</span></div>
         <button class="btn btn-secondary btn-sm" onclick="agregarProductoLibre()">+ Agregar</button>
@@ -1059,19 +1067,19 @@
     </div>
 
     <!-- CHOFER -->
-    <div style="border-top:1px solid var(--border);padding:14px 20px">
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px">
       <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">👷 SELECCIONAR CHOFER</div>
       <div id="nr-lista-choferes" style="display:flex;flex-wrap:wrap;gap:8px"></div>
     </div>
 
     <!-- VEHÍCULO -->
-    <div style="border-top:1px solid var(--border);padding:14px 20px">
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px">
       <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🚛 SELECCIONAR VEHÍCULO</div>
       <div id="nr-lista-vehiculos" style="display:flex;flex-wrap:wrap;gap:8px"></div>
     </div>
 
     <!-- DIRECCIONES DESDE ENTREGAS -->
-    <div style="border-top:1px solid var(--border);padding:14px 20px">
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">📍 PARADAS — SELECCIONAR DE ENTREGAS PENDIENTES</div>
         <div style="font-size:11px;color:var(--muted)">o escribí manualmente abajo</div>
@@ -1080,7 +1088,7 @@
       <div style="margin-top:10px">
         <label style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Agregar parada manual</label>
         <div style="display:flex;gap:8px;margin-top:6px">
-          <input type="text" id="nr-parada-manual" placeholder="Dirección a agregar..." style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-size:13px;outline:none">
+          <input type="text" id="nr-parada-manual" placeholder="Dirección a agregar..." style="flex:1;background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:8px 12px;font-size:13px;outline:none">
           <button class="btn btn-secondary" onclick="agregarParadaManual()">+ Agregar</button>
         </div>
       </div>
@@ -1247,7 +1255,7 @@
     <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
 
       <!-- Info parada -->
-      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px">
+      <div style="background:var(--surface2);border:1px solid #1a1a2e;padding:14px">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">PARADA <span id="modal-ne-num">—</span> DE <span id="modal-ne-total">—</span></div>
         <div style="font-size:14px;font-weight:600" id="modal-ne-parada">—</div>
       </div>
@@ -1277,7 +1285,7 @@
           <div class="motivo-chip" onclick="selMotivo(this, 'Problema con el vehículo')">Problema con vehículo</div>
         </div>
         <input type="text" id="modal-ne-motivo-custom" placeholder="O escribí un motivo personalizado..."
-          style="margin-top:10px;width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-size:13px;outline:none"
+          style="margin-top:10px;width:100%;background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:8px 12px;font-size:13px;outline:none"
           oninput="limpiarChipsMotivo()">
         <input type="hidden" id="modal-ne-motivo-sel">
       </div>
@@ -1312,14 +1320,69 @@
 let data = {};
 
 // ====== NAVIGATION ======
-const TITLES = { dashboard: 'DASHBOARD', entregas: 'GESTIÓN DE ENTREGAS', rutas: 'RUTAS DE ENTREGA', vehiculos: 'VEHÍCULOS', choferes: 'CHOFERES', clientes: 'CLIENTES', reportes: 'REPORTES' };
+const TITLES = { dashboard: 'PLANILLA OPERATIVA', vencidas: 'ENTREGAS VENCIDAS', entregas: 'GESTIÓN DE ENTREGAS', rutas: 'RUTAS DE ENTREGA', vehiculos: 'VEHÍCULOS', choferes: 'CHOFERES', clientes: 'CLIENTES', reportes: 'REPORTES' };
+
+const SECCIONES_PROTEGIDAS = ['entregas', 'rutas', 'vehiculos', 'choferes', 'clientes', 'reportes'];
+const PIN_CORRECTO = '1234'; // ← cambiá este PIN
+let _pinDesbloqueado = false;
 
 function showSection(id) {
+  if (SECCIONES_PROTEGIDAS.includes(id) && !_pinDesbloqueado) {
+    _seccionPendiente = id;
+    abrirModalPin();
+    return;
+  }
+  _mostrarSeccion(id);
+}
+
+let _seccionPendiente = null;
+
+function abrirModalPin() {
+  const m = document.getElementById('modal-pin');
+  m.style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('pin-error').style.display = 'none';
+  setTimeout(() => document.getElementById('pin-input').focus(), 100);
+}
+
+function cerrarModalPin() {
+  document.getElementById('modal-pin').style.display = 'none';
+  _seccionPendiente = null;
+}
+
+function confirmarPin() {
+  const val = document.getElementById('pin-input').value.trim();
+  if (val === PIN_CORRECTO) {
+    _pinDesbloqueado = true;
+    document.getElementById('modal-pin').style.display = 'none';
+    if (_seccionPendiente) { _mostrarSeccion(_seccionPendiente); _seccionPendiente = null; }
+    // Mostrar botón de bloquear en sidebar
+    const lockBtn = document.getElementById('btn-bloquear');
+    if (lockBtn) lockBtn.style.display = '';
+  } else {
+    const err = document.getElementById('pin-error');
+    err.style.display = '';
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-input').focus();
+  }
+}
+
+function bloquearSistema() {
+  _pinDesbloqueado = false;
+  const lockBtn = document.getElementById('btn-bloquear');
+  if (lockBtn) lockBtn.style.display = 'none';
+  showSection('dashboard');
+}
+
+function _mostrarSeccion(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('section-' + id).classList.add('active');
   document.getElementById('page-title').textContent = TITLES[id];
-  event.currentTarget.classList.add('active');
+  // Marcar nav-item activo
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(`'${id}'`)) n.classList.add('active');
+  });
   renderAll();
 }
 
@@ -1335,6 +1398,14 @@ function openModal(id) {
   if (id === 'modal-nueva-ruta') {
     setTimeout(() => populateRutaModal(), 50);
   }
+  if (id === 'modal-nueva-ruta-manana') {
+    setTimeout(() => populateRutaMananaModal(), 50);
+  }
+  if (id === 'modal-nueva-entrega-manana') {
+    // Poblar select de clientes
+    const sel = document.getElementById('nem-cliente');
+    if (sel) sel.innerHTML = '<option value="">Seleccionar cliente...</option>' + data.clientes.map(c => `<option>${c.nombre}</option>`).join('');
+  }
 }
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
@@ -1344,8 +1415,37 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 });
 
 // ====== RENDER ======
+function normalizarData() {
+  // Firebase convierte arrays con huecos a objetos — forzamos arrays limpios
+  ['entregas','vehiculos','choferes','clientes','rutasManana','entregasManana'].forEach(k => {
+    if (data[k] && !Array.isArray(data[k])) data[k] = Object.values(data[k]);
+    else if (!data[k]) data[k] = [];
+  });
+  if (data.rutas && !Array.isArray(data.rutas)) data.rutas = Object.values(data.rutas);
+  else if (!data.rutas) data.rutas = [];
+  data.rutas = data.rutas.map(r => ({
+    ...r,
+    estadosParadas: r.estadosParadas || {},
+    motivosParadas: r.motivosParadas || {},
+    nuevasFechasParadas: r.nuevasFechasParadas || {},
+    paradas: Array.isArray(r.paradas) ? r.paradas : Object.values(r.paradas || {}),
+    entregaIds: Array.isArray(r.entregaIds) ? r.entregaIds : Object.values(r.entregaIds || {}),
+  }));
+  if (data.rutasManana) data.rutasManana = data.rutasManana.map(r => ({
+    ...r,
+    estadosParadas: r.estadosParadas || {},
+    motivosParadas: r.motivosParadas || {},
+    nuevasFechasParadas: r.nuevasFechasParadas || {},
+    paradas: Array.isArray(r.paradas) ? r.paradas : Object.values(r.paradas || {}),
+    entregaIds: Array.isArray(r.entregaIds) ? r.entregaIds : Object.values(r.entregaIds || {}),
+  }));
+}
+
 function renderAll() {
+  normalizarData();
   renderDashboard();
+  renderDashboardManana();
+  renderVencidas();
   renderEntregas();
   renderVehiculos();
   renderChoferes();
@@ -1353,6 +1453,51 @@ function renderAll() {
   renderRutas();
   renderReportes();
 }
+
+function renderVencidas() {
+  const tbody = document.getElementById('tabla-vencidas');
+  const countEl = document.getElementById('vencidas-count');
+  if (!tbody) return;
+  const hoy = new Date().toISOString().slice(0, 10);
+  const vencidas = data.entregas.filter(e =>
+    e.fecha && e.fecha < hoy &&
+    (e.estado === 'pendiente' || e.estado === 'reprogramado' || e.estado === 'transito')
+  ).sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+  if (countEl) countEl.textContent = `${vencidas.length} entrega${vencidas.length !== 1 ? 's' : ''}`;
+  const navBadge = document.getElementById('nav-vencidas-count');
+  if (navBadge) {
+    navBadge.textContent = vencidas.length;
+    navBadge.style.display = vencidas.length > 0 ? '' : 'none';
+  }
+
+  if (vencidas.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px">✓ Sin entregas vencidas</td></tr>`;
+    return;
+  }
+
+  const origenColors = { 'Local': '#16a34a', 'Ventas': '#2563eb', 'Expedición': '#9333ea' };
+  tbody.innerHTML = vencidas.map(e => {
+    const [y, m, d] = e.fecha.split('-');
+    const fechaFmt = `${d}/${m}/${y}`;
+    const diasVenc = Math.floor((new Date(hoy) - new Date(e.fecha)) / 86400000);
+    const gravedad = diasVenc >= 7 ? 'color:#dc2626;font-weight:700' : diasVenc >= 3 ? 'color:#f5a623;font-weight:600' : 'color:#92400e';
+    const origenBadge = e.origen
+      ? `<span style="display:inline-block;background:${origenColors[e.origen]||'var(--muted)'};color:#fff;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;border-radius:20px">${e.origen.toUpperCase()}</span>`
+      : '—';
+    return `<tr style="background:rgba(220,38,38,0.03)">
+      <td class="mono" style="color:var(--accent);font-weight:700">${e.id}</td>
+      <td><strong>${e.cliente}</strong></td>
+      <td>${origenBadge}</td>
+      <td style="font-size:12px">${e.direccion}</td>
+      <td class="mono" style="color:#dc2626;font-weight:600">${fechaFmt} ⚠️</td>
+      <td>${estadoPill(e.estado)}</td>
+      <td class="mono" style="${gravedad}">${diasVenc} día${diasVenc !== 1 ? 's' : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+
 
 function estadoPill(e) {
   const map = {
@@ -1374,48 +1519,234 @@ function estadoPill(e) {
   return `<span class="pill ${map[e] || 'pill-pendiente'}">${labels[e] || e}</span>`;
 }
 
+// ── Tab switcher ──────────────────────────────────────────────
+let dashTab = 'hoy';
+function switchDashTab(tab) {
+  dashTab = tab;
+  document.getElementById('panel-hoy').style.display    = tab === 'hoy'    ? '' : 'none';
+  document.getElementById('panel-manana').style.display = tab === 'manana' ? '' : 'none';
+  const btnHoy    = document.getElementById('tab-hoy');
+  const btnManana = document.getElementById('tab-manana');
+  if (btnHoy) {
+    btnHoy.style.borderBottomColor = tab === 'hoy' ? 'var(--accent)' : 'transparent';
+    btnHoy.style.color             = tab === 'hoy' ? 'var(--accent)' : 'var(--muted)';
+  }
+  if (btnManana) {
+    btnManana.style.borderBottomColor = tab === 'manana' ? 'var(--accent)' : 'transparent';
+    btnManana.style.color             = tab === 'manana' ? 'var(--accent)' : 'var(--muted)';
+  }
+  if (tab === 'manana') renderDashboardManana();
+}
+
+// ── Shared table builder ───────────────────────────────────────
+function buildOperativoHTML(rutas, entregas) {
+  function estadoChip(estado) {
+    const cfg = {
+      pendiente:      { bg: '#f5a623', label: 'PENDIENTE' },
+      transito:       { bg: '#2563eb', label: 'EN VIAJE' },
+      entregado:      { bg: '#16a34a', label: 'ENTREGADO' },
+      cancelado:      { bg: '#6b7280', label: 'CANCELADO' },
+      'no-entregado': { bg: '#dc2626', label: 'NO ENTREGADO' },
+      reprogramado:   { bg: '#9333ea', label: 'REPROGRAMADO' },
+    };
+    const c = cfg[estado] || cfg.pendiente;
+    return `<span style="display:inline-block;background:${c.bg};color:#fff;padding:2px 7px;font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:700;letter-spacing:0.5px;white-space:nowrap;border-radius:20px">${c.label}</span>`;
+  }
+
+  if (!rutas || rutas.length === 0) {
+    return `<div style="text-align:center;padding:40px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px">
+      SIN RUTAS PLANIFICADAS<br><span style="font-size:10px;opacity:0.6">Cargá rutas desde la sección Rutas</span></div>`;
+  }
+
+  // Agrupar por chofer (misma columna)
+  const choferesOrden = [];
+  const porChofer = {};
+  rutas.forEach((r) => {
+    const key = r.chofer || 'Sin chofer';
+    if (!porChofer[key]) { porChofer[key] = { rutas: [], vehiculo: r.vehiculo }; choferesOrden.push(key); }
+    porChofer[key].rutas.push(r);
+  });
+
+  const cols = choferesOrden.map(chofer => {
+    const grupo = porChofer[chofer];
+    const tonelaje = getTonelajeVehiculo(grupo.vehiculo);
+    const header = `${grupo.vehiculo || 'SIN VEH.'} (${chofer}) (${tonelaje} TN)`;
+    const hasActivity = grupo.rutas.some(r => r.progreso > 0 || r.horario);
+    const rows = [];
+    grupo.rutas.forEach((r, viajeIdx) => {
+      rows.push({ type: 'viaje-header', label: `VIAJE ${viajeIdx + 1}`, ruta: r });
+      r.paradas.forEach((parada, pi) => {
+        const estadoParada = r.estadosParadas && r.estadosParadas[pi];
+        let estadoFinal;
+        if (estadoParada === 'entregado' || estadoParada === 'no-entregado' || estadoParada === 'reprogramado') estadoFinal = estadoParada;
+        else if (pi < r.progreso) estadoFinal = 'entregado';
+        else if (r.horario) estadoFinal = 'transito';
+        else estadoFinal = 'pendiente';
+        const idEntrega = r.entregaIds && r.entregaIds[pi];
+        const entrega = idEntrega ? entregas.find(e => e.id === idEntrega) : null;
+        const cliente = entrega ? entrega.cliente : '';
+        rows.push({ type: 'parada', parada, cliente, orden: pi + 1, estado: estadoFinal });
+      });
+      rows.push({ type: 'spacer' });
+      rows.push({ type: 'spacer' });
+    });
+    return { header, rows, hasActivity };
+  });
+
+  const maxRows = Math.max(...cols.map(c => c.rows.length), 1);
+  let html = `<table style="border-collapse:collapse;table-layout:auto;font-size:10px">`;
+
+  // THEAD
+  html += `<tr>`;
+  html += `<th style="width:20px;background:#e8edf2;border:1.5px solid #1a1a2e;padding:4px 3px;font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;text-align:center">HS</th>`;
+  cols.forEach(col => {
+    const bg = '#1e3a5f';
+    const color = '#fff';
+    html += `<th colspan="2" style="background:${bg};border:1.5px solid #1a1a2e;padding:5px 7px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.5px;color:${color};text-transform:uppercase;text-align:center;font-weight:700;max-width:160px">${col.header}</th>`;
+  });
+  html += `</tr>`;
+
+  // TBODY
+  for (let fi = 0; fi < maxRows; fi++) {
+    const rowItems = cols.map(c => c.rows[fi] || { type: 'empty' });
+    if (rowItems.every(r => r.type === 'empty')) continue;
+
+    if (rowItems.every(r => r.type === 'spacer' || r.type === 'empty')) {
+      html += `<tr style="height:4px;background:#f0f2f5"><td style="border:1.5px solid #1a1a2e;background:#f0f2f5"></td>`;
+      rowItems.forEach(() => { html += `<td style="border:1.5px solid #1a1a2e;background:#f0f2f5"></td><td style="border:1.5px solid #1a1a2e;background:#f0f2f5"></td>`; });
+      html += `</tr>`;
+      continue;
+    }
+
+    // Viaje header row
+    if (rowItems.some(r => r.type === 'viaje-header')) {
+      html += `<tr style="background:#dde6f0">`;
+      html += `<td style="border:1.5px solid #1a1a2e;background:#c8d8ec"></td>`;
+      rowItems.forEach(item => {
+        if (item.type === 'viaje-header') {
+          const rutaHorario = item.ruta && item.ruta.horario ? ` · Salida ${item.ruta.horario} hs` : '';
+          html += `<td colspan="2" style="border:1.5px solid #1a1a2e;padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;color:#0f2744;text-transform:uppercase;background:#c8d8ec">${item.label}${rutaHorario}</td>`;
+        } else if (item.type === 'parada') {
+          const dirDisplay = item.parada || '—';
+          const clienteDisplay = item.cliente ? `<div style="font-size:8px;color:var(--muted)">${item.cliente}</div>` : '';
+          html += `<td style="border:1.5px solid #1a1a2e;padding:3px 6px;background:#fff;min-width:90px;max-width:130px;word-break:break-word;font-size:10px">${dirDisplay}${clienteDisplay}</td>`;
+          html += `<td style="border:1.5px solid #1a1a2e;padding:3px 4px;background:#fff;white-space:nowrap;width:1px">${estadoChip(item.estado)}</td>`;
+        } else {
+          html += `<td style="border:1.5px solid #1a1a2e;background:#eef2f7"></td><td style="border:1.5px solid #1a1a2e;background:#eef2f7"></td>`;
+        }
+      });
+      html += `</tr>`;
+      continue;
+    }
+
+    // Parada normal
+    const primerParada = rowItems.find(r => r.type === 'parada');
+    html += `<tr>`;
+    html += `<td style="border:1.5px solid #1a1a2e;padding:3px 4px;font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--muted);text-align:center;background:#e8edf2">${primerParada ? primerParada.orden : ''}</td>`;
+    rowItems.forEach(item => {
+      if (item.type === 'parada') {
+        const dirDisplay = item.parada || '—';
+        const clienteDisplay = item.cliente ? `<div style="font-size:8px;color:var(--muted);margin-top:1px">${item.cliente}</div>` : '';
+        html += `<td style="border:1.5px solid #1a1a2e;padding:4px 6px;font-size:10px;font-weight:500;color:var(--text);background:#fff;min-width:90px;max-width:130px;word-break:break-word">${dirDisplay}${clienteDisplay}</td>`;
+        html += `<td style="border:1.5px solid #1a1a2e;padding:3px 4px;background:#fff;white-space:nowrap;width:1px">${estadoChip(item.estado)}</td>`;
+      } else {
+        html += `<td style="border:1.5px solid #1a1a2e;background:#fafafa"></td><td style="border:1.5px solid #1a1a2e;background:#fafafa"></td>`;
+      }
+    });
+    html += `</tr>`;
+  }
+
+  html += `</table>`;
+  return html;
+}
+
 function renderDashboard() {
-  const tbody = document.getElementById('dashboard-entregas');
+  const hoy = new Date();
+  const fechaEl = document.getElementById('dash-fecha-hoy');
+  if (fechaEl) fechaEl.textContent = hoy.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+
+  const manana = new Date(hoy); manana.setDate(manana.getDate() + 1);
+  const fechaMananaEl = document.getElementById('dash-fecha-manana');
+  if (fechaMananaEl) fechaMananaEl.textContent = '📅 ' + manana.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+
+  const el = document.getElementById('dashboard-operativo');
+  if (el) el.innerHTML = buildOperativoHTML(data.rutas, data.entregas);
+}
+
+function renderDashboardManana() {
+  const manana = new Date(); manana.setDate(manana.getDate() + 1);
+  const fechaMananaStr = manana.toISOString().slice(0, 10);
+
+  const fechaMananaEl = document.getElementById('dash-fecha-manana');
+  if (fechaMananaEl) fechaMananaEl.textContent = '📅 ' + manana.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+
+  // Rutas de mañana
+  const rutasManana = (data.rutasManana || []);
+
+  // Entregas asignadas a rutas de mañana (igual que HOY usa data.entregas)
+  // Colectamos todos los entregaIds de las rutas de mañana
+  const idsEnRutaManana = new Set();
+  rutasManana.forEach(r => { (r.entregaIds || []).forEach(id => idsEnRutaManana.add(id)); });
+  // También incluimos las que tienen paradas manuales (sin id en data.entregas)
+  // Para la tabla: mostramos data.entregas que estén en rutas de mañana
+  const entregasEnRutaManana = data.entregas.filter(e => idsEnRutaManana.has(e.id));
+
+  const el = document.getElementById('dashboard-operativo-manana');
+  if (el) el.innerHTML = buildOperativoHTML(rutasManana, data.entregas);
+
+  // Tabla de entregas de mañana — misma estructura que la tabla de HOY
+  const tbody = document.getElementById('tabla-entregas-manana');
   if (!tbody) return;
-  tbody.innerHTML = data.entregas.slice(0, 5).map(e => `
-    <tr>
+
+  if (entregasEnRutaManana.length === 0 && rutasManana.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);font-size:12px">No hay rutas ni entregas planificadas para mañana.</td></tr>`;
+    return;
+  }
+
+  // Si hay rutas pero las paradas son manuales (sin match en data.entregas), mostrar igual
+  if (entregasEnRutaManana.length === 0 && rutasManana.length > 0) {
+    // Armar filas desde las paradas directamente
+    const filas = [];
+    rutasManana.forEach(r => {
+      r.paradas.forEach((parada, pi) => {
+        const idEntrega = r.entregaIds && r.entregaIds[pi];
+        const entrega = idEntrega ? data.entregas.find(e => e.id === idEntrega) : null;
+        if (!entrega) {
+          filas.push(`<tr>
+            <td class="mono" style="color:var(--muted)">—</td>
+            <td style="color:var(--muted);font-size:12px">Manual</td>
+            <td style="font-size:12px">${parada}</td>
+            <td>—</td><td>—</td><td style="font-size:12px">${r.turno}</td>
+            <td>${estadoPill('pendiente')}</td>
+          </tr>`);
+        }
+      });
+    });
+    tbody.innerHTML = filas.join('') || `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);font-size:12px">No hay entregas cargadas para mañana.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = entregasEnRutaManana.map(e => {
+    // Buscar chofer y vehículo desde la ruta de mañana que contiene esta entrega
+    const rutaAsignada = rutasManana.find(r => (r.entregaIds || []).includes(e.id));
+    const choferVeh = rutaAsignada ? `<div style="font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:2px">${rutaAsignada.chofer} · ${rutaAsignada.vehiculo}</div>` : '';
+    return `<tr>
       <td class="mono" style="color:var(--accent)">${e.id}</td>
-      <td>${e.cliente}</td>
+      <td><strong>${e.cliente}</strong>${choferVeh}</td>
+      <td style="font-size:12px">${e.direccion}<br><span style="color:var(--muted);font-size:11px">${e.zona}</span></td>
+      <td style="font-size:11px;color:var(--text2);max-width:160px">${e.materiales}</td>
+      <td class="mono" style="color:var(--green)">${e.peso ? e.peso.toLocaleString('es-AR',{maximumFractionDigits:0})+' kg' : '—'}</td>
+      <td style="font-size:12px">${e.turno}</td>
       <td>${estadoPill(e.estado)}</td>
-      <td>${e.chofer}</td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
+}
 
-  const dv = document.getElementById('dashboard-vehiculos');
-  if (dv) dv.innerHTML = data.vehiculos.map(v => {
-    const color = v.estado === 'En ruta' ? 'var(--blue)' : v.estado === 'Disponible' ? 'var(--green)' : 'var(--red)';
-    return `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div>
-        <div style="font-weight:600;font-size:13px">${v.patente} <span style="color:var(--muted);font-size:12px">— ${v.tipo}</span></div>
-        <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:2px">${v.chofer}</div>
-      </div>
-      <span class="pill" style="background:rgba(0,0,0,0.3);color:${color};border:1px solid ${color}40">${v.estado}</span>
-    </div>
-  `}).join('');
-
-  const dt = document.getElementById('dashboard-timeline');
-  const events = [
-    { time: '08:15', text: 'Salida REM-0047 — Carlos Méndez', done: true },
-    { time: '09:30', text: 'Entrega completada en Belgrano 1240', done: true },
-    { time: '10:45', text: 'Salida REM-0048 — Roberto Díaz', done: true },
-    { time: '12:00', text: 'REM-0048 en tránsito — zona norte', active: true },
-    { time: '14:00', text: 'Salida REM-0049 programada', done: false },
-  ];
-  if (dt) dt.innerHTML = events.map(e => `
-    <div class="timeline-item">
-      <div class="timeline-dot ${e.done ? 'done' : e.active ? 'active' : ''}">${e.done ? '✓' : e.active ? '●' : '○'}</div>
-      <div class="timeline-content">
-        <div class="timeline-title">${e.text}</div>
-        <div class="timeline-time">${e.time} hs</div>
-      </div>
-    </div>
-  `).join('');
+function eliminarEntregaManana(i) {
+  if (!confirm('¿Eliminar esta entrega de mañana?')) return;
+  data.entregasManana.splice(i, 1);
+  guardarFirebase();
+  renderAll();
 }
 
 function renderEntregas(filtro = 'all') {
@@ -1448,7 +1779,7 @@ function renderEntregas(filtro = 'all') {
       ? `<button title="Remito confirmado" onclick="toggleRemito(${realIndex})"
            style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:var(--green);cursor:pointer;padding:5px 10px;font-size:14px;transition:all .15s" >✓</button>`
       : `<button title="Marcar remito recibido" onclick="toggleRemito(${realIndex})"
-           style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:5px 10px;font-size:14px;transition:all .15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">○</button>`;
+           style="background:var(--surface2);border:1px solid #1a1a2e;color:var(--muted);cursor:pointer;padding:5px 10px;font-size:14px;transition:all .15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='#1a1a2e';this.style.color='var(--muted)'">○</button>`;
 
     const deleteBtn = `<button title="Eliminar entrega" onclick="eliminarEntrega(${realIndex})"
          style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:var(--red);cursor:pointer;padding:5px 10px;font-size:13px;transition:all .15s" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.08)'">✕</button>`;
@@ -1458,10 +1789,16 @@ function renderEntregas(filtro = 'all') {
     if (e.estado === 'no-entregado') rowBg = 'background:rgba(249,115,22,0.04)';
     if (e.estado === 'reprogramado') rowBg = 'background:rgba(168,85,247,0.04)';
 
+    const origenColors = { 'Local': '#16a34a', 'Ventas': '#2563eb', 'Expedición': '#9333ea' };
+    const origenBadge = e.origen
+      ? `<span style="display:inline-block;background:${origenColors[e.origen]||'var(--muted)'};color:#fff;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.5px">${e.origen.toUpperCase()}</span>`
+      : '<span style="color:var(--muted);font-size:11px">—</span>';
+
     return `
     <tr style="${rowBg}">
       <td class="mono" style="color:var(--accent)">${e.id}<br>${remitoBadge}</td>
       <td><strong>${e.cliente}</strong></td>
+      <td>${origenBadge}</td>
       <td style="font-size:12px;max-width:150px">${e.direccion}<br><span style="color:var(--muted)">${e.zona}</span></td>
       <td style="font-size:12px;max-width:180px;color:var(--text2)">${e.materiales}</td>
       <td class="mono" style="color:var(--green);font-weight:600;white-space:nowrap">${e.peso ? e.peso.toLocaleString('es-AR',{maximumFractionDigits:0})+' kg' : '—'}</td>
@@ -1638,9 +1975,12 @@ function renderRutas() {
     const tonelaje = getTonelajeVehiculo(r.vehiculo);
     const estimada = r.horario ? calcularEstimada(r.horario, r.zona, tonelaje, r.paradas.length) : null;
 
+    const cargadorBadge = r.cargador
+      ? `<span style="display:inline-block;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.5);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;padding:2px 8px;margin-left:8px;letter-spacing:1px">${r.cargador}</span>`
+      : '';
     const horarioBadge = r.horario
-      ? `<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="editarHorario(${ri})" title="Click para editar">🕐 Salida ${r.horario} hs ✏️</span>`
-      : `<span style="color:var(--muted);cursor:pointer;border:1px dashed var(--muted);padding:2px 8px;font-size:11px" onclick="editarHorario(${ri})">+ Registrar salida</span>`;
+      ? `<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="editarHorario(${ri})" title="Click para editar">🕐 Salida ${r.horario} hs ✏️</span>${cargadorBadge}`
+      : `<button onclick="editarHorario(${ri})" style="background:none;color:var(--muted);cursor:pointer;border:1px dashed var(--muted);padding:3px 10px;font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px">+ Registrar salida</button>`;
 
     const estimadaBadge = estimada
       ? `<span style="color:var(--blue);font-size:11px;font-family:'IBM Plex Mono',monospace">⏱ Est. regreso: <strong>${estimada} hs</strong></span>`
@@ -1741,7 +2081,7 @@ function renderRutas() {
             <span style="color:var(--accent)">${todasProcesadas ? '✓ COMPLETADA' : ''}</span>
           </div>
           <div class="route-stops" style="margin-bottom:8px">${dots}</div>
-          <div style="background:var(--surface);border:1px solid var(--border);padding:8px 12px">${paradasDetalle}</div>
+          <div style="background:var(--surface);border:1px solid #1a1a2e;padding:8px 12px">${paradasDetalle}</div>
         </div>
       </div>
     </div>
@@ -1868,12 +2208,71 @@ function confirmarNoEntregado() {
   showSuccessToast(msg);
 }
 
+function actualizarTiempoCarga() {
+  const elLlegada = document.getElementById('modal-salida-llegada-ant');
+  const elSalida  = document.getElementById('modal-salida-hora');
+  const res       = document.getElementById('modal-carga-resultado');
+  const val       = document.getElementById('modal-carga-valor');
+  const det       = document.getElementById('modal-carga-detalle');
+  if (!elLlegada || !elSalida) return;
+  const llegada = elLlegada.value;
+  const salida  = elSalida.value;
+  if (!llegada || !salida) { if (res) res.style.display = 'none'; return; }
+  const [lh, lm] = llegada.split(':').map(Number);
+  const [sh, sm] = salida.split(':').map(Number);
+  let diff = (sh * 60 + sm) - (lh * 60 + lm);
+  if (diff < 0) diff += 1440; // cruzó medianoche
+  const horas = Math.floor(diff / 60);
+  const mins  = diff % 60;
+  const label = horas > 0 ? `${horas}h ${mins}min` : `${mins} min`;
+  if (res) res.style.display = '';
+  if (val) val.textContent = label;
+  if (det) det.textContent = `Llegada ${llegada} hs → Salida ${salida} hs`;
+}
+
+let _cargadorSel = '';
+
+function selCargador(val, btn) {
+  _cargadorSel = val;
+  document.querySelectorAll('.cargador-btn').forEach(b => {
+    b.style.borderColor = '#1a1a2e';
+    b.style.background = 'var(--surface2)';
+    b.style.color = 'var(--muted)';
+  });
+  btn.style.borderColor = 'var(--accent)';
+  btn.style.background = 'rgba(245,166,35,0.15)';
+  btn.style.color = 'var(--accent)';
+}
+
 function editarHorario(ri) {
+  // Normalizar data.rutas por si Firebase devolvió objeto con huecos
+  if (!Array.isArray(data.rutas)) {
+    data.rutas = Object.values(data.rutas);
+  }
+  // ri viene del .map() local — buscar por posición real en el array actual
   const ruta = data.rutas[ri];
+  if (!ruta) {
+    alert('No se encontró la ruta. Recargá la página.');
+    return;
+  }
+  const elModal = document.getElementById('modal-salida');
+  if (!elModal) { alert('Modal no encontrado'); return; }
   document.getElementById('modal-salida-ri').value = ri;
   document.getElementById('modal-salida-hora').value = ruta.horario || '';
+  const elLlegada = document.getElementById('modal-salida-llegada-ant');
+  if (elLlegada) elLlegada.value = ruta.llegadaAnterior || '';
+  const elRes = document.getElementById('modal-carga-resultado');
+  if (elRes) elRes.style.display = 'none';
+  _cargadorSel = ruta.cargador || '';
+  document.querySelectorAll('.cargador-btn').forEach(b => {
+    const active = b.textContent.trim() === _cargadorSel;
+    b.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+    b.style.background  = active ? 'rgba(245,166,35,0.15)' : 'var(--surface2)';
+    b.style.color       = active ? 'var(--accent)' : 'var(--muted)';
+  });
   actualizarEstimadaModal();
-  document.getElementById('modal-salida').classList.add('open');
+  elModal.classList.add('open');
+  elModal.style.display = 'flex';
 }
 
 function actualizarEstimadaModal() {
@@ -1901,8 +2300,19 @@ function confirmarSalida() {
   if (!hora) { alert('Ingresá la hora de salida'); return; }
   const ruta = data.rutas[ri];
   const tonelaje = getTonelajeVehiculo(ruta.vehiculo);
-  ruta.horario = hora;
+  ruta.horario  = hora;
   ruta.estimada = calcularEstimada(hora, ruta.zona, tonelaje, ruta.paradas.length);
+  if (_cargadorSel) ruta.cargador = _cargadorSel;
+  // Tiempo de carga
+  const llegadaAnt = document.getElementById('modal-salida-llegada-ant').value.trim();
+  if (llegadaAnt) {
+    ruta.llegadaAnterior = llegadaAnt;
+    const [lh, lm] = llegadaAnt.split(':').map(Number);
+    const [sh, sm] = hora.split(':').map(Number);
+    let diff = (sh * 60 + sm) - (lh * 60 + lm);
+    if (diff < 0) diff += 1440;
+    ruta.tiempoCargaMin = diff;
+  }
 
   let transitoCount = 0;
   if (ruta.entregaIds && ruta.entregaIds.length > 0) {
@@ -1915,7 +2325,9 @@ function confirmarSalida() {
     });
   }
 
-  document.getElementById('modal-salida').classList.remove('open');
+  const elModalSalida = document.getElementById('modal-salida');
+  elModalSalida.classList.remove('open');
+  elModalSalida.style.display = '';
   renderAll();
   showSuccessToast(`🚛 Salida ${hora} hs · ${transitoCount} pedido${transitoCount !== 1 ? 's' : ''} en tránsito`);
 }
@@ -1964,67 +2376,40 @@ function eliminarRuta(i) {
 }
 
 function renderReportes() {
-  const totalMes = data.entregas.filter(e => e.estado === 'entregado').length;
-  const elTM = document.getElementById('rep-total-mes');
-  const elTS = document.getElementById('rep-total-sub');
-  if (elTM) elTM.textContent = totalMes;
-  if (elTS) elTS.textContent = `de ${data.entregas.length} registradas`;
-
-  let puntualTotal = 0, puntualOk = 0;
-  data.rutas.forEach(r => {
-    if (!r.horario || !r.llegadas) return;
-    const tonelaje = getTonelajeVehiculo(r.vehiculo);
-    Object.entries(r.llegadas).forEach(([piStr, llegadaReal]) => {
-      const pi = parseInt(piStr);
-      const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
-      if (!est || !llegadaReal) return;
-      puntualTotal++;
-      const [eh, em] = est.split(':').map(Number);
-      const [rh, rm] = llegadaReal.split(':').map(Number);
-      if (rh * 60 + rm <= eh * 60 + em + 10) puntualOk++;
-    });
-  });
-  const pctPuntual = puntualTotal > 0 ? Math.round((puntualOk / puntualTotal) * 100) : null;
-  const elPP = document.getElementById('rep-puntualidad');
-  const elPS = document.getElementById('rep-puntualidad-sub');
-  if (elPP) elPP.textContent = pctPuntual !== null ? pctPuntual + '%' : '—';
-  if (elPS) elPS.textContent = pctPuntual !== null ? `${puntualOk} de ${puntualTotal} paradas a tiempo (±10 min)` : 'Sin datos suficientes';
-
-  const totalParadas = data.rutas.reduce((a, r) => a + r.paradas.length, 0);
-  const completadas = data.rutas.reduce((a, r) => a + r.progreso, 0);
-  const elPH = document.getElementById('rep-paradas-hoy');
-  const elPHS = document.getElementById('rep-paradas-sub');
-  if (elPH) elPH.textContent = completadas;
-  if (elPHS) elPHS.textContent = `de ${totalParadas} total en rutas activas`;
+  normalizarData();
+  const repFecha2 = document.getElementById('rep-fecha-reporte');
+  if (repFecha2) repFecha2.textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
   const rc = document.getElementById('reporte-choferes');
-  if (rc) rc.innerHTML = data.choferes.map(c => {
-    const total = c.entregasHoy;
-    const pct = Math.min((total / 6) * 100, 100);
-    return `
-    <div style="margin-bottom:16px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-        <span style="font-size:13px">${c.nombre}</span>
-        <span class="mono" style="color:var(--accent)">${total} entregas</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    </div>
-  `}).join('');
+  if (rc) {
+    const porChofer = {};
+    data.rutas.forEach(r => {
+      if (!r.chofer || r.chofer === '-') return;
+      if (!porChofer[r.chofer]) porChofer[r.chofer] = 0;
+      const estados = r.estadosParadas || {};
+      const progreso = r.progreso || 0;
+      (r.paradas || []).forEach((p, pi) => {
+        const est = estados[String(pi)] || estados[pi];
+        if (est === 'entregado') { porChofer[r.chofer]++; }
+        else if (!est && pi < progreso) { porChofer[r.chofer]++; }
+      });
+    });
 
-  const rz = document.getElementById('reporte-zonas');
-  const zonas = {};
-  data.entregas.forEach(e => { zonas[e.zona] = (zonas[e.zona] || 0) + 1; });
-  if (rz) rz.innerHTML = Object.entries(zonas).map(([zona, cant]) => {
-    const pct = (cant / data.entregas.length) * 100;
-    return `
-    <div style="margin-bottom:16px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-        <span style="font-size:13px">${zona}</span>
-        <span class="mono" style="color:var(--blue)">${cant} entregas</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--blue)"></div></div>
-    </div>
-  `}).join('');
+    const maxVal = Math.max(...Object.values(porChofer), 1);
+    rc.innerHTML = Object.keys(porChofer).length === 0
+      ? '<div style="color:var(--muted);font-size:12px;font-family:\'IBM Plex Mono\',monospace;padding:8px">Sin entregas completadas hoy.</div>'
+      : Object.entries(porChofer).map(([nombre, cant]) => {
+          const pct = Math.round((cant / maxVal) * 100);
+          return `
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:13px">${nombre}</span>
+              <span class="mono" style="color:var(--accent)">${cant} entregas</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          </div>`;
+        }).join('');
+  }
 
   const rp = document.getElementById('reporte-puntualidad');
   const repFecha = document.getElementById('rep-fecha-reporte');
@@ -2097,7 +2482,7 @@ function renderReportes() {
     }).join('');
 
     return `
-    <div style="margin-bottom:20px;background:var(--surface2);border:1px solid var(--border);padding:16px">
+    <div style="margin-bottom:20px;background:var(--surface2);border:1px solid #1a1a2e;padding:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <div>
           <div style="font-weight:600;font-size:14px">👷 ${chofer}</div>
@@ -2117,7 +2502,7 @@ function renderReportes() {
       <div style="overflow-x:auto">
         <table style="width:100%;border-collapse:collapse">
           <thead>
-            <tr style="border-bottom:1px solid var(--border)">
+            <tr style="border-bottom:1px solid #1a1a2e">
               <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Fecha</th>
               <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Ruta</th>
               <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Parada</th>
@@ -2131,6 +2516,61 @@ function renderReportes() {
       </div>` : ''}
     </div>`;
   }).join('');
+
+  // ── Tiempos de carga por cargador ──────────────────────────
+  const rc2 = document.getElementById('reporte-carga');
+  if (!rc2) return;
+
+  const rutasConCarga = data.rutas.filter(r => r.cargador && r.tiempoCargaMin != null);
+  if (rutasConCarga.length === 0) {
+    rc2.innerHTML = `<div style="color:var(--muted);font-size:12px;font-family:'IBM Plex Mono',monospace;padding:8px">
+      Sin registros aún. Los tiempos se cargan al confirmar la salida con hora de llegada anterior.</div>`;
+    return;
+  }
+
+  // Agrupar por cargador
+  const porCargador = {};
+  rutasConCarga.forEach(r => {
+    if (!porCargador[r.cargador]) porCargador[r.cargador] = [];
+    porCargador[r.cargador].push(r);
+  });
+
+  rc2.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="border-bottom:2px solid #1a1a2e">
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Cargador</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Ruta</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Chofer</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Vehículo</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Llegada ant.</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Salida</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Tiempo de carga</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rutasConCarga.map(r => {
+          const mins = r.tiempoCargaMin;
+          const h = Math.floor(mins / 60), m = mins % 60;
+          const label = h > 0 ? `${h}h ${m}min` : `${m} min`;
+          const color = mins <= 30 ? 'var(--green)' : mins <= 60 ? 'var(--accent)' : 'var(--red)';
+          return `<tr style="border-bottom:1px solid #1a1a2e">
+            <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--accent)">${r.cargador}</td>
+            <td style="padding:8px 10px">${r.nombre}</td>
+            <td style="padding:8px 10px">${r.chofer}</td>
+            <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace">${r.vehiculo}</td>
+            <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace">${r.llegadaAnterior} hs</td>
+            <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace">${r.horario} hs</td>
+            <td style="padding:8px 10px;font-family:'Bebas Neue',sans-serif;font-size:20px;color:${color};letter-spacing:1px">${label}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div style="margin-top:12px;display:flex;gap:20px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)">
+      <span style="color:var(--green)">● ≤ 30 min — Rápido</span>
+      <span style="color:var(--accent)">● 31–60 min — Normal</span>
+      <span style="color:var(--red)">● &gt; 60 min — Lento</span>
+    </div>`;
 }
 
 function descargarRutas() {
@@ -2369,7 +2809,7 @@ function populateRutaModal() {
     return `
     <div class="selcard" id="chofer-card-${c.nombre.replace(/\s/g,'_')}"
       onclick="selChofer('${c.nombre.replace(/'/g,"\\'")}', this)"
-      style="background:var(--surface2);border:1px solid var(--border);padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
+      style="background:var(--surface2);border:1px solid #1a1a2e;padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
       <div style="font-weight:600;font-size:13px">${c.nombre}</div>
       <div style="font-size:11px;color:${dispColor};font-family:'IBM Plex Mono',monospace;margin-top:2px">${c.disp} · ${c.entregasHoy} entregas hoy</div>
     </div>`;
@@ -2381,7 +2821,7 @@ function populateRutaModal() {
     return `
     <div class="selcard" id="vehiculo-card-${v.patente.replace(/\s/g,'_')}"
       onclick="selVehiculo('${v.patente}', this)"
-      style="background:var(--surface2);border:1px solid var(--border);padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
+      style="background:var(--surface2);border:1px solid #1a1a2e;padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
       <div style="font-weight:600;font-size:13px;font-family:'IBM Plex Mono',monospace">${v.patente}</div>
       <div style="font-size:11px;color:var(--muted);margin-top:2px">${v.tipo} ${v.modelo}</div>
       <div style="font-size:11px;color:${dispColor};font-family:'IBM Plex Mono',monospace;margin-top:2px">${v.estado} · ${(v.capacidad/1000).toFixed(1)}t</div>
@@ -2391,17 +2831,21 @@ function populateRutaModal() {
   const ld = document.getElementById('nr-lista-direcciones');
   const pendientes = data.entregas.filter(e => e.estado === 'pendiente' || e.estado === 'reprogramado');
   if (ld) ld.innerHTML = pendientes.length > 0
-    ? pendientes.map(e => `
+    ? pendientes.map(e => {
+        const hoy = new Date().toISOString().slice(0,10);
+        const fechaFmt = e.fecha ? (() => { const [y,m,d] = e.fecha.split('-'); return `${d}/${m}`; })() : '';
+        const esFutura = e.fecha && e.fecha > hoy;
+        const fechaBadge = e.fecha ? `<span style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:${esFutura ? 'var(--blue)' : 'var(--muted)'};margin-left:6px">${esFutura ? '📅 ' : ''}${fechaFmt}</span>` : '';
+        return `
       <div onclick="toggleParada('${e.id}', '${e.direccion.replace(/'/g,"\\'")}', '${e.cliente.replace(/'/g,"\\'")}', '${e.zona}', this)"
         id="dir-card-${e.id}"
-        style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid var(--border);padding:8px 12px;cursor:pointer;transition:all 0.15s">
+        style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid #1a1a2e;padding:8px 12px;cursor:pointer;transition:all 0.15s">
         <div>
-          <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span> ${e.estado === 'reprogramado' ? '<span style="color:var(--purple);font-size:10px;font-family:\'IBM Plex Mono\',monospace">REPROG.</span>' : ''}</div>
+          <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span> ${e.estado === 'reprogramado' ? '<span style="color:var(--purple);font-size:10px;font-family:\'IBM Plex Mono\',monospace">REPROG.</span>' : ''}${fechaBadge}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? e.peso.toLocaleString('es-AR')+' kg' : '—'}</div>
         </div>
-        <div style="font-size:18px;color:var(--border)" id="dir-check-${e.id}">○</div>
-      </div>`)
-    .join('')
+        <div style="font-size:18px;color:#aab0bb" id="dir-check-${e.id}">○</div>
+      </div>`}).join('')
     : '<div style="color:var(--muted);font-size:12px;padding:8px">No hay entregas pendientes cargadas.</div>';
 
   renderParadasSeleccionadas();
@@ -2410,7 +2854,7 @@ function populateRutaModal() {
 function selChofer(nombre, el) {
   rutaChoferSel = nombre;
   document.querySelectorAll('#nr-lista-choferes .selcard').forEach(c => {
-    c.style.borderColor = 'var(--border)';
+    c.style.borderColor = '#1a1a2e';
     c.style.background = 'var(--surface2)';
   });
   el.style.borderColor = 'var(--accent)';
@@ -2420,7 +2864,7 @@ function selChofer(nombre, el) {
 function selVehiculo(patente, el) {
   rutaVehiculoSel = patente;
   document.querySelectorAll('#nr-lista-vehiculos .selcard').forEach(c => {
-    c.style.borderColor = 'var(--border)';
+    c.style.borderColor = '#1a1a2e';
     c.style.background = 'var(--surface2)';
   });
   el.style.borderColor = 'var(--accent)';
@@ -2431,16 +2875,10 @@ function toggleParada(id, direccion, cliente, zona, el) {
   const exists = rutaParadasSeleccionadas.findIndex(p => p.id === id);
   if (exists >= 0) {
     rutaParadasSeleccionadas.splice(exists, 1);
-    el.style.borderColor = 'var(--border)';
-    el.style.background = 'var(--surface2)';
-    const chk = document.getElementById('dir-check-' + id);
-    if (chk) { chk.textContent = '○'; chk.style.color = 'var(--border)'; }
+    el.style.display = '';
   } else {
     rutaParadasSeleccionadas.push({ id, direccion, cliente, zona });
-    el.style.borderColor = 'var(--green)';
-    el.style.background = 'rgba(34,197,94,0.06)';
-    const chk = document.getElementById('dir-check-' + id);
-    if (chk) { chk.textContent = '✓'; chk.style.color = 'var(--green)'; }
+    el.style.display = 'none';
   }
   renderParadasSeleccionadas();
 }
@@ -2457,10 +2895,9 @@ function agregarParadaManual() {
 
 function quitarParada(id) {
   rutaParadasSeleccionadas = rutaParadasSeleccionadas.filter(p => p.id !== id);
-  const chk = document.getElementById('dir-check-' + id);
-  if (chk) { chk.textContent = '○'; chk.style.color = 'var(--border)'; }
+  // Volver a mostrar en la lista de disponibles (si no es manual)
   const card = document.getElementById('dir-card-' + id);
-  if (card) { card.style.borderColor='var(--border)'; card.style.background='var(--surface2)'; }
+  if (card) card.style.display = '';
   renderParadasSeleccionadas();
 }
 
@@ -2490,6 +2927,7 @@ function guardarEntrega() {
   data.entregas.unshift({
     id: remito,
     cliente: c('ne-cliente'),
+    origen: c('ne-origen') || '',
     direccion: direccionCompleta,
     materiales: todosLosMateriales,
     peso: pesoTotal,
@@ -2678,7 +3116,7 @@ function renderProductosLibres() {
       <input type="text" value="${p.desc}"
         oninput="updateProductoLibre(${p.id}, this.value)"
         placeholder="Ej: 3 baldes de albañil, 2 llanas, accesorios baño..."
-        style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 10px;font-size:13px;outline:none">
+        style="flex:1;background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:7px 10px;font-size:13px;outline:none">
       <button onclick="quitarProductoLibre(${p.id})" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);cursor:pointer;padding:5px 10px;font-size:12px">✕</button>
     </div>
   `).join('') || '<div style="color:var(--muted);font-size:12px;padding:4px 0">Agregá productos sin peso de la lista.</div>';
@@ -2695,7 +3133,7 @@ function quitarProductoLibre(id) {
 }
 
 function calcSelectHTML(lineId, selectedNombre = '') {
-  return `<select onchange="updateLinea(${lineId})" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
+  return `<select onchange="updateLinea(${lineId})" style="background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
     <option value="">Seleccionar...</option>
     ${CATS.map(cat => `
       <optgroup label="${cat}">
@@ -2725,7 +3163,7 @@ function renderLineas() {
       <div>
         <input type="number" min="0" step="0.5" value="${l.cantidad}"
           onchange="setCantidad(${l.id}, this.value)"
-          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
+          style="background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
       </div>
       <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);padding:0 4px;font-weight:600" id="peso-${l.id}">
         ${l.peso > 0 ? l.peso.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg' : '—'}
@@ -2817,7 +3255,9 @@ const DATA_DEFAULT = {
     { nombre: 'Zona 1 Mañana', chofer: 'Carlos Méndez', vehiculo: 'ABC 123', turno: 'Mañana', horario: '08:00', estimada: '10:45', zona: 'Zona 1', paradas: ['Av. Belgrano 1240', 'Corrientes 1100', 'Paraguay 780'], progreso: 2, llegadas: { 0: '09:10', 1: '10:05' }, estadosParadas: { 0: 'entregado', 1: 'entregado' }, motivosParadas: {}, nuevasFechasParadas: {} },
     { nombre: 'Zona 2 Mañana', chofer: 'Roberto Díaz', vehiculo: 'DEF 456', turno: 'Mañana', horario: '08:30', estimada: '11:15', zona: 'Zona 2', paradas: ['San Martín 567', 'Lavalle 890', 'Pueyrredón 345'], progreso: 1, llegadas: { 0: '09:45' }, estadosParadas: { 0: 'entregado' }, motivosParadas: {}, nuevasFechasParadas: {} },
     { nombre: 'Zona 3 Tarde', chofer: 'Luis Romero', vehiculo: 'GHI 789', turno: 'Tarde', horario: '', estimada: '', zona: 'Zona 3', paradas: ['Rivadavia 890', 'Mitre 234'], progreso: 0, llegadas: {}, estadosParadas: {}, motivosParadas: {}, nuevasFechasParadas: {} },
-  ]
+  ],
+  rutasManana: [],
+  entregasManana: [],
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -2857,16 +3297,23 @@ onValue(dbRef, (snapshot) => {
   } else {
     _guardandoDesdeFirebase = true;
     data = {
-      entregas: remoto.entregas || [],
-      vehiculos: remoto.vehiculos || [],
-      choferes: remoto.choferes || [],
-      clientes: remoto.clientes || [],
-      rutas: (remoto.rutas || []).map(r => ({
+      entregas: Object.values(remoto.entregas || []),
+      vehiculos: Object.values(remoto.vehiculos || []),
+      choferes: Object.values(remoto.choferes || []),
+      clientes: Object.values(remoto.clientes || []),
+      rutas: Object.values(remoto.rutas || []).map(r => ({
         ...r,
         estadosParadas: r.estadosParadas || {},
         motivosParadas: r.motivosParadas || {},
         nuevasFechasParadas: r.nuevasFechasParadas || {}
       })),
+      rutasManana: Object.values(remoto.rutasManana || []).map(r => ({
+        ...r,
+        estadosParadas: r.estadosParadas || {},
+        motivosParadas: r.motivosParadas || {},
+        nuevasFechasParadas: r.nuevasFechasParadas || {}
+      })),
+      entregasManana: Object.values(remoto.entregasManana || []),
     };
     _guardandoDesdeFirebase = false;
   }
@@ -2931,8 +3378,139 @@ function resetearDatos() {
   showSuccessToast('Datos reseteados');
 }
 
+function populateRutaMananaModal() {
+  rutaParadasSeleccionadas = [];
+  rutaChoferSel = '';
+  rutaVehiculoSel = '';
+
+  const lc = document.getElementById('nrm-lista-choferes');
+  if (lc) lc.innerHTML = data.choferes.map(c => {
+    const dispColor = c.disp === 'Disponible' ? 'var(--green)' : c.disp === 'En ruta' ? 'var(--blue)' : 'var(--muted)';
+    return `<div class="selcard" onclick="selChofer('${c.nombre.replace(/'/g,"\\'")}', this)"
+      style="background:var(--surface2);border:1px solid #1a1a2e;padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
+      <div style="font-weight:600;font-size:13px">${c.nombre}</div>
+      <div style="font-size:11px;color:${dispColor};font-family:'IBM Plex Mono',monospace;margin-top:2px">${c.disp}</div>
+    </div>`;
+  }).join('') || '<span style="color:var(--muted);font-size:12px">No hay choferes.</span>';
+
+  const lv = document.getElementById('nrm-lista-vehiculos');
+  if (lv) lv.innerHTML = data.vehiculos.map(v => {
+    const dispColor = v.estado === 'Disponible' ? 'var(--green)' : v.estado === 'En ruta' ? 'var(--blue)' : 'var(--red)';
+    return `<div class="selcard" onclick="selVehiculo('${v.patente}', this)"
+      style="background:var(--surface2);border:1px solid #1a1a2e;padding:10px 14px;cursor:pointer;transition:all 0.15s;min-width:160px">
+      <div style="font-weight:600;font-size:13px;font-family:'IBM Plex Mono',monospace">${v.patente}</div>
+      <div style="font-size:11px;color:${dispColor};font-family:'IBM Plex Mono',monospace;margin-top:2px">${v.estado} · ${(v.capacidad/1000).toFixed(1)}t</div>
+    </div>`;
+  }).join('') || '<span style="color:var(--muted);font-size:12px">No hay vehículos.</span>';
+
+  const ld = document.getElementById('nrm-lista-direcciones');
+  const pendientesManana = data.entregas.filter(e => e.estado === 'pendiente' || e.estado === 'reprogramado');
+  if (ld) ld.innerHTML = pendientesManana.length > 0
+    ? pendientesManana.map(e => {
+        const hoy = new Date().toISOString().slice(0,10);
+        const fechaFmt = e.fecha ? (() => { const [y,m,d] = e.fecha.split('-'); return `${d}/${m}`; })() : '';
+        const esFutura = e.fecha && e.fecha > hoy;
+        const fechaBadge = e.fecha ? `<span style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:${esFutura ? 'var(--blue)' : 'var(--muted)'};margin-left:6px">${esFutura ? '📅 ' : ''}${fechaFmt}</span>` : '';
+        return `
+      <div onclick="toggleParadaManana('${e.id}', '${e.direccion.replace(/'/g,"\\'")}', '${e.cliente.replace(/'/g,"\\'")}', '${e.zona}', this)"
+        id="dirm-card-${e.id}"
+        style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid #1a1a2e;padding:8px 12px;cursor:pointer;transition:all 0.15s">
+        <div>
+          <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span> ${e.estado === 'reprogramado' ? '<span style="color:var(--purple);font-size:10px;font-family:\'IBM Plex Mono\',monospace">REPROG.</span>' : ''}${fechaBadge}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? e.peso.toLocaleString('es-AR')+' kg' : '—'}</div>
+        </div>
+        <div style="font-size:18px;color:#aab0bb" id="dirm-check-${e.id}">○</div>
+      </div>`}).join('')
+    : '<div style="color:var(--muted);font-size:12px;padding:8px">No hay entregas pendientes. Agregá desde Entregas.</div>';
+
+  renderParadasSeleccionadasManana();
+}
+
+function toggleParadaManana(id, direccion, cliente, zona, el) {
+  const exists = rutaParadasSeleccionadas.findIndex(p => p.id === id);
+  if (exists >= 0) { rutaParadasSeleccionadas.splice(exists, 1); el.style.display = ''; }
+  else { rutaParadasSeleccionadas.push({ id, direccion, cliente, zona }); el.style.display = 'none'; }
+  renderParadasSeleccionadasManana();
+}
+
+function agregarParadaManualManana() {
+  const inp = document.getElementById('nrm-parada-manual');
+  const val = inp.value.trim();
+  if (!val) return;
+  rutaParadasSeleccionadas.push({ id: 'manual-' + Date.now(), direccion: val, cliente: 'Manual', zona: '' });
+  inp.value = '';
+  renderParadasSeleccionadasManana();
+}
+
+function renderParadasSeleccionadasManana() {
+  const el = document.getElementById('nrm-paradas-seleccionadas');
+  const cnt = document.getElementById('nrm-count');
+  if (cnt) cnt.textContent = rutaParadasSeleccionadas.length;
+  if (!el) return;
+  el.innerHTML = rutaParadasSeleccionadas.map(p => `
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);padding:4px 10px;font-size:12px">
+      <span>📍 ${p.cliente !== 'Manual' ? '<strong>' + p.cliente + '</strong> — ' : ''}${p.direccion}</span>
+      <button onclick="quitarParadaManana('${p.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 4px">✕</button>
+    </div>`).join('') || '<span style="color:var(--muted);font-size:12px">Ninguna parada seleccionada.</span>';
+}
+
+function quitarParadaManana(id) {
+  rutaParadasSeleccionadas = rutaParadasSeleccionadas.filter(p => p.id !== id);
+  const card = document.getElementById('dirm-card-' + id);
+  if (card) card.style.display = '';
+  renderParadasSeleccionadasManana();
+}
+
+function guardarRutaManana() {
+  const c = v => document.getElementById(v).value;
+  if (!c('nrm-nombre')) { alert('Ingresá el nombre de la ruta'); return; }
+  if (rutaParadasSeleccionadas.length === 0) { alert('Seleccioná al menos una parada'); return; }
+  if (!data.rutasManana) data.rutasManana = [];
+  data.rutasManana.push({
+    nombre: c('nrm-nombre'),
+    chofer: rutaChoferSel || '-',
+    vehiculo: rutaVehiculoSel || '-',
+    turno: c('nrm-turno'),
+    horario: c('nrm-horario') || '',
+    zona: c('nrm-zona'),
+    paradas: rutaParadasSeleccionadas.map(p => p.direccion),
+    entregaIds: rutaParadasSeleccionadas.map(p => p.id),
+    progreso: 0,
+    estadosParadas: {}, motivosParadas: {}, nuevasFechasParadas: {}
+  });
+  closeModal('modal-nueva-ruta-manana');
+  guardarFirebase();
+  renderAll();
+  showSuccessToast('Ruta de mañana guardada — ' + rutaParadasSeleccionadas.length + ' paradas');
+}
+
+function guardarEntregaManana() {
+  const c = v => document.getElementById(v).value;
+  if (!c('nem-cliente') || !c('nem-direccion')) { alert('Completá los campos requeridos'); return; }
+  const remito = c('nem-remito') || 'REM-M-' + String((data.entregasManana || []).length + 1).padStart(3, '0');
+  const localidad = c('nem-localidad').trim();
+  const direccionCompleta = localidad ? `${c('nem-direccion')} — ${localidad}` : c('nem-direccion');
+  if (!data.entregasManana) data.entregasManana = [];
+  data.entregasManana.unshift({
+    id: remito,
+    cliente: c('nem-cliente'),
+    direccion: direccionCompleta,
+    materiales: c('nem-materiales-txt') || '-',
+    peso: parseFloat(c('nem-peso')) || 0,
+    turno: c('nem-turno').split(' ')[0],
+    zona: c('nem-zona'),
+    estado: 'pendiente',
+    chofer: '-', vehiculo: '-', remitoRecibido: false
+  });
+  closeModal('modal-nueva-entrega-manana');
+  renderAll();
+  if (dashTab === 'manana') renderDashboardManana();
+  showSuccessToast('Entrega de mañana registrada — ' + remito);
+}
+
 Object.assign(window, {
   showSection, openModal, closeModal,
+  confirmarPin, cerrarModalPin, bloquearSistema,
   filterEntregas, cambiarEstado, eliminarEntrega, toggleRemito,
   guardarEntrega, guardarRuta, guardarVehiculo, guardarChofer, guardarCliente,
   eliminarVehiculo, eliminarChofer, eliminarCliente, eliminarRuta,
@@ -2943,31 +3521,63 @@ Object.assign(window, {
   agregarLinea, updateLinea, setCantidad, quitarLinea,
   agregarProductoLibre, updateProductoLibre, quitarProductoLibre,
   descargarReporte, descargarRutas, limpiarReporte, resetearDatos,
+  switchDashTab, eliminarEntregaManana, guardarRutaManana, guardarEntregaManana,
+  populateRutaMananaModal, toggleParadaManana, agregarParadaManualManana, quitarParadaManana,
+  selCargador, actualizarTiempoCarga,
 });
 </script>
 
 <!-- MODAL SALIDA -->
 <div class="modal-overlay" id="modal-salida">
-  <div class="modal" style="width:460px">
+  <div class="modal" style="width:560px">
     <div class="modal-header">
       <div class="modal-title" style="color:var(--accent)">🕐 REGISTRAR SALIDA</div>
-      <button class="modal-close" onclick="document.getElementById('modal-salida').classList.remove('open')">✕</button>
+      <button class="modal-close" onclick="document.getElementById('modal-salida').classList.remove('open');document.getElementById('modal-salida').style.display=''">✕</button>
     </div>
     <input type="hidden" id="modal-salida-ri">
     <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
-      <div class="form-group">
-        <label>Hora de salida del corralón</label>
-        <input type="time" id="modal-salida-hora" oninput="actualizarEstimadaModal()" style="font-size:22px;padding:12px;text-align:center;letter-spacing:4px">
+
+      <!-- Fila 1: Hora llegada anterior + Hora salida -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label style="font-size:10px;letter-spacing:1px">HORA LLEGADA VIAJE ANTERIOR</label>
+          <input type="time" id="modal-salida-llegada-ant" oninput="actualizarTiempoCarga()" style="font-size:18px;padding:10px;text-align:center;letter-spacing:3px;background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);width:100%">
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;font-family:'IBM Plex Mono',monospace">Dejar vacío si es primer viaje del día</div>
+        </div>
+        <div class="form-group">
+          <label style="font-size:10px;letter-spacing:1px">HORA DE SALIDA DEL CORRALÓN</label>
+          <input type="time" id="modal-salida-hora" oninput="actualizarEstimadaModal();actualizarTiempoCarga()" style="font-size:18px;padding:10px;text-align:center;letter-spacing:3px;background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);width:100%">
+        </div>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;border-left:3px solid var(--blue)">
+
+      <!-- Tiempo de carga calculado -->
+      <div id="modal-carga-resultado" style="display:none;background:var(--surface2);border:1px solid #1a1a2e;padding:12px 16px;border-left:3px solid var(--accent)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">⏱ TIEMPO DE CARGA</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent);letter-spacing:2px;line-height:1" id="modal-carga-valor">—</div>
+        <div style="font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:2px" id="modal-carga-detalle"></div>
+      </div>
+
+      <!-- Fila 2: Cargador -->
+      <div class="form-group">
+        <label style="font-size:10px;letter-spacing:1px">CARGADOR</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px" id="modal-salida-cargadores">
+          <button type="button" class="cargador-btn" onclick="selCargador('MAQ A',this)" style="padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s">MAQ A</button>
+          <button type="button" class="cargador-btn" onclick="selCargador('MAQ B',this)" style="padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s">MAQ B</button>
+          <button type="button" class="cargador-btn" onclick="selCargador('MAQ C',this)" style="padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s">MAQ C</button>
+          <button type="button" class="cargador-btn" onclick="selCargador('MAQ D',this)" style="padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s">MAQ D</button>
+          <button type="button" class="cargador-btn" onclick="selCargador('MAQ E',this)" style="padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s">MAQ E</button>
+        </div>
+      </div>
+
+      <!-- Estimada de regreso -->
+      <div style="background:var(--surface2);border:1px solid #1a1a2e;padding:16px;border-left:3px solid var(--blue)">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">⏱ HORA ESTIMADA DE REGRESO</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--blue);letter-spacing:2px;line-height:1" id="modal-salida-estimada">—</div>
         <div style="font-size:11px;color:var(--muted);margin-top:6px;font-family:'IBM Plex Mono',monospace" id="modal-salida-detalle"></div>
       </div>
-      <p style="font-size:11px;color:var(--muted)">La estimación usa las tablas de zona, tonelaje del vehículo y cantidad de paradas. Podés editarla después.</p>
     </div>
     <div class="form-actions">
-      <button class="btn btn-secondary" onclick="document.getElementById('modal-salida').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-salida').classList.remove('open');document.getElementById('modal-salida').style.display=''">Cancelar</button>
       <button class="btn btn-primary" onclick="confirmarSalida()">Confirmar Salida</button>
     </div>
   </div>
@@ -2982,7 +3592,7 @@ Object.assign(window, {
     </div>
     <input type="hidden" id="modal-llegada-ri">
     <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
-      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px">
+      <div style="background:var(--surface2);border:1px solid #1a1a2e;padding:14px">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">PARADA <span id="modal-llegada-num">—</span> DE <span id="modal-llegada-total">—</span></div>
         <div style="font-size:14px;font-weight:600" id="modal-llegada-parada">—</div>
         <div style="font-size:11px;color:var(--blue);font-family:'IBM Plex Mono',monospace;margin-top:4px" id="modal-llegada-estimada"></div>
@@ -2995,6 +3605,138 @@ Object.assign(window, {
     <div class="form-actions">
       <button class="btn btn-secondary" onclick="document.getElementById('modal-llegada').classList.remove('open')">Cancelar</button>
       <button class="btn btn-primary" style="background:var(--green);color:#000" onclick="confirmarLlegada()">Registrar Llegada</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RUTA MAÑANA -->
+<div class="modal-overlay" id="modal-nueva-ruta-manana">
+  <div class="modal" style="width:680px">
+    <div class="modal-header">
+      <div class="modal-title">📅 Planificar Ruta — Mañana</div>
+      <button class="modal-close" onclick="closeModal('modal-nueva-ruta-manana')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre de la Ruta</label>
+        <input type="text" id="nrm-nombre" placeholder="Ej: Zona 2 Mañana">
+      </div>
+      <div class="form-group">
+        <label>Turno</label>
+        <select id="nrm-turno"><option>Mañana</option><option>Tarde</option></select>
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="nrm-zona">
+          <option>Zona 0</option><option>Zona 1</option><option>Zona 2</option>
+          <option>Zona 3</option><option>Zona 4</option><option>Zona 5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Horario de Salida</label>
+        <input type="time" id="nrm-horario">
+      </div>
+    </div>
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">👷 CHOFER</div>
+      <div id="nrm-lista-choferes" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🚛 VEHÍCULO</div>
+      <div id="nrm-lista-vehiculos" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+    <div style="border-top:1px solid #1a1a2e;padding:14px 20px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📍 PARADAS — ENTREGAS DE MAÑANA</div>
+      <div id="nrm-lista-direcciones" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <input type="text" id="nrm-parada-manual" placeholder="Dirección manual..." style="flex:1;background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:8px 12px;font-size:13px;outline:none">
+        <button class="btn btn-secondary" onclick="agregarParadaManualManana()">+ Agregar</button>
+      </div>
+      <div style="margin-top:10px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:6px">PARADAS SELECCIONADAS (<span id="nrm-count">0</span>)</div>
+        <div id="nrm-paradas-seleccionadas" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nueva-ruta-manana')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarRutaManana()">Guardar Ruta Mañana</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ENTREGA MAÑANA -->
+<div class="modal-overlay" id="modal-nueva-entrega-manana">
+  <div class="modal" style="width:600px">
+    <div class="modal-header">
+      <div class="modal-title">📅 Nueva Entrega — Mañana</div>
+      <button class="modal-close" onclick="closeModal('modal-nueva-entrega-manana')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Cliente</label>
+        <select id="nem-cliente">
+          <option value="">Seleccionar cliente...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" id="nem-direccion" placeholder="Calle y número">
+      </div>
+      <div class="form-group">
+        <label>Localidad</label>
+        <input type="text" id="nem-localidad" placeholder="Ej: Morón, Vicente López...">
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="nem-zona">
+          <option>Zona 0</option><option>Zona 1</option><option>Zona 2</option>
+          <option>Zona 3</option><option>Zona 4</option><option>Zona 5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Turno</label>
+        <select id="nem-turno">
+          <option>Mañana (8:00 - 12:00)</option>
+          <option>Tarde (13:00 - 17:00)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Número de Remito</label>
+        <input type="text" id="nem-remito" placeholder="REM-0001">
+      </div>
+      <div class="form-group full">
+        <label>Materiales</label>
+        <input type="text" id="nem-materiales-txt" placeholder="Ej: Cemento 50 bolsas, Arena 1 ton">
+      </div>
+      <div class="form-group">
+        <label>Peso (kg)</label>
+        <input type="number" id="nem-peso" placeholder="0">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nueva-entrega-manana')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEntregaManana()">Registrar para Mañana</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PIN -->
+<div id="modal-pin" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border:2px solid #1a1a2e;width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div style="background:#1a1a2e;padding:18px 20px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:#f5a623">🔒 ACCESO RESTRINGIDO</div>
+      <button onclick="cerrarModalPin()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1">✕</button>
+    </div>
+    <div style="padding:28px 24px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Esta sección requiere PIN gerencial</div>
+      <input id="pin-input" type="password" maxlength="6" placeholder="• • • •"
+        onkeydown="if(event.key==='Enter') confirmarPin()"
+        style="width:100%;font-size:28px;text-align:center;letter-spacing:8px;padding:12px;border:2px solid #1a1a2e;font-family:'IBM Plex Mono',monospace;outline:none;box-sizing:border-box;background:#f8f9fa">
+      <div id="pin-error" style="display:none;margin-top:8px;color:#dc2626;font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:center;letter-spacing:1px">PIN incorrecto. Intentá de nuevo.</div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button onclick="cerrarModalPin()" style="flex:1;padding:10px;background:#f0f0f0;border:1.5px solid #1a1a2e;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px">CANCELAR</button>
+        <button onclick="confirmarPin()" style="flex:1;padding:10px;background:#f5a623;border:1.5px solid #1a1a2e;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px">INGRESAR</button>
+      </div>
     </div>
   </div>
 </div>
