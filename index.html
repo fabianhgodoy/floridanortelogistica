@@ -285,13 +285,13 @@
     border-radius: 20px;
   }
 
-  .pill-pendiente { background: rgba(245,166,35,0.15); color: var(--accent); border: 1px solid rgba(245,166,35,0.3); }
-  .pill-transito { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
-  .pill-entregado { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-  .pill-cancelado { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .pill-pendiente { background: rgba(245,166,35,0.15); color: var(--accent); border: 1.5px solid rgba(245,166,35,0.7); }
+  .pill-transito { background: rgba(59,130,246,0.15); color: var(--blue); border: 1.5px solid rgba(59,130,246,0.7); }
+  .pill-entregado { background: rgba(34,197,94,0.15); color: var(--green); border: 1.5px solid rgba(34,197,94,0.7); }
+  .pill-cancelado { background: rgba(239,68,68,0.15); color: var(--red); border: 1.5px solid rgba(239,68,68,0.7); }
   /* NUEVOS ESTADOS */
-  .pill-no-entregado { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid rgba(249,115,22,0.4); }
-  .pill-reprogramado { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
+  .pill-no-entregado { background: rgba(249,115,22,0.15); color: var(--orange); border: 1.5px solid rgba(249,115,22,0.8); }
+  .pill-reprogramado { background: rgba(168,85,247,0.15); color: var(--purple); border: 1.5px solid rgba(168,85,247,0.8); }
 
   /* BUTTONS */
   .btn {
@@ -347,6 +347,39 @@
 
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group.full { grid-column: 1 / -1; }
+
+  /* AUTOCOMPLETE */
+  .ac-wrapper { position: relative; }
+  .ac-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: #fff;
+    border: 1.5px solid #1a1a2e;
+    border-radius: 4px;
+    z-index: 9999;
+    max-height: 220px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .ac-dropdown.open { display: block; }
+  .ac-item {
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 1px solid #e2e5ea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.1s;
+  }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover, .ac-item.ac-active { background: #fff8ee; }
+  .ac-item-name { font-weight: 500; color: #1a1a2e; }
+  .ac-item-sub { font-size: 11px; color: #6b7280; white-space: nowrap; }
+  .ac-highlight { color: #f5a623; font-weight: 700; }
 
   label {
     font-family: 'IBM Plex Mono', monospace;
@@ -644,6 +677,12 @@
     <div class="nav-item" onclick="showSection('entregas')">
       <span class="icon">🚛</span> Entregas
     </div>
+    <div class="nav-item" onclick="showSection('clientes')">
+      <span class="icon">👥</span> Clientes
+    </div>
+    <div class="nav-section" style="margin-top:8px;display:flex;align-items:center;gap:6px">
+      <span>🔒</span> Logística
+    </div>
     <div class="nav-item" onclick="showSection('rutas')">
       <span class="icon">🗺️</span> Rutas
     </div>
@@ -652,10 +691,6 @@
     </div>
     <div class="nav-item" onclick="showSection('choferes')">
       <span class="icon">👷</span> Choferes
-    </div>
-    <div class="nav-section">Gestión</div>
-    <div class="nav-item" onclick="showSection('clientes')">
-      <span class="icon">👥</span> Clientes
     </div>
     <div class="nav-item" onclick="showSection('reportes')">
       <span class="icon">📋</span> Reportes
@@ -765,13 +800,13 @@
     <div class="section" id="section-entregas">
       <div class="flex-between mb-16">
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-sm filter-btn active-filter" onclick="filterEntregas('all', this)">Todas</button>
-          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('pendiente', this)">Pendientes</button>
-          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('transito', this)">En Tránsito</button>
-          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('entregado', this)">Entregadas</button>
-          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('no-entregado', this)" style="color:var(--orange);border-color:rgba(249,115,22,0.4)">No Entregadas</button>
-          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('reprogramado', this)" style="color:var(--purple);border-color:rgba(168,85,247,0.4)">Reprogramadas</button>
-          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('sin-remito', this)">Sin Remito ○</button>
+          <button class="btn btn-primary btn-sm filter-btn active-filter" onclick="filterEntregas('all', this)" style="border-radius:20px">Todas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('pendiente', this)" style="color:var(--accent);border:1.5px solid rgba(245,166,35,0.7);border-radius:20px">Pendientes</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('transito', this)" style="color:var(--blue);border:1.5px solid rgba(59,130,246,0.7);border-radius:20px">En Tránsito</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('entregado', this)" style="color:var(--green);border:1.5px solid rgba(34,197,94,0.7);border-radius:20px">Entregadas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('no-entregado', this)" style="color:var(--orange);border:1.5px solid rgba(249,115,22,0.8);border-radius:20px">No Entregadas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('reprogramado', this)" style="color:var(--purple);border:1.5px solid rgba(168,85,247,0.8);border-radius:20px">Reprogramadas</button>
+          <button class="btn btn-secondary btn-sm filter-btn" onclick="filterEntregas('sin-remito', this)" style="border:1.5px solid rgba(255,255,255,0.3);border-radius:20px">Sin Remito ○</button>
         </div>
         <button class="btn btn-primary" onclick="openModal('modal-nueva-entrega')">+ Nueva Entrega</button>
       </div>
@@ -889,27 +924,34 @@
 
     <!-- REPORTES -->
     <div class="section" id="section-reportes">
+
+      <!-- Barra superior con fecha y acciones -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;padding:14px 20px;background:#1a1a2e;border-radius:4px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f5a623;letter-spacing:1px" id="rep-fecha-reporte"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm" onclick="descargarReporte()" style="background:#f5a623;color:#1a1a2e;border-color:#f5a623;font-weight:700">⬇ Descargar PDF</button>
+          <button class="btn btn-danger btn-sm" onclick="limpiarReporte()">🗑 Limpiar día</button>
+        </div>
+      </div>
+
       <div class="card">
-        <div class="card-header"><div class="card-title">👷 Rendimiento por Chofer</div></div>
+        <div class="card-header" style="background:#1a1a2e">
+          <div class="card-title" style="color:#f5a623">👷 Rendimiento por Chofer</div>
+        </div>
         <div class="p-20" id="reporte-choferes"></div>
       </div>
 
       <div class="card" style="margin-top:24px">
-        <div class="card-header">
-          <div class="card-title">⏱ Puntualidad por Chofer — vs. Hora Estimada</div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <span style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace" id="rep-fecha-reporte"></span>
-            <button class="btn btn-secondary btn-sm" onclick="descargarReporte()">⬇ Descargar</button>
-            <button class="btn btn-danger btn-sm" onclick="limpiarReporte()">🗑 Limpiar día</button>
-          </div>
+        <div class="card-header" style="background:#1a1a2e">
+          <div class="card-title" style="color:#f5a623">⏱ Puntualidad por Chofer — vs. Hora Estimada</div>
         </div>
         <div class="p-20" id="reporte-puntualidad"></div>
       </div>
 
       <div class="card" style="margin-top:24px">
-        <div class="card-header">
-          <div class="card-title">🏗 Tiempos de Carga por Cargador</div>
-          <span style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace">Registrado al confirmar salida</span>
+        <div class="card-header" style="background:#1a1a2e">
+          <div class="card-title" style="color:#f5a623">🏗 Tiempos de Carga por Cargador</div>
+          <span style="font-size:11px;color:#9ca3af;font-family:'IBM Plex Mono',monospace">Registrado al confirmar salida</span>
         </div>
         <div class="p-20" id="reporte-carga"></div>
       </div>
@@ -929,9 +971,14 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Cliente</label>
-        <select id="ne-cliente">
-          <option value="">Seleccionar cliente...</option>
-        </select>
+        <div class="ac-wrapper">
+          <input type="text" id="ne-cliente" placeholder="Escribí el nombre del cliente..." autocomplete="off"
+            oninput="acCliente(this,'ne-cliente-dd','ne-cliente-val')"
+            onfocus="acCliente(this,'ne-cliente-dd','ne-cliente-val')"
+            onblur="setTimeout(()=>document.getElementById('ne-cliente-dd').classList.remove('open'),200)">
+          <input type="hidden" id="ne-cliente-val">
+          <div class="ac-dropdown" id="ne-cliente-dd"></div>
+        </div>
       </div>
       <div class="form-group">
         <label>Origen</label>
@@ -1003,7 +1050,7 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid #1a1a2e">
         <div>
           <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">PESO TOTAL CALCULADO</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);letter-spacing:1px" id="peso-total-display">0 kg</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);letter-spacing:1px" id="peso-total-display">0.000 tn</div>
         </div>
         <div style="text-align:right">
           <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px">RESUMEN MATERIALES</div>
@@ -1209,7 +1256,13 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Nombre / Razón Social</label>
-        <input type="text" id="ncl-nombre" placeholder="Nombre del cliente">
+        <div class="ac-wrapper">
+          <input type="text" id="ncl-nombre" placeholder="Nombre del cliente" autocomplete="off"
+            oninput="acCliente(this,'ncl-nombre-dd',null)"
+            onfocus="acCliente(this,'ncl-nombre-dd',null)"
+            onblur="setTimeout(()=>document.getElementById('ncl-nombre-dd').classList.remove('open'),200)">
+          <div class="ac-dropdown" id="ncl-nombre-dd"></div>
+        </div>
       </div>
       <div class="form-group">
         <label>Teléfono</label>
@@ -1219,18 +1272,7 @@
         <label>Dirección Principal</label>
         <input type="text" id="ncl-dir" placeholder="Calle, número, localidad">
       </div>
-      <div class="form-group">
-        <label>Zona</label>
-        <select id="ncl-zona">
-          <option>Zona 0</option>
-          <option>Zona 1</option>
-          <option>Zona 2</option>
-          <option>Zona 3</option>
-          <option>Zona 4</option>
-          <option>Zona 5</option>
-        </select>
-      </div>
-      <div class="form-group">
+      <div class="form-group full">
         <label>Observaciones</label>
         <input type="text" id="ncl-obs" placeholder="Notas...">
       </div>
@@ -1322,7 +1364,7 @@ let data = {};
 // ====== NAVIGATION ======
 const TITLES = { dashboard: 'PLANILLA OPERATIVA', vencidas: 'ENTREGAS VENCIDAS', entregas: 'GESTIÓN DE ENTREGAS', rutas: 'RUTAS DE ENTREGA', vehiculos: 'VEHÍCULOS', choferes: 'CHOFERES', clientes: 'CLIENTES', reportes: 'REPORTES' };
 
-const SECCIONES_PROTEGIDAS = ['entregas', 'rutas', 'vehiculos', 'choferes', 'clientes', 'reportes'];
+const SECCIONES_PROTEGIDAS = ['rutas', 'vehiculos', 'choferes', 'reportes'];
 const PIN_CORRECTO = '1234'; // ← cambiá este PIN
 let _pinDesbloqueado = false;
 
@@ -1476,7 +1518,7 @@ function renderVencidas() {
     return;
   }
 
-  const origenColors = { 'Local': '#16a34a', 'Ventas': '#2563eb', 'Expedición': '#9333ea' };
+  const origenColors = { 'Local': '#16a34a', 'Ventas': '#2563eb', 'Expedición': '#c0392b' };
   tbody.innerHTML = vencidas.map(e => {
     const [y, m, d] = e.fecha.split('-');
     const fechaFmt = `${d}/${m}/${y}`;
@@ -1735,7 +1777,7 @@ function renderDashboardManana() {
       <td><strong>${e.cliente}</strong>${choferVeh}</td>
       <td style="font-size:12px">${e.direccion}<br><span style="color:var(--muted);font-size:11px">${e.zona}</span></td>
       <td style="font-size:11px;color:var(--text2);max-width:160px">${e.materiales}</td>
-      <td class="mono" style="color:var(--green)">${e.peso ? e.peso.toLocaleString('es-AR',{maximumFractionDigits:0})+' kg' : '—'}</td>
+      <td class="mono" style="color:var(--green)">${e.peso ? (e.peso/1000).toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1})+' tn' : '—'}</td>
       <td style="font-size:12px">${e.turno}</td>
       <td>${estadoPill(e.estado)}</td>
     </tr>`;
@@ -1789,9 +1831,10 @@ function renderEntregas(filtro = 'all') {
     if (e.estado === 'no-entregado') rowBg = 'background:rgba(249,115,22,0.04)';
     if (e.estado === 'reprogramado') rowBg = 'background:rgba(168,85,247,0.04)';
 
-    const origenColors = { 'Local': '#16a34a', 'Ventas': '#2563eb', 'Expedición': '#9333ea' };
+    const origenColors = { 'Local': '#16a34a', 'Ventas': '#2563eb', 'Expedición': '#c0392b' };
+    const origenBorderColors = { 'Local': '#15803d', 'Ventas': '#1d4ed8', 'Expedición': '#922b21' };
     const origenBadge = e.origen
-      ? `<span style="display:inline-block;background:${origenColors[e.origen]||'var(--muted)'};color:#fff;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.5px">${e.origen.toUpperCase()}</span>`
+      ? `<span style="display:inline-block;background:${origenColors[e.origen]||'var(--muted)'};color:#fff;padding:2px 10px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.5px;border-radius:20px;border:1.5px solid ${origenBorderColors[e.origen]||'#555'}">${e.origen.toUpperCase()}</span>`
       : '<span style="color:var(--muted);font-size:11px">—</span>';
 
     return `
@@ -1801,7 +1844,7 @@ function renderEntregas(filtro = 'all') {
       <td>${origenBadge}</td>
       <td style="font-size:12px;max-width:150px">${e.direccion}<br><span style="color:var(--muted)">${e.zona}</span></td>
       <td style="font-size:12px;max-width:180px;color:var(--text2)">${e.materiales}</td>
-      <td class="mono" style="color:var(--green);font-weight:600;white-space:nowrap">${e.peso ? e.peso.toLocaleString('es-AR',{maximumFractionDigits:0})+' kg' : '—'}</td>
+      <td class="mono" style="color:var(--green);font-weight:600;white-space:nowrap">${e.peso ? (e.peso/1000).toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1})+' tn' : '—'}</td>
       <td class="mono" style="${fechaColor};white-space:nowrap">${fechaFmt}${esPasada ? ' ⚠️' : esHoy ? ' ★' : ''}</td>
       <td style="font-size:12px">${e.turno}</td>
       <td>${estadoPill(e.estado)}${motivoBadge}</td>
@@ -2398,17 +2441,20 @@ function renderReportes() {
     const maxVal = Math.max(...Object.values(porChofer), 1);
     rc.innerHTML = Object.keys(porChofer).length === 0
       ? '<div style="color:var(--muted);font-size:12px;font-family:\'IBM Plex Mono\',monospace;padding:8px">Sin entregas completadas hoy.</div>'
-      : Object.entries(porChofer).map(([nombre, cant]) => {
+      : `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">`
+        + Object.entries(porChofer).map(([nombre, cant]) => {
           const pct = Math.round((cant / maxVal) * 100);
           return `
-          <div style="margin-bottom:16px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-              <span style="font-size:13px">${nombre}</span>
-              <span class="mono" style="color:var(--accent)">${cant} entregas</span>
+          <div style="background:#fff5f5;border:1.5px solid #fca5a5;border-top:4px solid #dc2626;border-radius:4px;padding:16px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:#dc2626;text-transform:uppercase;margin-bottom:6px">Chofer</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px">${nombre}</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#1a1a2e;letter-spacing:1px;line-height:1">${cant}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6b7280;margin-bottom:10px">entregas hoy</div>
+            <div style="background:#fecaca;height:5px;border-radius:3px">
+              <div style="background:#dc2626;height:5px;border-radius:3px;width:${pct}%"></div>
             </div>
-            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
           </div>`;
-        }).join('');
+        }).join('') + `</div>`;
   }
 
   const rp = document.getElementById('reporte-puntualidad');
@@ -2471,7 +2517,7 @@ function renderReportes() {
       const diffLabel = d.diff > 0 ? `+${d.diff} min` : d.diff < 0 ? `${d.diff} min` : 'exacto';
       const diffColor = tarde ? 'var(--red)' : adelanto ? 'var(--blue)' : 'var(--green)';
       return `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+        <tr style="border-bottom:1px solid #e2e5ea">
           <td style="padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">${d.fecha}</td>
           <td style="padding:6px 8px;font-size:11px;color:var(--muted)">${d.ruta}</td>
           <td style="padding:6px 8px;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.parada}</td>
@@ -2481,11 +2527,15 @@ function renderReportes() {
         </tr>`;
     }).join('');
 
+    const bgCard = '#fff5f5';
+    const borderCard = '#fca5a5';
+    const accentLine = '#dc2626';
+
     return `
-    <div style="margin-bottom:20px;background:var(--surface2);border:1px solid #1a1a2e;padding:16px">
+    <div style="margin-bottom:16px;background:${bgCard};border:1.5px solid ${borderCard};border-left:5px solid ${accentLine};padding:16px;border-radius:4px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <div>
-          <div style="font-weight:600;font-size:14px">👷 ${chofer}</div>
+          <div style="font-weight:700;font-size:14px">👷 ${chofer}</div>
           <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:'IBM Plex Mono',monospace">
             ${st.paradas} paradas registradas · demora promedio: ${demoraPromedio > 0 ? demoraPromedio + ' min' : 'sin demora'}
             ${st.noEntregadas > 0 ? ` · <span style="color:var(--orange)">${st.noEntregadas} no entregadas</span>` : ''}
@@ -2494,15 +2544,17 @@ function renderReportes() {
         </div>
         <div style="display:flex;align-items:center;gap:10px">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:${barColor};letter-spacing:1px">${pct}%</span>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:${barColor};border:1px solid ${barColor};padding:2px 8px">${statusIcon} ${statusLabel}</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:${barColor};border:1px solid ${barColor};padding:2px 8px;border-radius:20px">${statusIcon} ${statusLabel}</span>
         </div>
       </div>
-      <div class="progress-bar" style="margin-bottom:12px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
+      <div style="background:#fecaca;height:6px;border-radius:3px;margin-bottom:12px">
+        <div style="background:${barColor};height:6px;border-radius:3px;width:${pct}%"></div>
+      </div>
       ${st.detalle.length > 0 ? `
-      <div style="overflow-x:auto">
+      <div style="overflow-x:auto;background:#fff;border:1px solid ${borderCard};border-radius:3px">
         <table style="width:100%;border-collapse:collapse">
           <thead>
-            <tr style="border-bottom:1px solid #1a1a2e">
+            <tr style="border-bottom:1.5px solid #1a1a2e;background:#fef2f2">
               <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Fecha</th>
               <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Ruta</th>
               <th style="padding:5px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Parada</th>
@@ -2536,26 +2588,26 @@ function renderReportes() {
   });
 
   rc2.innerHTML = `
-    <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;background:#fff5f5">
       <thead>
-        <tr style="border-bottom:2px solid #1a1a2e">
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Cargador</th>
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Ruta</th>
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Chofer</th>
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Vehículo</th>
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Llegada ant.</th>
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Salida</th>
-          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Tiempo de carga</th>
+        <tr style="border-bottom:2px solid #dc2626;background:#fef2f2">
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Cargador</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Ruta</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Chofer</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Vehículo</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Llegada ant.</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Salida</th>
+          <th style="padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Tiempo de carga</th>
         </tr>
       </thead>
       <tbody>
-        ${rutasConCarga.map(r => {
+        ${rutasConCarga.map((r, i) => {
           const mins = r.tiempoCargaMin;
           const h = Math.floor(mins / 60), m = mins % 60;
           const label = h > 0 ? `${h}h ${m}min` : `${m} min`;
           const color = mins <= 30 ? 'var(--green)' : mins <= 60 ? 'var(--accent)' : 'var(--red)';
-          return `<tr style="border-bottom:1px solid #1a1a2e">
-            <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--accent)">${r.cargador}</td>
+          return `<tr style="border-bottom:1px solid #fca5a5;background:${i%2===0?'#fff5f5':'#fff'}">
+            <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#dc2626">${r.cargador}</td>
             <td style="padding:8px 10px">${r.nombre}</td>
             <td style="padding:8px 10px">${r.chofer}</td>
             <td style="padding:8px 10px;font-family:'IBM Plex Mono',monospace">${r.vehiculo}</td>
@@ -2566,7 +2618,7 @@ function renderReportes() {
         }).join('')}
       </tbody>
     </table>
-    <div style="margin-top:12px;display:flex;gap:20px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)">
+    <div style="margin-top:12px;display:flex;gap:20px;font-family:'IBM Plex Mono',monospace;font-size:10px">
       <span style="color:var(--green)">● ≤ 30 min — Rápido</span>
       <span style="color:var(--accent)">● 31–60 min — Normal</span>
       <span style="color:var(--red)">● &gt; 60 min — Lento</span>
@@ -2729,47 +2781,210 @@ function descargarRutas() {
 }
 
 function descargarReporte() {
-  const fecha = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
-  let csv = `REPORTE DE PUNTUALIDAD — ${new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}\n\n`;
-  csv += `Fecha,Chofer,Ruta,Parada,Hora Estimada,Hora Real,Diferencia,Estado\n`;
+  const fechaLabel = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const fechaArchivo = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+
+  // Construir el contenido del PDF con el mismo diseño visual
+  let filas = '';
+  const choferMap = {};
 
   data.rutas.forEach(r => {
-    if (!r.chofer || r.chofer === '-' || !r.horario) return;
+    if (!r.chofer || r.chofer === '-') return;
+    if (!choferMap[r.chofer]) choferMap[r.chofer] = { paradas: 0, aTiempo: 0, demoraTotal: 0, noEntregadas: 0, reprogramadas: 0, detalle: [] };
+    const st = choferMap[r.chofer];
     const tonelaje = getTonelajeVehiculo(r.vehiculo);
     r.paradas.forEach((parada, pi) => {
-      const estadoParada = r.estadosParadas && r.estadosParadas[pi];
-      if (estadoParada === 'no-entregado') {
-        const motivo = r.motivosParadas && r.motivosParadas[pi] ? r.motivosParadas[pi] : '';
-        csv += `${fecha},"${r.chofer}","${r.nombre}","${parada}",—,—,"${motivo}",NO ENTREGADO\n`;
-        return;
-      }
-      if (estadoParada === 'reprogramado') {
-        const motivo = r.motivosParadas && r.motivosParadas[pi] ? r.motivosParadas[pi] : '';
-        const nf = r.nuevasFechasParadas && r.nuevasFechasParadas[pi] ? r.nuevasFechasParadas[pi] : '';
-        csv += `${fecha},"${r.chofer}","${r.nombre}","${parada}",—,—,"${motivo} → ${nf}",REPROGRAMADO\n`;
-        return;
-      }
-      const llegadaReal = r.llegadas && r.llegadas[pi];
-      if (!llegadaReal) return;
+      const estadoParada = (r.estadosParadas || {})[pi] || (r.estadosParadas || {})[String(pi)];
+      if (estadoParada === 'no-entregado') { st.noEntregadas++; return; }
+      if (estadoParada === 'reprogramado') { st.reprogramadas++; return; }
+      const llegadaReal = r.llegadas && (r.llegadas[pi] || r.llegadas[String(pi)]);
+      if (!llegadaReal || !r.horario) return;
       const est = calcularEstimada(r.horario, r.zona, tonelaje, pi + 1);
       if (!est) return;
       const [eh, em] = est.split(':').map(Number);
       const [rh, rm] = llegadaReal.split(':').map(Number);
       const diff = (rh * 60 + rm) - (eh * 60 + em);
-      const diffLabel = diff > 0 ? `+${diff} min` : diff < 0 ? `${diff} min` : 'exacto';
-      const estado = diff <= 10 ? 'A TIEMPO' : 'DEMORADO';
-      csv += `${fecha},"${r.chofer}","${r.nombre}","${parada}",${est} hs,${llegadaReal} hs,"${diffLabel}",${estado}\n`;
+      st.paradas++;
+      if (diff <= 10) st.aTiempo++;
+      st.demoraTotal += Math.max(0, diff);
+      const [y, m, d] = (r.fecha || new Date().toISOString().slice(0,10)).split('-');
+      st.detalle.push({ fecha: `${d}/${m}/${y}`, ruta: r.nombre, parada, est, real: llegadaReal, diff });
     });
   });
 
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  Object.entries(choferMap).forEach(([chofer, st]) => {
+    const pct = st.paradas > 0 ? Math.round((st.aTiempo / st.paradas) * 100) : 0;
+    const demoraPromedio = st.paradas > 0 ? Math.round(st.demoraTotal / st.paradas) : 0;
+    const barColor = pct >= 90 ? '#16a34a' : pct >= 70 ? '#f5a623' : '#dc2626';
+    const bgCard = pct >= 90 ? '#f0faf4' : pct >= 70 ? '#fffbf0' : '#fff5f5';
+    const borderCard = pct >= 90 ? '#86efac' : pct >= 70 ? '#fcd34d' : '#fca5a5';
+    const statusLabel = pct >= 90 ? '✓ Excelente' : pct >= 70 ? '⚠ Regular' : '✗ Con demoras';
+    const barW = Math.round(pct * 4.5); // px de la barra (max ~450px)
+
+    const detalleFilas = st.detalle.map(d => {
+      const diffLabel = d.diff > 0 ? `+${d.diff} min` : d.diff < 0 ? `${d.diff} min` : 'exacto';
+      const diffColor = d.diff > 10 ? '#dc2626' : d.diff < -5 ? '#2563eb' : '#16a34a';
+      return `<tr>
+        <td style="padding:5px 8px;font-family:monospace;font-size:11px;color:#f5a623">${d.fecha}</td>
+        <td style="padding:5px 8px;font-size:11px;color:#6b7280">${d.ruta}</td>
+        <td style="padding:5px 8px;font-size:11px">${d.parada}</td>
+        <td style="padding:5px 8px;font-family:monospace;font-size:11px;color:#2563eb">${d.est} hs</td>
+        <td style="padding:5px 8px;font-family:monospace;font-size:11px">${d.real} hs</td>
+        <td style="padding:5px 8px;font-family:monospace;font-size:11px;font-weight:700;color:${diffColor}">${diffLabel}</td>
+      </tr>`;
+    }).join('');
+
+    filas += `
+    <div style="margin-bottom:18px;background:${bgCard};border:1.5px solid ${borderCard};border-left:5px solid ${barColor};padding:14px;border-radius:4px;page-break-inside:avoid">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <div style="font-weight:700;font-size:14px;font-family:sans-serif">👷 ${chofer}</div>
+          <div style="font-size:10px;color:#6b7280;margin-top:2px;font-family:monospace">
+            ${st.paradas} paradas · demora prom: ${demoraPromedio > 0 ? demoraPromedio + ' min' : 'sin demora'}
+            ${st.noEntregadas > 0 ? ` · ${st.noEntregadas} no entregadas` : ''}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:28px;font-weight:900;color:${barColor};font-family:sans-serif">${pct}%</span>
+          <span style="font-size:10px;color:${barColor};border:1px solid ${barColor};padding:2px 8px;border-radius:20px;font-family:monospace">${statusLabel}</span>
+        </div>
+      </div>
+      <div style="background:#e5e7eb;height:6px;border-radius:3px;margin-bottom:10px">
+        <div style="background:${barColor};height:6px;border-radius:3px;width:${pct}%"></div>
+      </div>
+      ${st.detalle.length > 0 ? `
+      <table style="width:100%;border-collapse:collapse;font-family:sans-serif;background:#fff;border-radius:3px">
+        <thead>
+          <tr style="background:#f3f4f6;border-bottom:1.5px solid #1a1a2e">
+            <th style="padding:4px 8px;text-align:left;font-size:9px;letter-spacing:1px;color:#6b7280;text-transform:uppercase">Fecha</th>
+            <th style="padding:4px 8px;text-align:left;font-size:9px;letter-spacing:1px;color:#6b7280;text-transform:uppercase">Ruta</th>
+            <th style="padding:4px 8px;text-align:left;font-size:9px;letter-spacing:1px;color:#6b7280;text-transform:uppercase">Parada</th>
+            <th style="padding:4px 8px;text-align:left;font-size:9px;letter-spacing:1px;color:#6b7280;text-transform:uppercase">Estimada</th>
+            <th style="padding:4px 8px;text-align:left;font-size:9px;letter-spacing:1px;color:#6b7280;text-transform:uppercase">Real</th>
+            <th style="padding:4px 8px;text-align:left;font-size:9px;letter-spacing:1px;color:#6b7280;text-transform:uppercase">Diferencia</th>
+          </tr>
+        </thead>
+        <tbody>${detalleFilas}</tbody>
+      </table>` : '<div style="font-size:11px;color:#9ca3af;font-family:monospace">Sin llegadas registradas</div>'}
+    </div>`;
+  });
+
+  if (!filas) filas = '<p style="color:#9ca3af;font-family:monospace">Sin datos registrados para hoy.</p>';
+
+  // Rendimiento por chofer para PDF
+  const porChoferPDF = {};
+  data.rutas.forEach(r => {
+    if (!r.chofer || r.chofer === '-') return;
+    if (!porChoferPDF[r.chofer]) porChoferPDF[r.chofer] = 0;
+    const estados = r.estadosParadas || {};
+    (r.paradas || []).forEach((p, pi) => {
+      const est2 = estados[String(pi)] || estados[pi];
+      if (est2 === 'entregado' || (!est2 && pi < (r.progreso || 0))) porChoferPDF[r.chofer]++;
+    });
+  });
+  const maxPDF = Math.max(...Object.values(porChoferPDF), 1);
+  const rendimientoHTML = Object.keys(porChoferPDF).length === 0
+    ? '<p style="color:#9ca3af;font-size:12px">Sin entregas registradas hoy.</p>'
+    : `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+        ${Object.entries(porChoferPDF).map(([nombre, cant]) => {
+          const pct2 = Math.round((cant / maxPDF) * 100);
+          return `<div style="background:#fff5f5;border:1.5px solid #fca5a5;border-top:4px solid #dc2626;border-radius:4px;padding:14px">
+            <div style="font-size:9px;letter-spacing:1px;color:#dc2626;text-transform:uppercase;margin-bottom:4px;font-family:monospace">Chofer</div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:8px">${nombre}</div>
+            <div style="font-size:32px;font-weight:900;color:#1a1a2e;line-height:1">${cant}</div>
+            <div style="font-size:9px;color:#6b7280;margin-bottom:8px;font-family:monospace">entregas hoy</div>
+            <div style="background:#fecaca;height:4px;border-radius:2px">
+              <div style="background:#dc2626;height:4px;border-radius:2px;width:${pct2}%"></div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+
+  // Tiempos de carga para PDF
+  const rutasConCargaPDF = data.rutas.filter(r => r.cargador && r.tiempoCargaMin != null);
+  const cargaHTML = rutasConCargaPDF.length === 0
+    ? '<p style="color:#9ca3af;font-size:12px">Sin registros de tiempos de carga.</p>'
+    : `<table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="background:#fef2f2;border-bottom:2px solid #dc2626">
+            <th style="padding:6px 8px;text-align:left;font-size:8px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Cargador</th>
+            <th style="padding:6px 8px;text-align:left;font-size:8px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Ruta</th>
+            <th style="padding:6px 8px;text-align:left;font-size:8px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Chofer</th>
+            <th style="padding:6px 8px;text-align:left;font-size:8px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Llegada ant.</th>
+            <th style="padding:6px 8px;text-align:left;font-size:8px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Salida</th>
+            <th style="padding:6px 8px;text-align:left;font-size:8px;letter-spacing:1px;color:#dc2626;text-transform:uppercase">Tiempo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rutasConCargaPDF.map((r, i) => {
+            const mins = r.tiempoCargaMin;
+            const h = Math.floor(mins/60), m2 = mins%60;
+            const lbl = h > 0 ? `${h}h ${m2}min` : `${m2} min`;
+            const col = mins <= 30 ? '#16a34a' : mins <= 60 ? '#f5a623' : '#dc2626';
+            return `<tr style="border-bottom:1px solid #fca5a5;background:${i%2===0?'#fff5f5':'#fff'}">
+              <td style="padding:6px 8px;font-weight:700;color:#dc2626;font-family:monospace">${r.cargador}</td>
+              <td style="padding:6px 8px">${r.nombre}</td>
+              <td style="padding:6px 8px">${r.chofer}</td>
+              <td style="padding:6px 8px;font-family:monospace">${r.llegadaAnterior} hs</td>
+              <td style="padding:6px 8px;font-family:monospace">${r.horario} hs</td>
+              <td style="padding:6px 8px;font-weight:900;font-size:16px;color:${col}">${lbl}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte Gerencial — ${fechaLabel}</title>
+  <style>
+    @media print {
+      body { margin: 0; }
+      .no-print { display: none; }
+      .section-title { page-break-before: auto; }
+    }
+    body { font-family: sans-serif; background: #fff; color: #1a1a2e; padding: 28px; max-width: 960px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div style="background:#1a1a2e;padding:20px 28px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:4px;color:#f5a623;font-family:sans-serif">CORRALÓN LOG</div>
+      <div style="font-size:12px;color:#fff;margin-top:4px;font-family:monospace;letter-spacing:1px;text-transform:uppercase">Reporte Gerencial Diario</div>
+    </div>
+    <div style="text-align:right;color:#9ca3af;font-family:monospace;font-size:11px">${fechaLabel.toUpperCase()}</div>
+  </div>
+  <button class="no-print" onclick="window.print()" style="margin-bottom:20px;background:#f5a623;border:none;padding:10px 24px;font-family:monospace;font-weight:700;font-size:12px;cursor:pointer;letter-spacing:1px;border-radius:3px">🖨 IMPRIMIR / GUARDAR PDF</button>
+
+  <div style="background:#1a1a2e;padding:10px 16px;margin-bottom:14px;border-left:5px solid #dc2626">
+    <div style="font-size:14px;font-weight:700;letter-spacing:2px;color:#f5a623;font-family:monospace">👷 RENDIMIENTO POR CHOFER</div>
+  </div>
+  ${rendimientoHTML}
+
+  <div style="background:#1a1a2e;padding:10px 16px;margin:24px 0 14px;border-left:5px solid #dc2626">
+    <div style="font-size:14px;font-weight:700;letter-spacing:2px;color:#f5a623;font-family:monospace">⏱ PUNTUALIDAD POR CHOFER</div>
+  </div>
+  ${filas}
+
+  <div style="background:#1a1a2e;padding:10px 16px;margin:24px 0 14px;border-left:5px solid #dc2626">
+    <div style="font-size:14px;font-weight:700;letter-spacing:2px;color:#f5a623;font-family:monospace">🏗 TIEMPOS DE CARGA POR CARGADOR</div>
+  </div>
+  ${cargaHTML}
+
+  <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;font-family:monospace;text-align:right">
+    Generado el ${new Date().toLocaleString('es-AR')} — CORRALÓN LOG v1.0
+  </div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `reporte-puntualidad-${fecha}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showSuccessToast('Reporte descargado');
+  const w = window.open(url, '_blank');
+  if (w) {
+    w.onload = () => { setTimeout(() => { w.print(); URL.revokeObjectURL(url); }, 400); };
+  }
+  showSuccessToast('Reporte abierto — usá Ctrl+P para guardar como PDF');
 }
 
 function limpiarReporte() {
@@ -2793,9 +3008,46 @@ let rutaChoferSel = '';
 let rutaVehiculoSel = '';
 
 function populateSelects() {
-  document.querySelectorAll('#ne-cliente').forEach(s => {
-    s.innerHTML = '<option value="">Seleccionar cliente...</option>' + data.clientes.map(c => `<option>${c.nombre}</option>`).join('');
-  });
+  // ya no necesita poblar un select — el autocomplete lee data.clientes dinámicamente
+}
+
+// ── Autocomplete de clientes ──────────────────────────────────────
+function acNormalizar(str) {
+  return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function acCliente(inputEl, ddId, hiddenId) {
+  const dd = document.getElementById(ddId);
+  const q = acNormalizar(inputEl.value.trim());
+  const resultados = q
+    ? data.clientes.filter(c => acNormalizar(c.nombre).includes(q))
+    : data.clientes.slice(0, 30);
+
+  if (!resultados.length) {
+    dd.innerHTML = `<div class="ac-item" style="color:#6b7280;cursor:default">Sin coincidencias</div>`;
+    dd.classList.add('open');
+    return;
+  }
+
+  dd.innerHTML = resultados.map(c => {
+    const nombre = c.nombre || '';
+    const sub = [c.direccion, c.tel].filter(Boolean).join(' · ');
+    const resaltado = q
+      ? nombre.replace(new RegExp(`(${q})`, 'gi'), '<span class="ac-highlight">$1</span>')
+      : nombre;
+    return `<div class="ac-item" onmousedown="acSeleccionar(event,'${ddId}','${inputEl.id}',${hiddenId ? `'${hiddenId}'` : 'null'},'${nombre.replace(/'/g,"\\'")}')">
+      <span class="ac-item-name">${resaltado}</span>
+      <span class="ac-item-sub">${sub}</span>
+    </div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+
+function acSeleccionar(e, ddId, inputId, hiddenId, nombre) {
+  e.preventDefault();
+  document.getElementById(inputId).value = nombre;
+  if (hiddenId) document.getElementById(hiddenId).value = nombre;
+  document.getElementById(ddId).classList.remove('open');
 }
 
 function populateRutaModal() {
@@ -2842,7 +3094,7 @@ function populateRutaModal() {
         style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid #1a1a2e;padding:8px 12px;cursor:pointer;transition:all 0.15s">
         <div>
           <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span> ${e.estado === 'reprogramado' ? '<span style="color:var(--purple);font-size:10px;font-family:\'IBM Plex Mono\',monospace">REPROG.</span>' : ''}${fechaBadge}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? e.peso.toLocaleString('es-AR')+' kg' : '—'}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? (e.peso/1000).toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1})+' tn' : '—'}</div>
         </div>
         <div style="font-size:18px;color:#aab0bb" id="dir-check-${e.id}">○</div>
       </div>`}).join('')
@@ -2916,7 +3168,8 @@ function renderParadasSeleccionadas() {
 
 function guardarEntrega() {
   const c = v => document.getElementById(v).value;
-  if (!c('ne-cliente') || !c('ne-direccion')) { alert('Completá los campos requeridos'); return; }
+  const clienteVal = (document.getElementById('ne-cliente-val').value || c('ne-cliente')).trim();
+  if (!clienteVal || !c('ne-direccion')) { alert('Completá los campos requeridos'); return; }
   const remito = c('ne-remito') || 'REM-' + String(data.entregas.length + 1).padStart(4, '0');
   const materialesCalc = c('ne-materiales') || '';
   const productosExtra = productosLibres.map(p => p.desc).filter(Boolean);
@@ -2926,7 +3179,7 @@ function guardarEntrega() {
   const direccionCompleta = localidad ? `${c('ne-direccion')} — ${localidad}` : c('ne-direccion');
   data.entregas.unshift({
     id: remito,
-    cliente: c('ne-cliente'),
+    cliente: clienteVal,
     origen: c('ne-origen') || '',
     direccion: direccionCompleta,
     materiales: todosLosMateriales,
@@ -3133,16 +3386,67 @@ function quitarProductoLibre(id) {
 }
 
 function calcSelectHTML(lineId, selectedNombre = '') {
-  return `<select onchange="updateLinea(${lineId})" style="background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
-    <option value="">Seleccionar...</option>
-    ${CATS.map(cat => `
-      <optgroup label="${cat}">
-        ${MATERIALES_DB.filter(m => m.cat === cat).map(m =>
-          `<option value="${m.nombre}" ${m.nombre === selectedNombre ? 'selected' : ''}>${m.nombre} (${m.pesoPorUn} kg/${m.unidad})</option>`
-        ).join('')}
-      </optgroup>
-    `).join('')}
-  </select>`;
+  const mat = selectedNombre ? MATERIALES_DB.find(m => m.nombre === selectedNombre) : null;
+  return `<div class="ac-wrapper">
+    <input type="text" id="mat-input-${lineId}" value="${selectedNombre}"
+      placeholder="Buscá un material..."
+      autocomplete="off"
+      oninput="acMaterial(${lineId})"
+      onfocus="acMaterial(${lineId})"
+      onblur="setTimeout(()=>{const d=document.getElementById('mat-dd-${lineId}');if(d)d.classList.remove('open')},200)"
+      style="background:var(--surface2);border:1px solid #1a1a2e;color:var(--text);padding:6px 8px;font-size:12px;width:100%;outline:none">
+    <div class="ac-dropdown" id="mat-dd-${lineId}" style="background:#1a1a2e;border-color:#f5a623"></div>
+  </div>`;
+}
+
+function acMaterial(lineId) {
+  const input = document.getElementById(`mat-input-${lineId}`);
+  const dd = document.getElementById(`mat-dd-${lineId}`);
+  if (!input || !dd) return;
+  const q = acNormalizar(input.value.trim());
+  const resultados = q
+    ? MATERIALES_DB.filter(m => acNormalizar(m.nombre).includes(q) || acNormalizar(m.cat).includes(q))
+    : MATERIALES_DB.slice(0, 40);
+
+  if (!resultados.length) {
+    dd.innerHTML = `<div class="ac-item" style="color:#9ca3af;cursor:default;background:#1a1a2e">Sin resultados</div>`;
+    dd.classList.add('open');
+    return;
+  }
+
+  dd.innerHTML = resultados.map(m => {
+    const resaltado = q
+      ? m.nombre.replace(new RegExp(`(${q})`, 'gi'), '<span class="ac-highlight">$1</span>')
+      : m.nombre;
+    return `<div class="ac-item" style="background:#1a1a2e;color:#f0f0f0;border-color:#35332d"
+      onmousedown="acSelMaterial(event,${lineId},'${m.nombre.replace(/'/g,"\\'")}')">
+      <span class="ac-item-name" style="color:#f0f0f0">${resaltado}</span>
+      <span class="ac-item-sub" style="color:#f5a623">${m.cat} · ${m.pesoPorUn} kg/${m.unidad}</span>
+    </div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+
+function acSelMaterial(e, lineId, nombre) {
+  e.preventDefault();
+  const input = document.getElementById(`mat-input-${lineId}`);
+  const dd = document.getElementById(`mat-dd-${lineId}`);
+  if (input) input.value = nombre;
+  if (dd) dd.classList.remove('open');
+  const mat = MATERIALES_DB.find(m => m.nombre === nombre);
+  const l = calcLineas.find(l => l.id === lineId);
+  if (l && mat) {
+    l.material = nombre;
+    l.peso = mat.pesoPorUn * l.cantidad;
+    const unEl = document.getElementById(`unidad-${lineId}`);
+    const pEl = document.getElementById(`peso-${lineId}`);
+    if (unEl) unEl.textContent = mat.unidad || '—';
+    if (pEl) {
+      const ton = l.peso / 1000;
+      pEl.textContent = l.peso > 0 ? ton.toLocaleString('es-AR', {minimumFractionDigits:3, maximumFractionDigits:3}) + ' tn' : '—';
+    }
+    actualizarTotal();
+  }
 }
 
 function agregarLinea() {
@@ -3175,9 +3479,9 @@ function renderLineas() {
 }
 
 function updateLinea(id) {
-  const select = document.querySelector(`#linea-${id} select`);
-  if (!select) return;
-  const nombre = select.value;
+  const input = document.getElementById(`mat-input-${id}`);
+  if (!input) return;
+  const nombre = input.value;
   const mat = MATERIALES_DB.find(m => m.nombre === nombre);
   const l = calcLineas.find(l => l.id === id);
   if (l) {
@@ -3186,7 +3490,10 @@ function updateLinea(id) {
     const unEl = document.getElementById(`unidad-${id}`);
     const pEl = document.getElementById(`peso-${id}`);
     if (unEl) unEl.textContent = mat?.unidad || '—';
-    if (pEl) pEl.textContent = l.peso > 0 ? l.peso.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg' : '—';
+    if (pEl) {
+      const ton = l.peso / 1000;
+      pEl.textContent = l.peso > 0 ? ton.toLocaleString('es-AR', {minimumFractionDigits:3, maximumFractionDigits:3}) + ' tn' : '—';
+    }
     actualizarTotal();
   }
 }
@@ -3198,7 +3505,10 @@ function setCantidad(id, val) {
   const mat = MATERIALES_DB.find(m => m.nombre === l.material);
   l.peso = mat ? mat.pesoPorUn * l.cantidad : 0;
   const pEl = document.getElementById(`peso-${id}`);
-  if (pEl) pEl.textContent = l.peso > 0 ? l.peso.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg' : '—';
+  if (pEl) {
+    const ton = l.peso / 1000;
+    pEl.textContent = l.peso > 0 ? ton.toLocaleString('es-AR', {minimumFractionDigits:3, maximumFractionDigits:3}) + ' tn' : '—';
+  }
   actualizarTotal();
 }
 
@@ -3213,7 +3523,10 @@ function actualizarTotal() {
   const resumen = document.getElementById('resumen-materiales');
   const pesoHidden = document.getElementById('ne-peso');
   const materialesHidden = document.getElementById('ne-materiales');
-  if (el) el.textContent = total.toLocaleString('es-AR', {maximumFractionDigits:1}) + ' kg';
+  if (el) {
+    const ton = total / 1000;
+    el.textContent = ton.toLocaleString('es-AR', {minimumFractionDigits:3, maximumFractionDigits:3}) + ' tn';
+  }
   const items = calcLineas.filter(l => l.material && l.cantidad > 0);
   if (resumen) resumen.textContent = items.length > 0
     ? items.map(l => `${l.cantidad} ${MATERIALES_DB.find(m=>m.nombre===l.material)?.unidad||''} ${l.material}`).join(', ')
@@ -3417,7 +3730,7 @@ function populateRutaMananaModal() {
         style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid #1a1a2e;padding:8px 12px;cursor:pointer;transition:all 0.15s">
         <div>
           <div style="font-size:13px;font-weight:600">${e.cliente} <span class="badge" style="font-size:10px">${e.zona}</span> ${e.estado === 'reprogramado' ? '<span style="color:var(--purple);font-size:10px;font-family:\'IBM Plex Mono\',monospace">REPROG.</span>' : ''}${fechaBadge}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? e.peso.toLocaleString('es-AR')+' kg' : '—'}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${e.direccion} &nbsp;·&nbsp; <span class="mono" style="color:var(--accent)">${e.id}</span> &nbsp;·&nbsp; ${e.peso ? (e.peso/1000).toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1})+' tn' : '—'}</div>
         </div>
         <div style="font-size:18px;color:#aab0bb" id="dirm-check-${e.id}">○</div>
       </div>`}).join('')
@@ -3511,6 +3824,7 @@ function guardarEntregaManana() {
 Object.assign(window, {
   showSection, openModal, closeModal,
   confirmarPin, cerrarModalPin, bloquearSistema,
+  acCliente, acSeleccionar, acMaterial, acSelMaterial,
   filterEntregas, cambiarEstado, eliminarEntrega, toggleRemito,
   guardarEntrega, guardarRuta, guardarVehiculo, guardarChofer, guardarCliente,
   eliminarVehiculo, eliminarChofer, eliminarCliente, eliminarRuta,
